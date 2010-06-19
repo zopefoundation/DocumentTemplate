@@ -1,0 +1,9 @@
+Overview
+========
+
+This package implements the original Document Templating Markup Language
+(DTML). It uses custom SGML tags to implement simple programmatic features,
+such as variable replacement, conditional logic and loops.
+
+Inside Zope environments page templates and TAL have superseded DTML for most
+use cases.
