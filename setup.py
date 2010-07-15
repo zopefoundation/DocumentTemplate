@@ -16,7 +16,7 @@ from os.path import join
 from setuptools import setup, find_packages, Extension
 
 setup(name='DocumentTemplate',
-      version = '2.13.1dev',
+      version = '2.13.1',
       url='http://pypi.python.org/pypi/DocumentTemplate',
       license='ZPL 2.1',
       description="Document Templating Markup Language (DTML)",

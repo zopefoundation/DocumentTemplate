@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.13.1 (unreleased)
+2.13.1 (2010-07-15)
 -------------------
 
 - LP #143273: Enable the dtml-var modifiers url_quote, url_unquote,
