@@ -35,7 +35,7 @@ setup(name='DocumentTemplate',
       install_requires=[
         'AccessControl',
         'Acquisition',
-        'ExtensionClass',
+        'ExtensionClass<4.0.dev',
         'RestrictedPython',
         'zExceptions',
         'zope.sequencesort',
