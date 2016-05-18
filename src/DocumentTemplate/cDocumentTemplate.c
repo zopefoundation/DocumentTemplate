@@ -83,7 +83,7 @@ InstanceDict_dealloc(InstanceDictobject *self)
   Py_XDECREF(self->cache);
   Py_XDECREF(self->namespace);
   Py_XDECREF(self->guarded_getattr);
-  Py_DECREF(self->ob_type);
+  Py_DECREF(Py_TYPE(self));
   PyObject_DEL(self);
 }
 
@@ -179,8 +179,7 @@ static char InstanceDicttype__doc__[] =
 ;
 
 static PyExtensionClass InstanceDictType = {
-  PyObject_HEAD_INIT(NULL)
-  0,				/*ob_size*/
+  PyVarObject_HEAD_INIT(NULL, 0) 	/*ob_size*/
   "InstanceDict",			/*tp_name*/
   sizeof(InstanceDictobject),	/*tp_basicsize*/
   0,				/*tp_itemsize*/
@@ -437,7 +436,7 @@ MM_dealloc(MM *self)
 {
   Py_XDECREF(self->data);
   Py_XDECREF(self->dict);
-  Py_DECREF(self->ob_type);
+  Py_DECREF(Py_TYPE(self));
   PyObject_DEL(self);
 }
 
@@ -528,8 +527,7 @@ DictInstance_getattr(DictInstance *self, PyObject *name)
 }
 
 static PyTypeObject DictInstanceType = {
-  PyObject_HEAD_INIT(NULL)
-  0,				/*ob_size*/
+  PyVarObject_HEAD_INIT(NULL, 0) 	/*ob_size*/
   "DictInstance",			/*tp_name*/
   sizeof(DictInstance),		/*tp_basicsize*/
   0,				/*tp_itemsize*/
@@ -569,7 +567,7 @@ MM_call(MM *self, PyObject *args, PyObject *kw)
   if (args && (l=PyTuple_Size(args)) < 0) return NULL;
   if (l)
     {
-      UNLESS(r=PyObject_CallObject(OBJECT(self->ob_type), NULL)) return NULL;
+      UNLESS(r=PyObject_CallObject(OBJECT(Py_TYPE(self)), NULL)) return NULL;
       for (i=0; i < l; i++) 
 	if (PyList_Append(((MM*)r)->data, PyTuple_GET_ITEM(args, i)) < 0) 
 	  goto err;
@@ -609,8 +607,7 @@ static char MMtype__doc__[] =
 ;
 
 static PyExtensionClass MMtype = {
-	PyObject_HEAD_INIT(NULL)
-	0,				/*ob_size*/
+        PyVarObject_HEAD_INIT(NULL, 0)  /*ob_size*/
 	"TemplateDict",			/*tp_name*/
 	sizeof(MM),			/*tp_basicsize*/
 	0,				/*tp_itemsize*/
@@ -970,7 +967,7 @@ initcDocumentTemplate(void)
 {
   PyObject *m, *d;
 
-  DictInstanceType.ob_type=&PyType_Type;
+  Py_TYPE(&DictInstanceType)=&PyType_Type;
 
   UNLESS (html_quote = PyImport_ImportModule("DocumentTemplate.html_quote")) return;
   ASSIGN(ustr, PyObject_GetAttrString(html_quote, "ustr"));
