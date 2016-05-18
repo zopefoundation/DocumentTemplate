@@ -179,8 +179,7 @@ static char InstanceDicttype__doc__[] =
 ;
 
 static PyExtensionClass InstanceDictType = {
-  PyObject_HEAD_INIT(NULL)
-  0,				/*ob_size*/
+  PyVarObject_HEAD_INIT(NULL, 0) 	/*ob_size*/
   "InstanceDict",			/*tp_name*/
   sizeof(InstanceDictobject),	/*tp_basicsize*/
   0,				/*tp_itemsize*/
@@ -528,8 +527,7 @@ DictInstance_getattr(DictInstance *self, PyObject *name)
 }
 
 static PyTypeObject DictInstanceType = {
-  PyObject_HEAD_INIT(NULL)
-  0,				/*ob_size*/
+  PyVarObject_HEAD_INIT(NULL, 0) 	/*ob_size*/
   "DictInstance",			/*tp_name*/
   sizeof(DictInstance),		/*tp_basicsize*/
   0,				/*tp_itemsize*/
@@ -609,8 +607,7 @@ static char MMtype__doc__[] =
 ;
 
 static PyExtensionClass MMtype = {
-	PyObject_HEAD_INIT(NULL)
-	0,				/*ob_size*/
+        PyVarObject_HEAD_INIT(NULL, 0)  /*ob_size*/
 	"TemplateDict",			/*tp_name*/
 	sizeof(MM),			/*tp_basicsize*/
 	0,				/*tp_itemsize*/

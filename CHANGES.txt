@@ -4,6 +4,7 @@ Changelog
 2.13.3 (unreleased)
 -------------------
 
+- Modernised C code in preparation of porting to Python 3.
 
 2.13.2 (2011-12-12)
 -------------------
