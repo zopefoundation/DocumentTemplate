@@ -11,11 +11,15 @@
 #
 ##############################################################################
 """ustr function.
-
-$Id$
 """
 
+import sys
+
+if sys.version_info > (3, 0):
+    basestring = str
+
 nasty_exception_str = getattr(Exception.__str__, 'im_func', None)
+
 
 def ustr(v):
     """Convert any object to a plain string or unicode string,
@@ -25,14 +29,15 @@ def ustr(v):
     if isinstance(v, basestring):
         return v
     else:
-        fn = getattr(v,'__str__',None)
+        fn = getattr(v, '__str__', None)
         if fn is not None:
             # An object that wants to present its own string representation,
             # but we dont know what type of string. We cant use any built-in
             # function like str() or unicode() to retrieve it because
-            # they all constrain the type which potentially raises an exception.
+            # they all constrain the type which potentially raises an
+            # exception.
             # To avoid exceptions we have to call __str__ direct.
-            if getattr(fn,'im_func',None)==nasty_exception_str:
+            if getattr(fn, 'im_func', None) == nasty_exception_str:
                 # Exception objects have been optimised into C, and their
                 # __str__ function fails when given a unicode object.
                 # Unfortunately this scenario is all too common when

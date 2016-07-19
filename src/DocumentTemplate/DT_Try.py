@@ -11,13 +11,16 @@
 #
 ##############################################################################
 
-import  sys, traceback
+import sys
+import traceback
+
 from cStringIO import StringIO
 from DocumentTemplate.DT_Util import ParseError, parse_params, render_blocks
 from DocumentTemplate.DT_Util import namespace, InstanceDict
 from DocumentTemplate.DT_Return import DTReturn
 
-class Try:
+
+class Try(object):
     """Zope DTML Exception handling
 
     usage:
@@ -84,15 +87,14 @@ class Try:
 
     name = 'try'
     blockContinuations = 'except', 'else', 'finally'
-    finallyBlock=None
-    elseBlock=None
+    finallyBlock = None
+    elseBlock = None
 
     def __init__(self, blocks):
         tname, args, section = blocks[0]
 
         self.args = parse_params(args)
         self.section = section.blocks
-
 
         # Find out if this is a try..finally type
         if len(blocks) == 2 and blocks[1][0] == 'finally':
@@ -104,36 +106,36 @@ class Try:
             self.handlers = []
             defaultHandlerFound = 0
 
-            for tname,nargs,nsection in blocks[1:]:
+            for tname, nargs, nsection in blocks[1:]:
                 if tname == 'else':
-                    if not self.elseBlock is None:
-                        raise ParseError, (
+                    if self.elseBlock is not None:
+                        raise ParseError(
                             'No more than one else block is allowed',
                             self.name)
                     self.elseBlock = nsection.blocks
 
                 elif tname == 'finally':
-                    raise ParseError, (
+                    raise ParseError(
                         'A try..finally combination cannot contain '
                         'any other else, except or finally blocks',
                         self.name)
 
                 else:
-                    if not self.elseBlock is None:
-                        raise ParseError, (
+                    if self.elseBlock is not None:
+                        raise ParseError(
                             'The else block should be the last block '
                             'in a try tag', self.name)
 
                     for errname in nargs.split():
-                        self.handlers.append((errname,nsection.blocks))
-                    if nargs.strip()=='':
+                        self.handlers.append((errname, nsection.blocks))
+                    if nargs.strip() == '':
                         if defaultHandlerFound:
-                            raise ParseError, (
+                            raise ParseError(
                                 'Only one default exception handler '
                                 'is allowed', self.name)
                         else:
                             defaultHandlerFound = 1
-                            self.handlers.append(('',nsection.blocks))
+                            self.handlers.append(('', nsection.blocks))
 
     def render(self, md):
         if (self.finallyBlock is None):
@@ -151,8 +153,8 @@ class Try:
             raise
         except:
             # but an error occurs.. save the info.
-            t,v = sys.exc_info()[:2]
-            if type(t)==type(''):
+            t, v = sys.exc_info()[:2]
+            if isinstance(t, str):
                 errname = t
             else:
                 errname = t.__name__
@@ -165,12 +167,12 @@ class Try:
 
             # found the handler block, now render it
             try:
-                f=StringIO()
-                traceback.print_exc(100,f)
-                error_tb=f.getvalue()
+                f = StringIO()
+                traceback.print_exc(100, f)
+                error_tb = f.getvalue()
                 ns = namespace(md, error_type=errname, error_value=v,
-                    error_tb=error_tb)[0]
-                md._push(InstanceDict(ns,md))
+                               error_tb=error_tb)[0]
+                md._push(InstanceDict(ns, md))
                 return render_blocks(handler, md)
             finally:
                 md._pop(1)
@@ -192,22 +194,23 @@ class Try:
             result = result + render_blocks(self.finallyBlock, md)
         return result
 
-    def find_handler(self,exception):
+    def find_handler(self, exception):
         "recursively search for a handler for a given exception"
-        if type(exception)==type(''):
-            for e,h in self.handlers:
-                if exception==e or e=='':
+        if isinstance(exception, str):
+            for e, h in self.handlers:
+                if exception == e or e == '':
                     return h
             else:
                 return None
-        for e,h in self.handlers:
-            if e==exception.__name__ or e=='' or self.match_base(exception,e):
+        for e, h in self.handlers:
+            if (e == exception.__name__ or
+                    e == '' or self.match_base(exception, e)):
                 return h
         return None
 
-    def match_base(self,exception,name):
+    def match_base(self, exception, name):
         for base in exception.__bases__:
-            if base.__name__==name or self.match_base(base,name):
+            if base.__name__ == name or self.match_base(base, name):
                 return 1
         return None
 

@@ -10,13 +10,14 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-__version__='$Revision: 1.9 $'[11:-2]
 
 from DocumentTemplate.DT_Util import parse_params, name_param
 
-class ReturnTag:
-    name='return'
-    expr=None
+
+class ReturnTag(object):
+
+    name = 'return'
+    expr = None
 
     def __init__(self, args):
         args = parse_params(args, name='', expr='')
@@ -34,6 +35,7 @@ class ReturnTag:
 
     __call__ = render
 
-class DTReturn:
+
+class DTReturn(object):
     def __init__(self, v):
         self.v = v

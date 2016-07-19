@@ -15,11 +15,18 @@
 This wrapper allows the (now many) document template modules to be
 segregated in a separate package."""
 
-from DocumentTemplate.DT_String import String, File
-from DocumentTemplate.DT_HTML import HTML, HTMLDefault, HTMLFile
+from DocumentTemplate.DT_HTML import (  # NOQA
+    HTML,
+    HTMLDefault,
+    HTMLFile,
+)
+from DocumentTemplate.DT_String import (  # NOQA
+    String,
+    File,
+)
 
 # Register the dtml-tree tag
-import TreeDisplay
+import TreeDisplay  # NOQA
 
 from DocumentTemplate import security  # Side effects!
 del security

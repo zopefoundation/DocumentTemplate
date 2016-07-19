@@ -14,11 +14,10 @@
 
 XXX This module is no longer actively used, but is left as an
 XXX implementation reference for cDocumentTemplate
+"""
 
-$Id$"""
-__version__='$Revision: 1.42 $'[11:-2]
-
-import sys, types
+import sys
+import types
 from types import StringType, UnicodeType, TupleType
 from DocumentTemplate.ustr import ustr
 
@@ -26,7 +25,7 @@ import warnings
 warnings.warn('pDocumentTemplate is not longer in active use. '
               'It remains only as an implementation reference.',
               DeprecationWarning)
-              
+
 ClassTypes = [types.ClassType]
 
 try:
@@ -34,8 +33,12 @@ try:
 except ImportError:
     pass
 else:
-    class c(Base): pass
+    class c(Base):
+        pass
     ClassTypes.append(c.__class__)
+
+if sys.version_info > (3, 0):
+    unicode = str
 
 
 def safe_callable(ob):
@@ -48,36 +51,42 @@ def safe_callable(ob):
     else:
         return callable(ob)
 
-class InstanceDict:
 
-    guarded_getattr=None
+class InstanceDict(object):
 
-    def __init__(self,o,namespace,guarded_getattr=None):
-        self.self=o
-        self.cache={}
-        self.namespace=namespace
+    guarded_getattr = None
+
+    def __init__(self, o, namespace, guarded_getattr=None):
+        self.self = o
+        self.cache = {}
+        self.namespace = namespace
         if guarded_getattr is None:
             self.guarded_getattr = namespace.guarded_getattr
-        else: self.guarded_getattr = guarded_getattr
+        else:
+            self.guarded_getattr = guarded_getattr
 
-    def has_key(self,key):
-        return hasattr(self.self,key)
+    def __contains__(self, key):
+        return hasattr(self.self, key)
+
+    def has_key(self, key):
+        return key in self
 
     def keys(self):
         return self.self.__dict__.keys()
 
-    def __repr__(self): return 'InstanceDict(%s)' % str(self.self)
+    def __repr__(self):
+        return 'InstanceDict(%s)' % str(self.self)
 
-    def __getitem__(self,key):
+    def __getitem__(self, key):
+        cache = self.cache
+        if key in cache:
+            return cache[key]
 
-        cache=self.cache
-        if cache.has_key(key): return cache[key]
+        inst = self.self
 
-        inst=self.self
-
-        if key[:1]=='_':
+        if key[:1] == '_':
             if key != '__str__':
-                raise KeyError, key # Don't divuldge private data
+                raise KeyError(key)  # Don't divuldge private data
             else:
                 return str(inst)
 
@@ -85,18 +94,22 @@ class InstanceDict:
         if get is None:
             get = getattr
 
-        try: r = get(inst, key)
-        except AttributeError: raise KeyError, key
+        try:
+            r = get(inst, key)
+        except AttributeError:
+            raise KeyError(key)
 
-        self.cache[key]=r
+        self.cache[key] = r
         return r
 
     def __len__(self):
         return 1
 
-class MultiMapping:
 
-    def __init__(self): self.dicts=[]
+class MultiMapping(object):
+
+    def __init__(self):
+        self.dicts = []
 
     def __getitem__(self, key):
         for d in self.dicts:
@@ -105,9 +118,10 @@ class MultiMapping:
             except (KeyError, AttributeError):
                 # XXX How do we get an AttributeError?
                 pass
-        raise KeyError, key
+        raise KeyError(key)
 
-    def push(self,d): self.dicts.insert(0,d)
+    def push(self, d):
+        self.dicts.insert(0, d)
 
     def pop(self, n=1):
         r = self.dicts[-1]
@@ -120,31 +134,39 @@ class MultiMapping:
             kz = kz + d.keys()
         return kz
 
-class DictInstance:
+
+class DictInstance(object):
 
     def __init__(self, mapping):
-        self.__d=mapping
+        self.__d = mapping
 
     def __getattr__(self, name):
-        try: return self.__d[name]
-        except KeyError: raise AttributeError, name
+        try:
+            return self.__d[name]
+        except KeyError:
+            raise AttributeError(name)
 
-class TemplateDict:
 
-    level=0
+class TemplateDict(object):
 
-    def _pop(self, n=1): return self.dicts.pop(n)
-    def _push(self, d): return self.dicts.push(d)
+    level = 0
+
+    def _pop(self, n=1):
+        return self.dicts.pop(n)
+
+    def _push(self, d):
+        return self.dicts.push(d)
 
     def __init__(self):
-        m=self.dicts=MultiMapping()
-        self._pop=m.pop
-        self._push=m.push
-        try: self.keys=m.keys
-        except: pass
+        m = self.dicts = MultiMapping()
+        self._pop = m.pop
+        self._push = m.push
+        try:
+            self.keys = m.keys
+        except Exception:
+            pass
 
-    def __getitem__(self,key,call=1):
-
+    def __getitem__(self, key, call=1):
         v = self.dicts[key]
         if call:
             if hasattr(v, '__render_with_namespace__'):
@@ -163,79 +185,99 @@ class TemplateDict:
             total = total + len(d)
         return total
 
-    def has_key(self,key):
+    def __contains__(self, key):
         try:
-            v=self.dicts[key]
+            self.dicts[key]
         except KeyError:
-            return 0
-        return 1
+            return False
+        return True
 
-    getitem=__getitem__
+    def has_key(self, key):
+        return key in self
+
+    getitem = __getitem__
 
     def __call__(self, *args, **kw):
         if args:
-            if len(args)==1 and not kw:
-                m=args[0]
+            if len(args) == 1 and not kw:
+                m = args[0]
             else:
-                m=self.__class__()
-                for a in args: m._push(a)
-                if kw: m._push(kw)
-        else: m=kw
+                m = self.__class__()
+                for a in args:
+                    m._push(a)
+                if kw:
+                    m._push(kw)
+        else:
+            m = kw
         return (DictInstance(m),)
+
 
 def render_blocks(blocks, md):
     rendered = []
-    append=rendered.append
     for section in blocks:
         if type(section) is TupleType:
-            l=len(section)
-            if l==1:
+            l = len(section)
+            if l == 1:
                 # Simple var
-                section=section[0]
-                if type(section) is StringType: section=md[section]
-                else: section=section(md)
-                section=ustr(section)
+                section = section[0]
+                if type(section) is StringType:
+                    section = md[section]
+                else:
+                    section = section(md)
+                section = ustr(section)
             else:
                 # if
-                cache={}
+                cache = {}
                 md._push(cache)
                 try:
-                    i=0
-                    m=l-1
+                    i = 0
+                    m = l - 1
                     while i < m:
-                        cond=section[i]
+                        cond = section[i]
                         if type(cond) is StringType:
-                            n=cond
+                            n = cond
                             try:
-                                cond=md[cond]
-                                cache[n]=cond
-                            except KeyError, v:
-                                v=str(v)
-                                if n != v: raise KeyError, v, sys.exc_traceback
-                                cond=None
-                        else: cond=cond(md)
+                                cond = md[cond]
+                                cache[n] = cond
+                            except KeyError as v:
+                                v = str(v)
+                                if n != v:
+                                    raise KeyError(v)
+                                cond = None
+                        else:
+                            cond = cond(md)
                         if cond:
-                            section=section[i+1]
-                            if section: section=render_blocks(section,md)
-                            else: section=''
-                            m=0
+                            section = section[i + 1]
+                            if section:
+                                section = render_blocks(section, md)
+                            else:
+                                section = ''
+                            m = 0
                             break
-                        i=i+2
+                        i = i + 2
                     if m:
-                        if i==m: section=render_blocks(section[i],md)
-                        else: section=''
+                        if i == m:
+                            section = render_blocks(section[i], md)
+                        else:
+                            section = ''
 
-                finally: md._pop()
+                finally:
+                    md._pop()
 
-        elif type(section) is not StringType and type(section) is not UnicodeType:
-            section=section(md)
+        elif (type(section) is not StringType and
+              type(section) is not UnicodeType):
+            section = section(md)
 
-        if section: rendered.append(section)
+        if section:
+            rendered.append(section)
 
-    l=len(rendered)
-    if l==0: return ''
-    elif l==1: return rendered[0]
+    l = len(rendered)
+    if l == 0:
+        return ''
+    elif l == 1:
+        return rendered[0]
     return join_unicode(rendered)
+
 
 def join_unicode(rendered):
     """join a list of plain strings into a single plain string,
@@ -251,5 +293,5 @@ def join_unicode(rendered):
         rendered = list(rendered)
         for i in range(len(rendered)):
             if type(rendered[i]) is StringType:
-                rendered[i] = unicode(rendered[i],'latin-1')
+                rendered[i] = unicode(rendered[i], 'latin-1')
         return u''.join(rendered)

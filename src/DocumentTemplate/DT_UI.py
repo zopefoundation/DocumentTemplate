@@ -10,18 +10,16 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-__doc__='''Machinery to support through-the-web editing
-
-$Id$'''
-__version__='$Revision: 1.15 $'[11:-2]
+'''Machinery to support through-the-web editing
+'''
 
 from DocumentTemplate.DT_HTML import HTML
 
-FactoryDefaultString="Factory Default"
+FactoryDefaultString = "Factory Default"
 
-HTML.document_template_edit_header='<h2>Edit Document</h2>'
-HTML.document_template_form_header=''
-HTML.document_template_edit_footer=(
+HTML.document_template_edit_header = '<h2>Edit Document</h2>'
+HTML.document_template_form_header = ''
+HTML.document_template_edit_footer = (
     """<FONT SIZE="-1">
     <I><A HREF="http://www.zope.com">
     &copy; 2002 Zope Corporation</A></I></FONT>""")
@@ -75,7 +73,7 @@ HTML._manage_editForm = HTML(
     </BODY>
     </HTML>""",)
 
-HTML.editConfirmation=HTML(
+HTML.editConfirmation = HTML(
     """<html><head><title>Change Successful</title></head><body>
     <!--#if CANCEL_ACTION-->
       <form action="&dtml-CANCEL_ACTION;" method="POST">

@@ -11,11 +11,11 @@
 #
 ##############################################################################
 """Tests for functions and classes in DT_Var.
-
-$Id$
 """
 
-import unittest, doctest
+import doctest
+import unittest
+
 
 class TestNewlineToBr(doctest.DocTestCase):
 
@@ -38,7 +38,7 @@ class TestNewlineToBr(doctest.DocTestCase):
         <br />
         line three<br />
         <BLANKLINE>
-        
+
         >>> dos = text.replace('\n', '\r\n')
         >>> DT_Var.newline_to_br(text) == DT_Var.newline_to_br(dos)
         True
@@ -74,10 +74,9 @@ class TestUrlQuoting(unittest.TestCase):
 
         self.assertEquals(url_quote(unicode_value), quoted_unicode_value)
         self.assertEquals(url_quote(utf8_value), quoted_utf8_value)
-        
+
         self.assertEquals(url_unquote(quoted_unicode_value), unicode_value)
         self.assertEquals(url_unquote(quoted_utf8_value), utf8_value)
-
 
     def test_url_quoting_plus(self):
         from DocumentTemplate.DT_Var import url_quote_plus
@@ -89,9 +88,11 @@ class TestUrlQuoting(unittest.TestCase):
 
         self.assertEquals(url_quote_plus(unicode_value), quoted_unicode_value)
         self.assertEquals(url_quote_plus(utf8_value), quoted_utf8_value)
-        
-        self.assertEquals(url_unquote_plus(quoted_unicode_value), unicode_value)
-        self.assertEquals(url_unquote_plus(quoted_utf8_value), utf8_value)
+
+        self.assertEquals(
+            url_unquote_plus(quoted_unicode_value), unicode_value)
+        self.assertEquals(
+            url_unquote_plus(quoted_utf8_value), utf8_value)
 
 
 def test_suite():
@@ -99,6 +100,3 @@ def test_suite():
     suite.addTest(doctest.DocTestSuite())
     suite.addTest(unittest.makeSuite(TestUrlQuoting))
     return suite
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

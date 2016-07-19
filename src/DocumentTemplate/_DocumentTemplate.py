@@ -104,11 +104,6 @@ Document Templates may be created 4 ways:
 
 '''
 
-
-__version__='$Revision: 1.14 $'[11:-2]
-
-from DocumentTemplate.DT_Raise import ParseError
-from DocumentTemplate.DT_String import String, File
-from DocumentTemplate.DT_HTML import HTML, HTMLFile, HTMLDefault
-
-# import DT_UI # Install HTML editing
+from DocumentTemplate.DT_Raise import ParseError  # NOQA
+from DocumentTemplate.DT_String import String, File  # NOQA
+from DocumentTemplate.DT_HTML import HTML, HTMLFile, HTMLDefault  # NOQA

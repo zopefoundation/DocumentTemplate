@@ -11,29 +11,31 @@
 #
 ##############################################################################
 """ustr unit tests.
-
-$Id$
 """
 
+import sys
 import unittest
 
+if sys.version_info > (3, 0):
+    unichr = chr
+    unicode = str
 
 
-class force_str:
+class force_str(object):
     # A class whose string representation is not always a plain string:
-    def __init__(self,s):
+
+    def __init__(self, s):
         self.s = s
+
     def __str__(self):
         return self.s
 
 
 class Foo(str):
-
     pass
 
 
 class Bar(unicode):
-
     pass
 
 
@@ -66,7 +68,7 @@ class UnicodeTests(unittest.TestCase):
 
     def test_with_list(self):
         from DocumentTemplate.ustr import ustr
-        a = ustr([1,2,3])
+        a = ustr([1, 2, 3])
         self.assertEqual(a, '[1, 2, 3]')
 
     def test_w_unicode_literal(self):
@@ -100,9 +102,3 @@ class UnicodeTests(unittest.TestCase):
         self.assertEqual(type(a), Foo)
         a = ustr(Bar('bar'))
         self.assertEqual(type(a), Bar)
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest( unittest.makeSuite( UnicodeTests ) )
-    return suite

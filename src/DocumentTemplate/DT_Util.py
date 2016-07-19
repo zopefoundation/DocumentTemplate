@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """DTML Utilities
-
-$Id$
 """
 
 import re
@@ -25,34 +23,39 @@ from AccessControl.ZopeGuards import _safe_globals
 from RestrictedPython.Guards import safe_builtins
 from RestrictedPython.Utilities import utility_builtins
 from RestrictedPython.Eval import RestrictionCapableEval
+from zExceptions import Unauthorized as ValidationError
 
 # for import by other modules, dont remove!
-from DocumentTemplate.html_quote import html_quote, ustr
+from DocumentTemplate.html_quote import html_quote, ustr  # NOQA
+from DocumentTemplate.cDocumentTemplate import (  # NOQA
+    InstanceDict,
+    join_unicode,
+    render_blocks,
+)
 
-from DocumentTemplate.cDocumentTemplate import InstanceDict, TemplateDict
-from DocumentTemplate.cDocumentTemplate import render_blocks, safe_callable
-from DocumentTemplate.cDocumentTemplate import join_unicode
+from DocumentTemplate.cDocumentTemplate import TemplateDict
+from DocumentTemplate.cDocumentTemplate import safe_callable
 from DocumentTemplate import sequence
 
 if 'test' not in utility_builtins:
     from RestrictedPython.Utilities import test
     utility_builtins['test'] = test
 
-test = utility_builtins['test'] # for backwards compatibility, dont remove!
+test = utility_builtins['test']  # for backwards compatibility, dont remove!
 utility_builtins['sequence'] = sequence
 safe_builtins['sequence'] = sequence
 _safe_globals['sequence'] = sequence
 
 LIMITED_BUILTINS = 1
 
-str=__builtins__['str'] # Waaaaa, waaaaaaaa needed for pickling waaaaa
+str = __builtins__['str']  # Waaaaa, waaaaaaaa needed for pickling waaaaa
+
 
 class ParseError(Exception):
     """Document Template Parse Error"""
 
-from zExceptions import Unauthorized as ValidationError
 
-def int_param(params,md,name,default=0, st=type('')):
+def int_param(params, md, name, default=0, st=type('')):
     v = params.get(name, default)
     if v:
         try:
@@ -64,6 +67,8 @@ def int_param(params,md,name,default=0, st=type('')):
     return v or 0
 
 functype = type(int_param)
+
+
 class NotBindable:
     # Used to prevent TemplateDict from trying to bind to functions.
     def __init__(self, f):
@@ -82,18 +87,20 @@ if LIMITED_BUILTINS:
             f = NotBindable(f)
         setattr(TemplateDict, name, f)
 
-# Wrap the string module so it can deal with TaintedString strings.
-class StringModuleWrapper:
+
+class StringModuleWrapper(object):
+    # Wrap the string module so it can deal with TaintedString strings.
 
     def __getattr__(self, key):
         attr = getattr(string, key)
         if (isinstance(attr, FunctionType) or
-            isinstance(attr, BuiltinFunctionType)):
+                isinstance(attr, BuiltinFunctionType)):
             return StringFunctionWrapper(attr)
         else:
             return attr
 
-class StringFunctionWrapper:
+
+class StringFunctionWrapper(object):
 
     def __init__(self, method):
         self._method = method
@@ -123,6 +130,7 @@ TemplateDict.__allow_access_to_unprotected_subobjects__ = 1
 
 _marker = []  # Create a new marker object.
 
+
 def careful_getattr(md, inst, name, default=_marker):
 
     get = md.guarded_getattr
@@ -134,6 +142,7 @@ def careful_getattr(md, inst, name, default=_marker):
         if default is _marker:
             raise
         return default
+
 
 def careful_hasattr(md, inst, name):
 
@@ -150,18 +159,20 @@ def careful_hasattr(md, inst, name):
 TemplateDict.getattr = careful_getattr
 TemplateDict.hasattr = careful_hasattr
 
+
 def namespace(self, **kw):
     """Create a tuple consisting of a single instance whose attributes are
     provided as keyword arguments."""
     if not (getattr(self, '__class__', None) == TemplateDict or
             isinstance(self, TemplateDict)):
-        raise TypeError,'''A call was made to DT_Util.namespace() with an
+        raise TypeError('''A call was made to DT_Util.namespace() with an
         incorrect "self" argument.  It could be caused by a product which
         is not yet compatible with this version of Zope.  The traceback
-        information may contain more details.)'''
+        information may contain more details.)''')
     return self(**kw)
 
 TemplateDict.namespace = namespace
+
 
 def render(self, v):
     "Render an object in the way done by the 'name' attribute"
@@ -196,11 +207,10 @@ class Eval(RestrictionCapableEval):
             code = self.ucode
             d = {'_': md, '_vars': md}
         d.update(self.globals)
-        has_key = d.has_key
         for name in self.used:
             __traceback_info__ = name
             try:
-                if not has_key(name):
+                if name not in d:
                     d[name] = md.getitem(name, 0)
             except KeyError:
                 # Swallow KeyErrors since the expression
@@ -217,11 +227,14 @@ class Eval(RestrictionCapableEval):
 
 simple_name = re.compile('[a-z][a-z0-9_]*', re.I).match
 
-class Add_with_prefix:
+
+class Add_with_prefix(object):
+
     def __init__(self, map, defprefix, prefix):
         self.map = map
         self.defprefix = defprefix
         self.prefix = prefix
+
     def __setitem__(self, name, value):
         map = self.map
         map[name] = value
@@ -231,65 +244,64 @@ class Add_with_prefix:
         else:
             map['%s_%s' % (self.prefix, name)] = value
 
+
 def add_with_prefix(map, defprefix, prefix):
-    if not prefix: return map
+    if not prefix:
+        return map
     return Add_with_prefix(map, defprefix, prefix)
 
-def name_param(params,tag='',expr=0, attr='name', default_unnamed=1):
-    used=params.has_key
-    __traceback_info__=params, tag, expr, attr
 
-    #if expr and used('expr') and used('') and not used(params['']):
-    #   # Fix up something like: <!--#in expr="whatever" mapping-->
-    #   params[params['']]=default_unnamed
-    #   del params['']
+def name_param(params, tag='', expr=0, attr='name', default_unnamed=1):
+    __traceback_info__ = params, tag, expr, attr
 
-    if used(''):
-        v=params['']
+    if '' in params:
+        v = params['']
 
-        if v[:1]=='"' and v[-1:]=='"' and len(v) > 1: # expr shorthand
-            if used(attr):
+        if v[:1] == '"' and v[-1:] == '"' and len(v) > 1:  # expr shorthand
+            if attr in params:
                 raise ParseError('%s and expr given' % attr, tag)
             if expr:
-                if used('expr'):
+                if 'expr' in params:
                     raise ParseError('two exprs given', tag)
-                v=v[1:-1]
-                try: expr=Eval(v)
-                except SyntaxError, v:
+                v = v[1:-1]
+                try:
+                    expr = Eval(v)
+                except SyntaxError as v:
                     raise ParseError(
                         '<strong>Expression (Python) Syntax error</strong>:'
                         '\n<pre>\n%s\n</pre>\n' % v[0],
                         tag)
-                return v, expr
-            else: raise ParseError(
-                'The "..." shorthand for expr was used in a tag '
-                'that doesn\'t support expr attributes.',
-                tag)
+                return (v, expr)
+            else:
+                raise ParseError(
+                    'The "..." shorthand for expr was used in a tag '
+                    'that doesn\'t support expr attributes.',
+                    tag)
 
-        else: # name shorthand
-            if used(attr):
+        else:  # name shorthand
+            if attr in params:
                 raise ParseError('Two %s values were given' % attr, tag)
             if expr:
-                if used('expr'):
+                if 'expr' in params:
                     # raise 'Waaaaaa', 'waaa'
                     raise ParseError('%s and expr given' % attr, tag)
-                return params[''],None
+                return (params[''], None)
             return params['']
 
-    elif used(attr):
+    elif attr in params:
         if expr:
-            if used('expr'):
+            if 'expr' in params:
                 raise ParseError('%s and expr given' % attr, tag)
-            return params[attr],None
+            return (params[attr], None)
         return params[attr]
-    elif expr and used('expr'):
-        name=params['expr']
-        expr=Eval(name)
-        return name, expr
+    elif expr and 'expr' in params:
+        name = params['expr']
+        expr = Eval(name)
+        return (name, expr)
 
     raise ParseError('No %s given' % attr, tag)
 
-Expr_doc="""
+Expr_doc = """
 
 
 Python expression support
@@ -346,7 +358,9 @@ Python expression support
 
 """
 
-ListType=type([])
+ListType = type([])
+
+
 def parse_params(text,
                  result=None,
                  tag='',
@@ -377,7 +391,7 @@ def parse_params(text,
     Unnamed values are mapped from the name '""'.  Only one value may
     be given for a name and there may be only one unnamed value. """
 
-    result=result or {}
+    result = result or {}
 
     # HACK - we precalculate all matches. Maybe we don't need them
     # all. This should be fixed for performance issues
@@ -388,50 +402,57 @@ def parse_params(text,
     mo_unq = qunparmre.match(text)
 
     if mo_p:
-        name=mo_p.group(2).lower()
-        value=mo_p.group(3)
-        l=len(mo_p.group(1))
+        name = mo_p.group(2).lower()
+        value = mo_p.group(3)
+        l = len(mo_p.group(1))
     elif mo_q:
-        name=mo_q.group(2).lower()
-        value=mo_q.group(3)
-        l=len(mo_q.group(1))
+        name = mo_q.group(2).lower()
+        value = mo_q.group(3)
+        l = len(mo_q.group(1))
     elif mo_unp:
-        name=mo_unp.group(2)
-        l=len(mo_unp.group(1))
+        name = mo_unp.group(2)
+        l = len(mo_unp.group(1))
         if result:
-            if parms.has_key(name):
-                if parms[name] is None: raise ParseError(
-                    'Attribute %s requires a value' % name, tag)
+            if name in parms:
+                if parms[name] is None:
+                    raise ParseError(
+                        'Attribute %s requires a value' % name, tag)
 
-                result[name]=parms[name]
-            else: raise ParseError(
+                result[name] = parms[name]
+            else:
+                raise ParseError(
+                    'Invalid attribute name, "%s"' % name, tag)
+        else:
+            result[''] = name
+        return parse_params(text[l:], result, **parms)
+    elif mo_unq:
+        name = mo_unq.group(2)
+        l = len(mo_unq.group(1))
+        if result:
+            raise ParseError(
                 'Invalid attribute name, "%s"' % name, tag)
         else:
-            result['']=name
-        return parse_params(text[l:],result,**parms)
-    elif mo_unq:
-        name=mo_unq.group(2)
-        l=len(mo_unq.group(1))
-        if result: raise ParseError(
-            'Invalid attribute name, "%s"' % name, tag)
-        else: result['']=name
-        return parse_params(text[l:],result,**parms)
+            result[''] = name
+        return parse_params(text[l:], result, **parms)
     else:
-        if not text or not text.strip(): return result
+        if not text or not text.strip():
+            return result
         raise ParseError('invalid parameter: "%s"' % text, tag)
 
-    if not parms.has_key(name):
+    if name not in parms:
         raise ParseError(
             'Invalid attribute name, "%s"' % name, tag)
 
-    if result.has_key(name):
-        p=parms[name]
+    if name in result:
+        p = parms[name]
         if type(p) is not ListType or p:
             raise ParseError(
                 'Duplicate values for attribute "%s"' % name, tag)
 
-    result[name]=value
+    result[name] = value
 
-    text=text[l:].strip()
-    if text: return parse_params(text,result,**parms)
-    else: return result
+    text = text[l:].strip()
+    if text:
+        return parse_params(text, result, **parms)
+    else:
+        return result

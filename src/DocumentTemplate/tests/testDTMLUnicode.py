@@ -12,16 +12,24 @@
 ##############################################################################
 """Document Template Tests
 """
+import sys
 import unittest
 
-class force_str:
+if sys.version_info > (3, 0):
+    unichr = chr
+
+
+class force_str(object):
     # A class whose string representation is not always a plain string:
-    def __init__(self,s):
+
+    def __init__(self, s):
         self.s = s
+
     def __str__(self):
         return self.s
 
-class DTMLUnicodeTests (unittest.TestCase):
+
+class DTMLUnicodeTests(unittest.TestCase):
 
     def _get_doc_class(self):
         from DocumentTemplate.DT_HTML import HTML
@@ -29,60 +37,55 @@ class DTMLUnicodeTests (unittest.TestCase):
     doc_class = property(_get_doc_class,)
 
     def testAA(self):
-        html=self.doc_class('<dtml-var a><dtml-var b>')
+        html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = 'helloworld'
-        res = html(a='hello',b='world')
-        assert res == expected, `res`
+        res = html(a='hello', b='world')
+        assert res == expected
 
     def testUU(self):
-        html=self.doc_class('<dtml-var a><dtml-var b>')
+        html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'helloworld'
-        res = html(a=u'hello',b=u'world')
-        assert res == expected, `res`
+        res = html(a=u'hello', b=u'world')
+        assert res == expected
 
     def testAU(self):
-        html=self.doc_class('<dtml-var a><dtml-var b>')
+        html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'helloworld'
-        res = html(a='hello',b=u'world')
-        assert res == expected, `res`
+        res = html(a='hello', b=u'world')
+        assert res == expected
 
     def testAB(self):
-        html=self.doc_class('<dtml-var a><dtml-var b>')
+        html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = 'hello\xc8'
-        res = html(a='hello',b=chr(200))
-        assert res == expected, `res`
+        res = html(a='hello', b=chr(200))
+        assert res == expected
 
     def testUB(self):
-        html=self.doc_class('<dtml-var a><dtml-var b>')
+        html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'hello\xc8'
-        res = html(a=u'hello',b=chr(200))
-        assert res == expected, `res`
+        res = html(a=u'hello', b=chr(200))
+        assert res == expected
 
     def testUB2(self):
-        html=self.doc_class('<dtml-var a><dtml-var b>')
+        html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'\u07d0\xc8'
-        res = html(a=unichr(2000),b=chr(200))
-        assert res == expected, `res`
+        res = html(a=unichr(2000), b=chr(200))
+        assert res == expected
 
     def testUnicodeStr(self):
-        html=self.doc_class('<dtml-var a><dtml-var b>')
+        html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'\u07d0\xc8'
-        res = html(a=force_str(unichr(2000)),b=chr(200))
-        assert res == expected, `res`
+        res = html(a=force_str(unichr(2000)), b=chr(200))
+        assert res == expected
 
     def testUqB(self):
-        html=self.doc_class('<dtml-var a html_quote><dtml-var b>')
+        html = self.doc_class('<dtml-var a html_quote><dtml-var b>')
         expected = u'he&gt;llo\xc8'
-        res = html(a=u'he>llo',b=chr(200))
-        assert res == expected, `res`
+        res = html(a=u'he>llo', b=chr(200))
+        assert res == expected
 
     def testSize(self):
-        html=self.doc_class('<dtml-var "_.unichr(200)*4" size=2>')
-        expected = unichr(200)*2+'...'
+        html = self.doc_class('<dtml-var "_.unichr(200)*4" size=2>')
+        expected = unichr(200) * 2 + '...'
         res = html()
-        assert res == expected, `res`
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest( unittest.makeSuite( DTMLUnicodeTests ) )
-    return suite
+        assert res == expected

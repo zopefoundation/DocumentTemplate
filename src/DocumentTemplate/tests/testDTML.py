@@ -15,6 +15,7 @@
 
 import unittest
 
+
 class DTMLTests(unittest.TestCase):
 
     def _get_doc_class(self):
@@ -27,141 +28,142 @@ class DTMLTests(unittest.TestCase):
         def item(key, **kw):
             return (key, kw)
 
-        items=(
-            item( 1,dealer='Bay Chevy', make='Chevrolet',
-                  model='Caprice', year=96),
-            item( 2,dealer='Bay Chevy', make='Chevrolet',
-                  model='Nova', year=96),
-            item( 4,dealer='Bay Chevy', make='Chevrolet',
-                  model='Nova', year=96),
-            item( 5,dealer='Bay Chevy', make='Chevrolet',
-                  model='Nova', year=96),
-            item( 3,dealer='Bay Chevy', make='Chevrolet',
-                  model='Corvett', year=96),
-            item( 6,dealer='Bay Chevy', make='Chevrolet',
-                  model='Lumina', year=96),
-            item( 7,dealer='Bay Chevy', make='Chevrolet',
-                  model='Lumina', year=96),
-            item( 8,dealer='Bay Chevy', make='Chevrolet',
-                  model='Lumina', year=95),
-            item( 9,dealer='Bay Chevy', make='Chevrolet',
-                  model='Corsica', year=96),
-            item(10,dealer='Bay Chevy', make='Chevrolet',
+        items = (
+            item(1, dealer='Bay Chevy', make='Chevrolet',
+                 model='Caprice', year=96),
+            item(2, dealer='Bay Chevy', make='Chevrolet',
+                 model='Nova', year=96),
+            item(4, dealer='Bay Chevy', make='Chevrolet',
+                 model='Nova', year=96),
+            item(5, dealer='Bay Chevy', make='Chevrolet',
+                 model='Nova', year=96),
+            item(3, dealer='Bay Chevy', make='Chevrolet',
+                 model='Corvett', year=96),
+            item(6, dealer='Bay Chevy', make='Chevrolet',
+                 model='Lumina', year=96),
+            item(7, dealer='Bay Chevy', make='Chevrolet',
+                 model='Lumina', year=96),
+            item(8, dealer='Bay Chevy', make='Chevrolet',
+                 model='Lumina', year=95),
+            item(9, dealer='Bay Chevy', make='Chevrolet',
                  model='Corsica', year=96),
-            item(11,dealer='Bay Chevy', make='Toyota',
-                 model='Camry', year=95),
-            item(12,dealer='Colman Olds', make='Olds',
-                 model='Ciera', year=96),
-            item(12,dealer='Colman Olds', make='Olds',
-                 model='Ciera', year=96),
-            item(12,dealer='Colman Olds', make='Olds',
-                 model='Ciera', year=96),
-            item(12,dealer='Colman Olds', make='Olds',
-                 model='Cutlass', year=96),
-            item(12,dealer='Colman Olds', make='Olds',
-                 model='Cutlas', year=95),
-            item(12,dealer='Colman Olds', make='Dodge',
-                 model='Shadow', year=93),
-            item(12,dealer='Colman Olds', make='Jeep',
-                 model='Cheroke', year=94),
-            item(12,dealer='Colman Olds', make='Toyota',
-                 model='Previa', year=92),
-            item(12,dealer='Colman Olds', make='Toyota',
-                 model='Celica', year=93),
-            item(12,dealer='Colman Olds', make='Toyota',
-                 model='Camry', year=93),
-            item(12,dealer='Colman Olds', make='Honda',
-                 model='Accord', year=94),
-            item(12,dealer='Colman Olds', make='Honda',
-                 model='Accord', year=92),
-            item(12,dealer='Colman Olds', make='Honda',
-                 model='Civic', year=94),
-            item(12,dealer='Colman Olds', make='Honda',
-                 model='Civix', year=93),
-            item( 1,dealer='Spam Chev', make='Chevrolet',
-                  model='Caprice', year=96),
-            item( 2,dealer='Spam Chev', make='Chevrolet',
-                  model='Nova', year=96),
-            item( 4,dealer='Spam Chev', make='Chevrolet',
-                  model='Nova', year=96),
-            item( 5,dealer='Spam Chev', make='Chevrolet',
-                  model='Nova', year=96),
-            item( 3,dealer='Spam Chev', make='Chevrolet',
-                  model='Corvett', year=96),
-            item( 6,dealer='Spam Chev', make='Chevrolet',
-                  model='Lumina', year=96),
-            item( 7,dealer='Spam Chev', make='Chevrolet',
-                  model='Lumina', year=96),
-            item( 8,dealer='Spam Chev', make='Chevrolet',
-                  model='Lumina', year=95),
-            item( 9,dealer='Spam Chev', make='Chevrolet',
-                  model='Corsica', year=96),
-            item(10,dealer='Spam Chev', make='Chevrolet',
+            item(10, dealer='Bay Chevy', make='Chevrolet',
                  model='Corsica', year=96),
-            item(11,dealer='Spam Chevy', make='Toyota',
+            item(11, dealer='Bay Chevy', make='Toyota',
                  model='Camry', year=95),
-            item(12,dealer='Spam Olds', make='Olds',
+            item(12, dealer='Colman Olds', make='Olds',
                  model='Ciera', year=96),
-            item(12,dealer='Spam Olds', make='Olds',
+            item(12, dealer='Colman Olds', make='Olds',
                  model='Ciera', year=96),
-            item(12,dealer='Spam Olds', make='Olds',
+            item(12, dealer='Colman Olds', make='Olds',
                  model='Ciera', year=96),
-            item(12,dealer='Spam Olds', make='Olds',
+            item(12, dealer='Colman Olds', make='Olds',
                  model='Cutlass', year=96),
-            item(12,dealer='Spam Olds', make='Olds',
+            item(12, dealer='Colman Olds', make='Olds',
                  model='Cutlas', year=95),
-            item(12,dealer='Spam Olds', make='Dodge',
+            item(12, dealer='Colman Olds', make='Dodge',
                  model='Shadow', year=93),
-            item(12,dealer='Spam Olds', make='Jeep',
+            item(12, dealer='Colman Olds', make='Jeep',
                  model='Cheroke', year=94),
-            item(12,dealer='Spam Olds', make='Toyota',
+            item(12, dealer='Colman Olds', make='Toyota',
                  model='Previa', year=92),
-            item(12,dealer='Spam Olds', make='Toyota',
+            item(12, dealer='Colman Olds', make='Toyota',
                  model='Celica', year=93),
-            item(12,dealer='Spam Olds', make='Toyota',
+            item(12, dealer='Colman Olds', make='Toyota',
                  model='Camry', year=93),
-            item(12,dealer='Spam Olds', make='Honda',
+            item(12, dealer='Colman Olds', make='Honda',
                  model='Accord', year=94),
-            item(12,dealer='Spam Olds', make='Honda',
+            item(12, dealer='Colman Olds', make='Honda',
                  model='Accord', year=92),
-            item(12,dealer='Spam Olds', make='Honda',
+            item(12, dealer='Colman Olds', make='Honda',
                  model='Civic', year=94),
-            item(12,dealer='Spam Olds', make='Honda',
+            item(12, dealer='Colman Olds', make='Honda',
                  model='Civix', year=93),
-            )
+            item(1, dealer='Spam Chev', make='Chevrolet',
+                 model='Caprice', year=96),
+            item(2, dealer='Spam Chev', make='Chevrolet',
+                 model='Nova', year=96),
+            item(4, dealer='Spam Chev', make='Chevrolet',
+                 model='Nova', year=96),
+            item(5, dealer='Spam Chev', make='Chevrolet',
+                 model='Nova', year=96),
+            item(3, dealer='Spam Chev', make='Chevrolet',
+                 model='Corvett', year=96),
+            item(6, dealer='Spam Chev', make='Chevrolet',
+                 model='Lumina', year=96),
+            item(7, dealer='Spam Chev', make='Chevrolet',
+                 model='Lumina', year=96),
+            item(8, dealer='Spam Chev', make='Chevrolet',
+                 model='Lumina', year=95),
+            item(9, dealer='Spam Chev', make='Chevrolet',
+                 model='Corsica', year=96),
+            item(10, dealer='Spam Chev', make='Chevrolet',
+                 model='Corsica', year=96),
+            item(11, dealer='Spam Chevy', make='Toyota',
+                 model='Camry', year=95),
+            item(12, dealer='Spam Olds', make='Olds',
+                 model='Ciera', year=96),
+            item(12, dealer='Spam Olds', make='Olds',
+                 model='Ciera', year=96),
+            item(12, dealer='Spam Olds', make='Olds',
+                 model='Ciera', year=96),
+            item(12, dealer='Spam Olds', make='Olds',
+                 model='Cutlass', year=96),
+            item(12, dealer='Spam Olds', make='Olds',
+                 model='Cutlas', year=95),
+            item(12, dealer='Spam Olds', make='Dodge',
+                 model='Shadow', year=93),
+            item(12, dealer='Spam Olds', make='Jeep',
+                 model='Cheroke', year=94),
+            item(12, dealer='Spam Olds', make='Toyota',
+                 model='Previa', year=92),
+            item(12, dealer='Spam Olds', make='Toyota',
+                 model='Celica', year=93),
+            item(12, dealer='Spam Olds', make='Toyota',
+                 model='Camry', year=93),
+            item(12, dealer='Spam Olds', make='Honda',
+                 model='Accord', year=94),
+            item(12, dealer='Spam Olds', make='Honda',
+                 model='Accord', year=92),
+            item(12, dealer='Spam Olds', make='Honda',
+                 model='Civic', year=94),
+            item(12, dealer='Spam Olds', make='Honda',
+                 model='Civix', year=93),
+        )
 
-        html=self.doc_class(read_file('dealers.dtml'))
+        html = self.doc_class(read_file('dealers.dtml'))
         res = html(inventory=items, first_ad=15)
         expected = read_file('dealers.out')
-        self.assertEqual(res,expected)
+        self.assertEqual(res, expected)
 
     def testSequenceSummaries(self):
-        data=(dict(name='jim', age=38),
-              # dict(name='kak', age=40),
-              dict(name='will', age=7),
-              dict(name='drew', age=4),
-              dict(name='ches', age=1),
-              )
-        html = self.doc_class('<dtml-in data mapping>'
-                    '<dtml-if sequence-end>'
-                    'Variable "name": '
-                    'min=<dtml-var min-name> '
-                    'max=<dtml-var max-name> '
-                    'count=<dtml-var count-name> '
-                    'total=<dtml-var total-name> '
-                    'median=<dtml-var median-name> '
-                    'Variable "age": '
-                    'min=<dtml-var min-age> '
-                    'max=<dtml-var max-age> '
-                    'count=<dtml-var count-age> '
-                    'total=<dtml-var total-age> '
-                    'median=<dtml-var median-age> '
-                    'mean=<dtml-var mean-age> '
-                    '<dtml-let sda=standard-deviation-age>'
-                    's.d.=<dtml-var expr="_.int(sda)">'
-                    '</dtml-let>'
-                    '</dtml-if sequence-end>'
-                    '</dtml-in data>')
+        data = (dict(name='jim', age=38),
+                # dict(name='kak', age=40),
+                dict(name='will', age=7),
+                dict(name='drew', age=4),
+                dict(name='ches', age=1),
+                )
+        html = self.doc_class(
+            '<dtml-in data mapping>'
+            '<dtml-if sequence-end>'
+            'Variable "name": '
+            'min=<dtml-var min-name> '
+            'max=<dtml-var max-name> '
+            'count=<dtml-var count-name> '
+            'total=<dtml-var total-name> '
+            'median=<dtml-var median-name> '
+            'Variable "age": '
+            'min=<dtml-var min-age> '
+            'max=<dtml-var max-age> '
+            'count=<dtml-var count-age> '
+            'total=<dtml-var total-age> '
+            'median=<dtml-var median-age> '
+            'mean=<dtml-var mean-age> '
+            '<dtml-let sda=standard-deviation-age>'
+            's.d.=<dtml-var expr="_.int(sda)">'
+            '</dtml-let>'
+            '</dtml-if sequence-end>'
+            '</dtml-in data>')
         res = html(data=data)
         expected = ('Variable "name": min=ches max=will count=4 total= '
                     'median=between jim and drew '
@@ -172,9 +174,9 @@ class DTMLTests(unittest.TestCase):
     def testDTMLDateFormatting(self):
         import DateTime
         html = self.doc_class(
-        "<dtml-var name capitalize spacify> is "
-        "<dtml-var date fmt=year>/<dtml-var date "
-                    "fmt=month>/<dtml-var date fmt=day>")
+            "<dtml-var name capitalize spacify> is "
+            "<dtml-var date fmt=year>/<dtml-var date "
+            "fmt=month>/<dtml-var date fmt=day>")
         res = html(date=DateTime.DateTime("1995-12-25"),
                    name='christmas_day')
         expected = 'Christmas day is 1995/12/25'
@@ -198,69 +200,51 @@ class DTMLTests(unittest.TestCase):
         assert res == expected, res
 
     def testSequence1(self):
-        html=self.doc_class(
+        html = self.doc_class(
             '<dtml-in spam><dtml-in sequence-item><dtml-var sequence-item> '
             '</dtml-in sequence-item></dtml-in spam>')
         expected = '1 2 3 4 5 6 '
-        res = html(spam=[[1,2,3],[4,5,6]])
+        res = html(spam=[[1, 2, 3], [4, 5, 6]])
         assert res == expected, res
 
     def testSequence2(self):
-        html=self.doc_class(
+        html = self.doc_class(
             '<dtml-in spam><dtml-in sequence-item><dtml-var sequence-item>-'
             '</dtml-in sequence-item></dtml-in spam>')
         expected = '1-2-3-4-5-6-'
-        res = html(spam=[[1,2,3],[4,5,6]])
+        res = html(spam=[[1, 2, 3], [4, 5, 6]])
         assert res == expected, res
 
     def testNull(self):
-        html=self.doc_class('<dtml-var spam fmt="$%.2f bobs your uncle" '
-                  'null="spam%eggs!|">')
+        html = self.doc_class('<dtml-var spam fmt="$%.2f bobs your uncle" '
+                              'null="spam%eggs!|">')
         expected = '$42.00 bobs your unclespam%eggs!|'
         res = html(spam=42) + html(spam=None)
         assert res == expected, res
 
     def testUrlUnquote(self):
         html1 = self.doc_class(
-            """
-            <dtml-var expr="'http%3A//www.zope.org%3Fa%3Db%20123'" fmt=url-unquote>
-            """
-            )
+            '<dtml-var expr="\'http%3A//www.zope.org%3Fa%3Db%20123\'" '
+            'fmt=url-unquote>')
         html2 = self.doc_class(
-            """
-            <dtml-var expr="'http%3A%2F%2Fwww.zope.org%3Fa%3Db+123'" fmt=url-unquote-plus>
-            """
-            )
-
-        expected = (
-            """
-            http://www.zope.org?a=b 123
-            """
-            )
+            '<dtml-var expr="\'http%3A%2F%2Fwww.zope.org%3Fa%3Db+123\'" '
+            'fmt=url-unquote-plus>')
+        expected = 'http://www.zope.org?a=b 123'
         self.assertEqual(html1(), expected)
         self.assertEqual(html2(), expected)
+
         html1 = self.doc_class(
-            """
-            <dtml-var expr="'http%3A//www.zope.org%3Fa%3Db%20123'" url_unquote>
-            """
-            )
+            '<dtml-var expr="\'http%3A//www.zope.org%3Fa%3Db%20123\'" '
+            'url_unquote>')
         html2 = self.doc_class(
-            """
-            <dtml-var expr="'http%3A%2F%2Fwww.zope.org%3Fa%3Db+123'" url_unquote_plus>
-            """
-            )
-
-        expected = (
-            """
-            http://www.zope.org?a=b 123
-            """
-            )
+            '<dtml-var expr="\'http%3A%2F%2Fwww.zope.org%3Fa%3Db+123\'" '
+            'url_unquote_plus>')
+        expected = 'http://www.zope.org?a=b 123'
         self.assertEqual(html1(), expected)
         self.assertEqual(html2(), expected)
-
 
     def test_fmt(self):
-        html=self.doc_class(
+        html = self.doc_class(
             """
             <dtml-var spam>
             html=<dtml-var spam fmt=html-quote>
@@ -303,18 +287,22 @@ foo bar
 
         res = html(spam=4200000) + html(spam=None) + html(
             spam='<a href="spam">\nfoo bar')
-        self.assertEqual(res,expected)
+        self.assertEqual(res, expected)
 
     def testPropogatedError(self):
         from ExtensionClass import Base
 
-        class foo:
-            def __len__(self): return 9
-            def __getitem__(self,i):
-                if i >= 9: raise IndexError, i
+        class foo(object):
+            def __len__(self):
+                return 9
+
+            def __getitem__(self, i):
+                if i >= 9:
+                    raise IndexError(i)
                 return self.testob(i)
 
-            class testob (Base):
+            class testob(Base):
+
                 __roles__ = None  # Public
                 def __init__(self, index):
                     self.index = index
@@ -328,7 +316,7 @@ foo bar
                 def puke(self):
                     raise PukeError('raaalf')
 
-        html=self.doc_class(
+        html = self.doc_class(
             """
             <dtml-if spam>
             <dtml-in spam>
@@ -346,12 +334,16 @@ foo bar
             assert 0, 'Puke error not propogated'
 
     def testRenderCallable(self):
-        #Test automatic rendering of callable objects
+        # Test automatic rendering of callable objects
         from ExtensionClass import Base
-        class C (Base):
+
+        class C(Base):
             __allow_access_to_unprotected_subobjects__ = 1
-            x=1
-            def y(self): return self.x*2
+            x = 1
+
+            def y(self):
+                return self.x * 2
+
         C.h = self.doc_class("The h method, <dtml-var x> <dtml-var y>")
         C.h2 = self.doc_class("The h2 method")
 
@@ -374,8 +366,8 @@ foo bar
     def testWith(self):
         class person:
             __allow_access_to_unprotected_subobjects__ = 1
-            name='Jim'
-            height_inches=73
+            name = 'Jim'
+            height_inches = 73
 
         expected = 'Hi, my name is %s and my height is %d cm.' % (
             person.name, int(person.height_inches * 2.54))
@@ -389,16 +381,15 @@ foo bar
     def testRaise(self):
         try:
             res = self.doc_class(
-            "<dtml-raise IndexError>success!</dtml-raise>")()
-        except IndexError, v:
+                "<dtml-raise IndexError>success!</dtml-raise>")()
+        except IndexError as v:
             res = v
-        assert str(res) == 'success!', `res`
-
+        assert str(res) == 'success!'
 
     def testNoItemPush(self):
         data = dict(sec='B',
                     name='XXX',
-                    sub=(dict(name='b1'), dict(name='b2',sec='XXX')))
+                    sub=(dict(name='b1'), dict(name='b2', sec='XXX')))
         html = """
 <dtml-with data mapping><dtml-in sub no_push_item>
     <dtml-var sec>.<dtml-with sequence-item mapping><dtml-var name></dtml-with>
@@ -410,15 +401,15 @@ foo bar
         assert result == expected, result
 
     def testBasicHTMLIn(self):
-        data=(
+        data = (
             dict(name='jim', age=39),
             dict(name='kak', age=29),
             dict(name='will', age=8),
             dict(name='andrew', age=5),
-            dict(name='chessie',age=2),
-            )
+            dict(name='chessie', age=2),
+        )
 
-        html="""
+        html = """
 <!--#in data mapping-->
    <!--#var name-->, <!--#var age-->
 <!--#/in-->
@@ -434,7 +425,7 @@ foo bar
         assert result == expected, result
 
     def testBasicHTMLIn2(self):
-        xxx=(Dummy(name=1), Dummy(name=2), Dummy(name=3))
+        xxx = (Dummy(name=1), Dummy(name=2), Dummy(name=3))
         html = """
 <!--#in xxx-->
    <!--#var name  -->
@@ -458,8 +449,8 @@ foo bar
         assert result == expected, result
 
     def testHTMLInElse(self):
-        xxx=(Dummy(name=1), Dummy(name=2), Dummy(name=3))
-        html="""
+        xxx = (Dummy(name=1), Dummy(name=2), Dummy(name=3))
+        html = """
 <!--#in data mapping-->
 <!--#var name-->, <!--#var age-->
 <!--#else-->
@@ -478,14 +469,14 @@ foo bar
 
     def testBasicStringIn(self):
         from DocumentTemplate.DT_HTML import String
-        data=(
+        data = (
             dict(name='jim', age=39),
             dict(name='kak', age=29),
             dict(name='will', age=8),
             dict(name='andrew', age=5),
-            dict(name='chessie',age=2),
-            )
-        s="""
+            dict(name='chessie', age=2),
+        )
+        s = """
 %(in data mapping)[
    %(name)s, %(age)s
 %(in)]
@@ -564,31 +555,37 @@ def read_file(name):
     f.close()
     return res
 
-class Dummy:
+
+class Dummy(object):
     __allow_access_to_unprotected_subobjects__ = 1
 
     def __init__(self, **kw):
         self.__dict__.update(kw)
 
     def __repr__(self):
-        return "Dummy(%s)" % `self.__dict__`
+        return "Dummy(%r)" % self.__dict__
 
-docutils_include_warning = '''\
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 1)</p>
-<p>&quot;include&quot; directive disabled.</p>'''
+docutils_include_warning = (
+    '<p class="system-message-title">System Message: WARNING/2 '
+    '(<tt class="docutils">&lt;string&gt;</tt>, line 1)</p>\n'
+    '<p>&quot;include&quot; directive disabled.</p>'
+)
 
-docutils_raw_warning = '''\
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 1)</p>
-<p>&quot;raw&quot; directive disabled.</p>'''
+docutils_raw_warning = (
+    '<p class="system-message-title">System Message: WARNING/2 '
+    '(<tt class="docutils">&lt;string&gt;</tt>, line 1)</p>\n'
+    '<p>&quot;raw&quot; directive disabled.</p>')
+
 
 class PukeError(Exception):
     """Exception raised in test code."""
+
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(DTMLTests))
     try:
-        import reStructuredText
+        import reStructuredText  # NOQA
     except ImportError:
         pass
     else:

@@ -20,10 +20,11 @@ from AccessControl.ZopeGuards import guarded_getitem
 
 RestrictedDTML = None
 
-class BaseRestrictedDTML:
+
+class BaseRestrictedDTML(object):
     """A mix-in for derivatives of DT_String.String that adds Zope security."""
 
-    def guarded_getattr(self, *args): # ob, name [, default]
+    def guarded_getattr(self, *args):  # ob, name [, default]
         return guarded_getattr(*args)
 
     def guarded_getitem(self, ob, index):
@@ -42,9 +43,10 @@ else:
 
 # Add security testing capabilities
 
-from AccessControl import SecurityManagement
+from AccessControl import SecurityManagement  # NOQA
 
-class DTMLSecurityAPI:
+
+class DTMLSecurityAPI(object):
     """API for performing security checks in DTML using '_' methods.
     """
 
@@ -100,18 +102,19 @@ class DTMLSecurityAPI:
              .getSecurityManager()
              .calledByExecutable()
              )
-        if r > 0: return r-1
+        if r > 0:
+            return r - 1
         return r
 
 
-from DocumentTemplate import DT_Util
+from DocumentTemplate import DT_Util  # NOQA
 
 for name, v in DTMLSecurityAPI.__dict__.items():
     if name[0] != '_':
         setattr(DT_Util.TemplateDict, name, v)
 
-from types import FunctionType
-from AccessControl.ZopeGuards import safe_builtins
+from types import FunctionType  # NOQA
+from AccessControl.ZopeGuards import safe_builtins  # NOQA
 
 for name, v in safe_builtins.items():
     if type(v) is FunctionType:
@@ -124,17 +127,18 @@ for name, v in safe_builtins.items():
 # Temporarily create a DictInstance so that we can mark its type as
 # being a key in the ContainerAssertions.
 
-from AccessControl.SimpleObjectPolicies import ContainerAssertions
+from AccessControl.SimpleObjectPolicies import ContainerAssertions  # NOQA
 
-class _dummy_class:
+
+class _dummy_class(object):
     pass
 
 templateDict = DT_Util.TemplateDict()
 try:
     dictInstance = templateDict(dummy=1)[0]
-    if type(dictInstance) is not type(_dummy_class()):
-        ContainerAssertions[type(dictInstance)]=1
-except:
+    if not isinstance(dictInstance, type(_dummy_class())):
+        ContainerAssertions[type(dictInstance)] = 1
+except Exception:
     # Hmm, this may cause _() and _.namespace() to fail.
     # What to do?
     pass

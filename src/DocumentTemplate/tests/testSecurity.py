@@ -13,8 +13,6 @@
 """Document Template Tests
 """
 
-import unittest
-
 from DocumentTemplate import HTML
 from DocumentTemplate.tests.testDTML import DTMLTests
 from DocumentTemplate.security import RestrictedDTML
@@ -45,7 +43,7 @@ class SecurityTests(DTMLTests):
 
     def testNoImplicitAccess(self):
         class person:
-            name='Jim'
+            name = 'Jim'
 
         doc = self.doc_class(
             '<dtml-with person>Hi, my name is '
@@ -62,6 +60,7 @@ class SecurityTests(DTMLTests):
         class myclass (Base):
             __roles__ = None  # Public
             somemethod__roles__ = ()  # Private
+
             def somemethod(self):
                 return "This is a protected operation of public object"
 
@@ -83,7 +82,8 @@ class SecurityTests(DTMLTests):
             assert 0, 'Did not catch bad expr'
         # Now be sure the syntax error occurred for security purposes.
         html = self.unrestricted_doc_class(expr)
-        class c:
+
+        class c(object):
             y = 10
         res = html(c=c)
         assert res == '10', res
@@ -102,25 +102,8 @@ class SecurityTests(DTMLTests):
 
         EXPECTED = ['1', '3', '10', 'No', 'None', 'testing', '[1, 2, 3]']
 
-        #
-        #   XXX:    these expressions seem like they should work, with
-        #           the following ExPECTED, but they raise Unauthorized
-        #           on the 'next' name.
-        #
-        #<dtml-var expr="_.iter([1,2,3]).next()">
-        #<dtml-var expr="_.enumerate([1,2,3]).next()">
-        #
-        #EXPECTED = ['1', '3', '10', '1', '(0, 1)']
-
         template = self.doc_class(NEW_BUILTINS_TEMPLATE)
         res = template()
         lines = filter(None, [x.strip() for x in res.split('\n')])
 
         self.assertEqual(lines, EXPECTED)
-
-    # Note: we need more tests!
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SecurityTests))
-    return suite

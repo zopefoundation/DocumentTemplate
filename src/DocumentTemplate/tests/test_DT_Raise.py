@@ -1,6 +1,11 @@
 import unittest
 
-class Test_Raise(unittest.TestCase):
+
+class DummySection(object):
+    blocks = ['dummy']
+
+
+class TestRaise(unittest.TestCase):
 
     def _getTargetClass(self):
         from DocumentTemplate.DT_Raise import Raise
@@ -58,11 +63,3 @@ class Test_Raise(unittest.TestCase):
         raiser = self._makeOne(expr='NonesuchError')
         self.assertRaises(InvalidErrorTypeExpression,
                           raiser.render, TemplateDict())
-
-class DummySection:
-    blocks = ['dummy']
-
-def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(Test_Raise),
-    ))

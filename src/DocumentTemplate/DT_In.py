@@ -179,7 +179,8 @@
                     ... display rows
 
                     <!--#if sequence-end--> <!--#if next-sequence-->
-                      <a href="&dtml-URL;/&dtml-sequence-query;batch_start=&dtml-next-sequence-start-number;">
+                      <a href="&dtml-URL;/&dtml-sequence-query;
+                               batch_start=&dtml-next-sequence-start-number;">
                       (Next &dtml-next-sequence-size; results)
                       </a>
                     <!--#/if--> <!--#/if-->
@@ -327,10 +328,7 @@
         - The 'next' attribute was used and their are no
           next batches, or
 
-''' #'
-
-__rcs_id__='$Id$'
-__version__='$Revision: 1.62 $'[11:-2]
+'''
 
 import sys
 import re
@@ -342,189 +340,205 @@ from DocumentTemplate.DT_Util import ValidationError, Eval
 from DocumentTemplate.DT_Util import simple_name, add_with_prefix
 from DocumentTemplate.DT_InSV import sequence_variables, opt
 
+if sys.version_info > (3, 0):
+    unicode = str
+
 TupleType = tuple
 StringTypes = (str, unicode)
 
-class InFactory:
-    blockContinuations=('else',)
-    name='in'
+
+class InFactory(object):
+    blockContinuations = ('else', )
+    name = 'in'
 
     def __call__(self, blocks):
-        i=InClass(blocks)
-        if i.batch: return i.renderwb
-        else: return i.renderwob
+        i = InClass(blocks)
+        if i.batch:
+            return i.renderwb
+        else:
+            return i.renderwob
 
-In=InFactory()
+In = InFactory()
 
-class InClass:
-    elses=None
-    expr=sort=batch=mapping=no_push_item=None
-    start_name_re=None
-    reverse=None
-    sort_expr=reverse_expr=None
+
+class InClass(object):
+    elses = None
+    expr = sort = batch = mapping = no_push_item = None
+    start_name_re = None
+    reverse = None
+    sort_expr = reverse_expr = None
 
     def __init__(self, blocks):
         tname, args, section = blocks[0]
-        args=parse_params(args, name='', start='1',end='-1',size='10',
-                          orphan='0',overlap='1',mapping=1,
-                          no_push_item=1,
-                          skip_unauthorized=1,
-                          previous=1, next=1, expr='', sort='',
-                          reverse=1, sort_expr='', reverse_expr='',
-                          prefix='')
-        self.args=args
-        has_key=args.has_key
+        args = parse_params(args, name='', start='1', end='-1', size='10',
+                            orphan='0', overlap='1', mapping=1,
+                            no_push_item=1,
+                            skip_unauthorized=1,
+                            previous=1, next=1, expr='', sort='',
+                            reverse=1, sort_expr='', reverse_expr='',
+                            prefix='')
+        self.args = args
 
-        if has_key('sort'):
-            self.sort=sort=args['sort']
-            if sort=='sequence-item': self.sort=''
+        if 'sort' in args:
+            self.sort = sort = args['sort']
+            if sort == 'sequence-item':
+                self.sort = ''
 
-        if has_key('sort_expr'):
-            self.sort_expr=Eval(args['sort_expr'])
+        if 'sort_expr' in args:
+            self.sort_expr = Eval(args['sort_expr'])
 
-        if has_key('reverse_expr'):
-            self.reverse_expr=Eval(args['reverse_expr'])
+        if 'reverse_expr' in args:
+            self.reverse_expr = Eval(args['reverse_expr'])
 
-        if has_key('reverse'):
-            self.reverse=args['reverse']
+        if 'reverse' in args:
+            self.reverse = args['reverse']
 
-        if has_key('no_push_item'):
-            self.no_push_item=args['no_push_item']
+        if 'no_push_item' in args:
+            self.no_push_item = args['no_push_item']
 
-        if has_key('mapping'): self.mapping=args['mapping']
+        if 'mapping' in args:
+            self.mapping = args['mapping']
         for n in 'start', 'size', 'end':
-            if has_key(n): self.batch=1
+            if n in args:
+                self.batch = 1
 
         prefix = args.get('prefix')
         if prefix and not simple_name(prefix):
-            raise ParseError, _tm(
-                'prefix is not a simple name', 'in')
+            raise ParseError('prefix is not a simple name', 'in')
 
-        for n in 'orphan','overlap','previous','next':
-            if has_key(n) and not self.batch:
-                raise ParseError, (
+        for n in ('orphan', 'overlap', 'previous', 'next'):
+            if n in args and not self.batch:
+                raise ParseError(
                     """
                     The %s attribute was used but neither of the
                     <code>start</code>, <code>end</code>, or <code>size</code>
                     attributes were used.
                     """ % n, 'in')
 
-        if has_key('start'):
-            v=args['start']
-            if type(v)==type(''):
-                try: int(v)
-                except:
-
-                    self.start_name_re=re.compile(
-                        '&+'+
-                        ''.join(["[%s]" % c for c in v])+
+        if 'start' in args:
+            v = args['start']
+            if isinstance(v, str):
+                try:
+                    int(v)
+                except Exception:
+                    self.start_name_re = re.compile(
+                        '&+' +
+                        ''.join(["[%s]" % c for c in v]) +
                         '=[0-9]+&+')
 
-        name,expr=name_param(args,'in',1)
-        if expr is not None: expr=expr.eval
+        name, expr = name_param(args, 'in', 1)
+        if expr is not None:
+            expr = expr.eval
         self.__name__, self.expr = name, expr
-        self.section=section.blocks
+        self.section = section.blocks
         if len(blocks) > 1:
-            if len(blocks) != 2: raise ParseError, (
-                'too many else blocks', 'in')
+            if len(blocks) != 2:
+                raise ParseError('too many else blocks', 'in')
             tname, args, section = blocks[1]
-            args=parse_params(args, name='')
+            args = parse_params(args, name='')
             if args:
-                ename=name_param(args)
+                ename = name_param(args)
                 if ename != name:
-                    raise ParseError, (
-                        'name in else does not match in', 'in')
-            self.elses=section.blocks
-
+                    raise ParseError('name in else does not match in', 'in')
+            self.elses = section.blocks
 
     def renderwb(self, md):
-        expr=self.expr
-        name=self.__name__
+        expr = self.expr
+        name = self.__name__
         if expr is None:
-            sequence=md[name]
-            cache={ name: sequence }
+            sequence = md[name]
+            cache = {name: sequence}
         else:
-            sequence=expr(md)
-            cache=None
+            sequence = expr(md)
+            cache = None
 
         if not sequence:
-            if self.elses: return render_blocks(self.elses, md)
+            if self.elses:
+                return render_blocks(self.elses, md)
             return ''
 
-        if type(sequence) is type(''):
-            raise ValueError, (
+        if isinstance(sequence, str):
+            raise ValueError(
                 'Strings are not allowed as input to the in tag.')
 
+        section = self.section
+        params = self.args
 
-        section=self.section
-        params=self.args
-
-        mapping=self.mapping
-        no_push_item=self.no_push_item
+        mapping = self.mapping
+        no_push_item = self.no_push_item
 
         if self.sort_expr is not None:
-            self.sort=self.sort_expr.eval(md)
-            sequence=self.sort_sequence(sequence, md)
+            self.sort = self.sort_expr.eval(md)
+            sequence = self.sort_sequence(sequence, md)
         elif self.sort is not None:
-            sequence=self.sort_sequence(sequence, md)
+            sequence = self.sort_sequence(sequence, md)
 
         if self.reverse_expr is not None and self.reverse_expr.eval(md):
-            sequence=self.reverse_sequence(sequence)
+            sequence = self.reverse_sequence(sequence)
         elif self.reverse is not None:
-            sequence=self.reverse_sequence(sequence)
+            sequence = self.reverse_sequence(sequence)
 
-        next=previous=0
-        try: start=int_param(params,md,'start',0)
-        except: start=1
-        end=int_param(params,md,'end',0)
-        size=int_param(params,md,'size',0)
-        overlap=int_param(params,md,'overlap',0)
-        orphan=int_param(params,md,'orphan','0')
-        start,end,sz=opt(start,end,size,orphan,sequence)
-        if params.has_key('next'): next=1
-        if params.has_key('previous'): previous=1
+        next = previous = 0
+        try:
+            start = int_param(params, md, 'start', 0)
+        except Exception:
+            start = 1
+        end = int_param(params, md, 'end', 0)
+        size = int_param(params, md, 'size', 0)
+        overlap = int_param(params, md, 'overlap', 0)
+        orphan = int_param(params, md, 'orphan', '0')
+        start, end, sz = opt(start, end, size, orphan, sequence)
+        if 'next' in params:
+            next = 1
+        if 'previous' in params:
+            previous = 1
 
-        last=end-1
-        first=start-1
+        last = end - 1
+        first = start - 1
 
-        try: query_string=md['QUERY_STRING']
-        except: query_string=''
+        try:
+            query_string = md['QUERY_STRING']
+        except Exception:
+            query_string = ''
         prefix = params.get('prefix')
-        vars = sequence_variables(sequence, '?'+query_string,
+        vars = sequence_variables(sequence, '?' + query_string,
                                   self.start_name_re, prefix)
-        kw=vars.data
+        kw = vars.data
         pkw = add_with_prefix(kw, 'sequence', prefix)
         for k, v in kw.items():
             pkw[k] = v
-        pkw['sequence-step-size']=sz
-        pkw['sequence-step-overlap']=overlap
-        pkw['sequence-step-start']=start
-        pkw['sequence-step-end']=end
-        pkw['sequence-step-start-index']=start-1
-        pkw['sequence-step-end-index']=end-1
-        pkw['sequence-step-orphan']=orphan
+        pkw['sequence-step-size'] = sz
+        pkw['sequence-step-overlap'] = overlap
+        pkw['sequence-step-start'] = start
+        pkw['sequence-step-end'] = end
+        pkw['sequence-step-start-index'] = start - 1
+        pkw['sequence-step-end-index'] = end - 1
+        pkw['sequence-step-orphan'] = orphan
 
-        kw['mapping']=mapping
+        kw['mapping'] = mapping
 
-        push=md._push
-        pop=md._pop
-        render=render_blocks
+        push = md._push
+        pop = md._pop
+        render = render_blocks
 
-        if cache: push(cache)
+        if cache:
+            push(cache)
         push(vars)
         try:
             if previous:
                 if first > 0:
-                    pstart,pend,psize=opt(0,first+overlap,
-                                          sz,orphan,sequence)
-                    pkw['previous-sequence']=1
-                    pkw['previous-sequence-start-index']=pstart-1
-                    pkw['previous-sequence-end-index']=pend-1
-                    pkw['previous-sequence-size']=pend+1-pstart
-                    result=render(section,md)
+                    pstart, pend, psize = opt(0, first + overlap,
+                                              sz, orphan, sequence)
+                    pkw['previous-sequence'] = 1
+                    pkw['previous-sequence-start-index'] = pstart - 1
+                    pkw['previous-sequence-end-index'] = pend - 1
+                    pkw['previous-sequence-size'] = pend + 1 - pstart
+                    result = render(section, md)
 
-                elif self.elses: result=render(self.elses, md)
-                else: result=''
+                elif self.elses:
+                    result = render(self.elses, md)
+                else:
+                    result = ''
             elif next:
                 try:
                     # The following line is a sneaky way to test whether
@@ -532,65 +546,74 @@ class InClass:
                     # computing a length:
                     sequence[end]
                 except IndexError:
-                    if self.elses: result=render(self.elses, md)
-                    else: result=''
+                    if self.elses:
+                        result = render(self.elses, md)
+                    else:
+                        result = ''
                 else:
-                    pstart,pend,psize=opt(end+1-overlap,0,
-                                          sz,orphan,sequence)
-                    pkw['next-sequence']=1
-                    pkw['next-sequence-start-index']=pstart-1
-                    pkw['next-sequence-end-index']=pend-1
-                    pkw['next-sequence-size']=pend+1-pstart
-                    result=render(section,md)
+                    pstart, pend, psize = opt(end + 1 - overlap, 0,
+                                              sz, orphan, sequence)
+                    pkw['next-sequence'] = 1
+                    pkw['next-sequence-start-index'] = pstart - 1
+                    pkw['next-sequence-end-index'] = pend - 1
+                    pkw['next-sequence-size'] = pend + 1 - pstart
+                    result = render(section, md)
             else:
                 result = []
-                append=result.append
+                append = result.append
                 guarded_getitem = getattr(md, 'guarded_getitem', None)
-                for index in range(first,end):
+                for index in range(first, end):
                     # preset
-                    pkw['previous-sequence']= 0
-                    pkw['next-sequence']= 0 # now more often defined then previously
+                    pkw['previous-sequence'] = 0
+                    # now more often defined then previously
+                    pkw['next-sequence'] = 0
                     #
-                    if index==first or index==last:
+                    if index == first or index == last:
                         # provide batching information
                         if first > 0:
-                            pstart,pend,psize=opt(0,first+overlap,
-                                                  sz,orphan,sequence)
-                            if index==first: pkw['previous-sequence']=1
-                            pkw['previous-sequence-start-index']=pstart-1
-                            pkw['previous-sequence-end-index']=pend-1
-                            pkw['previous-sequence-size']=pend+1-pstart
+                            pstart, pend, psize = opt(0, first + overlap,
+                                                      sz, orphan, sequence)
+                            if index == first:
+                                pkw['previous-sequence'] = 1
+                            pkw['previous-sequence-start-index'] = pstart - 1
+                            pkw['previous-sequence-end-index'] = pend - 1
+                            pkw['previous-sequence-size'] = pend + 1 - pstart
                         try:
                             # The following line is a sneaky way to
                             # test whether there are more items,
                             # without actually computing a length:
                             sequence[end]
-                            pstart,pend,psize=opt(end+1-overlap,0,
-                                                  sz,orphan,sequence)
-                            if index==last: pkw['next-sequence']=1
-                            pkw['next-sequence-start-index']=pstart-1
-                            pkw['next-sequence-end-index']=pend-1
-                            pkw['next-sequence-size']=pend+1-pstart
-                        except: pass
+                            pstart, pend, psize = opt(end + 1 - overlap, 0,
+                                                      sz, orphan, sequence)
+                            if index == last:
+                                pkw['next-sequence'] = 1
+                            pkw['next-sequence-start-index'] = pstart - 1
+                            pkw['next-sequence-end-index'] = pend - 1
+                            pkw['next-sequence-size'] = pend + 1 - pstart
+                        except Exception:
+                            pass
 
-                    if index==last: pkw['sequence-end']=1
+                    if index == last:
+                        pkw['sequence-end'] = 1
 
                     if guarded_getitem is not None:
-                        try: client = guarded_getitem(sequence, index)
-                        except ValidationError, vv:
-                            if (params.has_key('skip_unauthorized') and
-                                params['skip_unauthorized']):
-                                if index==first: pkw['sequence-start']=0
+                        try:
+                            client = guarded_getitem(sequence, index)
+                        except ValidationError as vv:
+                            if ('skip_unauthorized' in params and
+                                    params['skip_unauthorized']):
+                                if index == first:
+                                    pkw['sequence-start'] = 0
                                 continue
-                            raise ValidationError, '(item %s): %s' % (
-                                index, vv), sys.exc_info()[2]
+                            raise ValidationError('(item %s): %s' % (
+                                index, vv), sys.exc_info()[2])
                     else:
                         client = sequence[index]
 
-                    pkw['sequence-index']=index
+                    pkw['sequence-index'] = index
                     t = type(client)
-                    if t is TupleType and len(client)==2:
-                        client=client[1]
+                    if t is TupleType and len(client) == 2:
+                        client = client[1]
 
                     if no_push_item:
                         pushed = 0
@@ -603,95 +626,102 @@ class InClass:
                         pushed = 1
                         push(InstanceDict(client, md))
 
-                    try: append(render(section, md))
+                    try:
+                        append(render(section, md))
                     finally:
                         if pushed:
                             pop()
 
-                    if index==first: pkw['sequence-start']=0
-
+                    if index == first:
+                        pkw['sequence-start'] = 0
 
                 result = join_unicode(result)
 
         finally:
-            if cache: pop()
+            if cache:
+                pop()
             pop()
 
         return result
 
     def renderwob(self, md):
         """RENDER WithOutBatch"""
-        expr=self.expr
-        name=self.__name__
+        expr = self.expr
+        name = self.__name__
         if expr is None:
-            sequence=md[name]
-            cache={ name: sequence }
+            sequence = md[name]
+            cache = {name: sequence}
         else:
-            sequence=expr(md)
-            cache=None
+            sequence = expr(md)
+            cache = None
 
         if not sequence:
-            if self.elses: return render_blocks(self.elses, md)
+            if self.elses:
+                return render_blocks(self.elses, md)
             return ''
 
-        if type(sequence) is type(''):
-            raise ValueError, (
+        if isinstance(sequence, str):
+            raise ValueError(
                 'Strings are not allowed as input to the in tag.')
 
-        section=self.section
-        mapping=self.mapping
-        no_push_item=self.no_push_item
+        section = self.section
+        mapping = self.mapping
+        no_push_item = self.no_push_item
 
         if self.sort_expr is not None:
-            self.sort=self.sort_expr.eval(md)
-            sequence=self.sort_sequence(sequence, md)
+            self.sort = self.sort_expr.eval(md)
+            sequence = self.sort_sequence(sequence, md)
         elif self.sort is not None:
-            sequence=self.sort_sequence(sequence, md)
+            sequence = self.sort_sequence(sequence, md)
 
         if self.reverse_expr is not None and self.reverse_expr.eval(md):
-            sequence=self.reverse_sequence(sequence)
+            sequence = self.reverse_sequence(sequence)
         elif self.reverse is not None:
-            sequence=self.reverse_sequence(sequence)
+            sequence = self.reverse_sequence(sequence)
 
         prefix = self.args.get('prefix')
-        vars=sequence_variables(sequence, alt_prefix=prefix)
-        kw=vars.data
+        vars = sequence_variables(sequence, alt_prefix=prefix)
+        kw = vars.data
         pkw = add_with_prefix(kw, 'sequence', prefix)
         for k, v in kw.items():
             pkw[k] = v
-        kw['mapping']=mapping
+        kw['mapping'] = mapping
 
-        l=len(sequence)
-        last=l-1
+        l = len(sequence)
+        last = l - 1
 
-        push=md._push
-        pop=md._pop
-        render=render_blocks
+        push = md._push
+        pop = md._pop
+        render = render_blocks
 
-        if cache: push(cache)
+        if cache:
+            push(cache)
         push(vars)
         try:
             result = []
-            append=result.append
+            append = result.append
             guarded_getitem = getattr(md, 'guarded_getitem', None)
             for index in range(l):
-                if index==last: pkw['sequence-end']=1
+                if index == last:
+                    pkw['sequence-end'] = 1
                 if guarded_getitem is not None:
-                    try: client = guarded_getitem(sequence, index)
-                    except ValidationError, vv:
-                        if (self.args.has_key('skip_unauthorized') and
-                            self.args['skip_unauthorized']):
-                            if index==1: pkw['sequence-start']=0
+                    try:
+                        client = guarded_getitem(sequence, index)
+                    except ValidationError as vv:
+                        if ('skip_unauthorized' in self.args and
+                                self.args['skip_unauthorized']):
+                            if index == 1:
+                                pkw['sequence-start'] = 0
                             continue
-                        raise ValidationError, '(item %s): %s' % (
-                            index, vv), sys.exc_info()[2]
+                        raise ValidationError(
+                            '(item %s): %s' % (index, vv), sys.exc_info()[2])
                 else:
                     client = sequence[index]
 
-                pkw['sequence-index']=index
+                pkw['sequence-index'] = index
                 t = type(client)
-                if t is TupleType and len(client)==2:
-                    client=client[1]
+                if t is TupleType and len(client) == 2:
+                    client = client[1]
 
                 if no_push_item:
                     pushed = 0
@@ -704,16 +734,19 @@ class InClass:
                     pushed = 1
                     push(InstanceDict(client, md))
 
-                try: append(render(section, md))
+                try:
+                    append(render(section, md))
                 finally:
                     if pushed:
                         pop()
-                if index==0: pkw['sequence-start']=0
+                if index == 0:
+                    pkw['sequence-start'] = 0
 
             result = join_unicode(result)
 
         finally:
-            if cache: pop()
+            if cache:
+                pop()
             pop()
 
         return result
@@ -728,53 +761,63 @@ class InClass:
         # Oleg Broytmann <phd@phd.pp.ru> 30 Mar 2001
         # eg <dtml-in "foo" sort="akey/nocase,anotherkey/cmp/desc">
 
-        sort=self.sort
+        sort = self.sort
         need_sortfunc = sort.find('/') >= 0
 
-        sortfields = sort.split(',')   # multi sort = key1,key2
-        multsort = len(sortfields) > 1 # flag: is multiple sort
+        sortfields = sort.split(',')  # multi sort = key1,key2
+        multsort = len(sortfields) > 1  # flag: is multiple sort
 
         if need_sortfunc:
             # prepare the list of functions and sort order multipliers
             sf_list = make_sortfunctions(sortfields, md)
 
             # clean the mess a bit
-            if multsort: # More than one sort key.
+            if multsort:  # More than one sort key.
                 sortfields = map(lambda x: x[0], sf_list)
             else:
                 sort = sf_list[0][0]
 
-        mapping=self.mapping
-        isort=not sort
+        mapping = self.mapping
+        isort = not sort
 
-        s=[]
+        s = []
         for client in sequence:
             k = None
-            if type(client)==TupleType and len(client)==2:
-                if isort: k=client[0]
-                v=client[1]
+            if type(client) == TupleType and len(client) == 2:
+                if isort:
+                    k = client[0]
+                v = client[1]
             else:
-                if isort: k=client
-                v=client
+                if isort:
+                    k = client
+                v = client
 
             if sort:
-                if multsort: # More than one sort key.
+                if multsort:  # More than one sort key.
                     k = []
                     for sk in sortfields:
-                        if mapping: akey = v.get(sk)
-                        else: akey = getattr(v, sk, None)
+                        if mapping:
+                            akey = v.get(sk)
+                        else:
+                            akey = getattr(v, sk, None)
                         if not basic_type(akey):
-                            try: akey = akey()
-                            except: pass
+                            try:
+                                akey = akey()
+                            except Exception:
+                                pass
                         k.append(akey)
-                else: # One sort key.
-                    if mapping: k = v.get(sort)
-                    else: k = getattr(v, sort, None)
+                else:  # One sort key.
+                    if mapping:
+                        k = v.get(sort)
+                    else:
+                        k = getattr(v, sort, None)
                     if not basic_type(type(k)):
-                        try: k = k()
-                        except: pass
+                        try:
+                            k = k()
+                        except Exception:
+                            pass
 
-            s.append((k,client))
+            s.append((k, client))
 
         if need_sortfunc:
             by = SortBy(multsort, sf_list)
@@ -782,28 +825,39 @@ class InClass:
         else:
             s.sort()
 
-        sequence=[]
+        sequence = []
         for k, client in s:
             sequence.append(client)
         return sequence
 
     def reverse_sequence(self, sequence):
-        s=list(sequence)
+        s = list(sequence)
         s.reverse()
         return s
 
 
-basic_type={type(''): 1, type(0): 1, type(0.0): 1, type(()): 1, type([]): 1,
-            type(None) : 1 }.has_key
+basic_type = {
+    type(''): 1,
+    type(0): 1,
+    type(0.0): 1,
+    type(()): 1,
+    type([]): 1,
+    type(None): 1,
+}.__contains__
 
-def int_param(params,md,name,default=0, st=type('')):
-    try: v=params[name]
-    except: v=default
+
+def int_param(params, md, name, default=0, st=type('')):
+    try:
+        v = params[name]
+    except Exception:
+        v = default
     if v:
-        try: v=int(v)
-        except:
-            v=md[v]
-            if type(v) is st: v=int(v)
+        try:
+            v = int(v)
+        except Exception:
+            v = md[v]
+            if type(v) is st:
+                v = int(v)
     return v
 
 
@@ -812,7 +866,7 @@ def int_param(params,md,name,default=0, st=type('')):
 def nocase(str1, str2):
     return cmp(str1.lower(), str2.lower())
 
-if sys.modules.has_key("locale"): # only if locale is already imported
+if 'locale' in sys.modules:  # only if locale is already imported
     from locale import strcoll
 
     def strcoll_nocase(str1, str2):
@@ -820,8 +874,10 @@ if sys.modules.has_key("locale"): # only if locale is already imported
 
 
 def make_sortfunctions(sortfields, md):
-    """Accepts a list of sort fields; splits every field, finds comparison
-    function. Returns a list of 3-tuples (field, cmp_function, asc_multplier)"""
+    """
+    Accepts a list of sort fields; splits every field, finds comparison
+    function. Returns a list of 3-tuples (field, cmp_function, asc_multplier).
+    """
 
     sf_list = []
     for field in sortfields:
@@ -836,20 +892,21 @@ def make_sortfunctions(sortfields, md):
         elif l == 3:
             pass
         else:
-            raise SyntaxError, "sort option must contain no more than 2 slashes"
+            raise SyntaxError(
+                "sort option must contain no more than 2 slashes")
 
         f_name = f[1]
 
         # predefined function?
         if f_name == "cmp":
-            func = cmp # builtin
+            func = cmp  # builtin
         elif f_name == "nocase":
             func = nocase
         elif f_name in ("locale", "strcoll"):
             func = strcoll
         elif f_name in ("locale_nocase", "strcoll_nocase"):
             func = strcoll_nocase
-        else: # no - look it up in the namespace
+        else:  # no - look it up in the namespace
             func = md.getitem(f_name, 0)
 
         sort_order = f[2].lower()
@@ -859,14 +916,14 @@ def make_sortfunctions(sortfields, md):
         elif sort_order == "desc":
             multiplier = -1
         else:
-            raise SyntaxError, "sort oder must be either ASC or DESC"
+            raise SyntaxError("sort oder must be either ASC or DESC")
 
         sf_list.append((f[0], func, multiplier))
 
     return sf_list
 
 
-class SortBy:
+class SortBy(object):
     def __init__(self, multsort, sf_list):
         self.multsort = multsort
         self.sf_list = sf_list
@@ -874,7 +931,7 @@ class SortBy:
     def __call__(self, o1, o2):
         multsort = self.multsort
         if multsort:
-            o1 = o1[0] # if multsort - take the first element (key list)
+            o1 = o1[0]  # if multsort - take the first element (key list)
             o2 = o2[0]
 
         sf_list = self.sf_list
@@ -892,7 +949,8 @@ class SortBy:
             c1, c2 = o1[i], o2[i]
             func, multiplier = sf_list[i][1:3]
             n = func(c1, c2)
-            if n: return n*multiplier
+            if n:
+                return n * multiplier
 
         # all functions returned 0 - identical sequences
         return 0

@@ -43,12 +43,14 @@
 import re
 
 from DocumentTemplate.DT_Util import render_blocks, Eval, ParseError
-from DocumentTemplate.DT_Util import str # Probably needed due to
-                                         # hysterical pickles.
+# Probably needed due to hysterical pickles.
+from DocumentTemplate.DT_Util import str  # NOQA
 
-class Let:
-    blockContinuations=()
-    name='let'
+
+class Let(object):
+
+    blockContinuations = ()
+    name = 'let'
 
     def __init__(self, blocks):
         tname, args, section = blocks[0]
@@ -57,55 +59,65 @@ class Let:
         self.args = args = parse_let_params(args)
 
         for i in range(len(args)):
-            name,expr = args[i]
-            if expr[:1]=='"' and expr[-1:]=='"' and len(expr) > 1:
-                                # expr shorthand
-                expr=expr[1:-1]
-                try: args[i] = name, Eval(expr).eval
-                except SyntaxError, v:
-                    m,(huh,l,c,src) = v
-                    raise ParseError, (
+            name, expr = args[i]
+            if expr[:1] == '"' and expr[-1:] == '"' and len(expr) > 1:
+                # expr shorthand
+                expr = expr[1:-1]
+                try:
+                    args[i] = name, Eval(expr).eval
+                except SyntaxError as v:
+                    m, (huh, l, c, src) = v
+                    raise ParseError(
                         '<strong>Expression (Python) Syntax error</strong>:'
                         '\n<pre>\n%s\n</pre>\n' % v[0],
                         'let')
+
     def render(self, md):
-        d={}; md._push(d)
+        d = {}
+        md._push(d)
         try:
-            for name,expr in self.args:
-                if type(expr) is type(''): d[name]=md[expr]
-                else: d[name]=expr(md)
+            for name, expr in self.args:
+                if isinstance(expr, str):
+                    d[name] = md[expr]
+                else:
+                    d[name] = expr(md)
             return render_blocks(self.section, md)
-        finally: md._pop(1)
+        finally:
+            md._pop(1)
 
     __call__ = render
 
 
-def parse_let_params(text,
-            result=None,
-            tag='let',
-            parmre=re.compile('([\000- ]*([^\000- ="]+)=([^\000- ="]+))'),
-            qparmre=re.compile('([\000- ]*([^\000- ="]+)="([^"]*)")'),
-            **parms):
+def parse_let_params(
+        text,
+        result=None,
+        tag='let',
+        parmre=re.compile('([\000- ]*([^\000- ="]+)=([^\000- ="]+))'),
+        qparmre=re.compile('([\000- ]*([^\000- ="]+)="([^"]*)")'),
+        **parms):
 
-    result=result or []
+    result = result or []
 
     mo = parmre.match(text)
-    mo1= qparmre.match(text)
+    mo1 = qparmre.match(text)
 
     if mo is not None:
-        name=mo.group(2)
-        value=mo.group(3)
-        l=len(mo.group(1))
+        name = mo.group(2)
+        value = mo.group(3)
+        l = len(mo.group(1))
     elif mo1 is not None:
-        name=mo1.group(2)
-        value='"%s"' % mo1.group(3)
-        l=len(mo1.group(1))
+        name = mo1.group(2)
+        value = '"%s"' % mo1.group(3)
+        l = len(mo1.group(1))
     else:
-        if not text or not text.strip(): return result
-        raise ParseError, ('invalid parameter: "%s"' % text, tag)
+        if not text or not text.strip():
+            return result
+        raise ParseError('invalid parameter: "%s"' % text, tag)
 
-    result.append((name,value))
+    result.append((name, value))
 
-    text=text[l:].strip()
-    if text: return parse_let_params(text,result,tag,**parms)
-    else: return result
+    text = text[l:].strip()
+    if text:
+        return parse_let_params(text, result, tag, **parms)
+    else:
+        return result

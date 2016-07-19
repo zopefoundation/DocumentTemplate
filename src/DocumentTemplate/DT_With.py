@@ -33,49 +33,56 @@
 
 '''
 
-__rcs_id__='$Id$'
-__version__='$Revision: 1.15 $'[11:-2]
-
 from DocumentTemplate.DT_Util import parse_params, name_param
-from DocumentTemplate.DT_Util import InstanceDict, render_blocks, str
+from DocumentTemplate.DT_Util import InstanceDict, render_blocks, str  # NOQA
 from DocumentTemplate.DT_Util import TemplateDict
 
-class With:
-    blockContinuations=()
-    name='with'
-    mapping=None
-    only=0
+
+class With(object):
+    blockContinuations = ()
+    name = 'with'
+    mapping = None
+    only = 0
 
     def __init__(self, blocks):
         tname, args, section = blocks[0]
-        args=parse_params(args, name='', expr='', mapping=1, only=1)
-        name,expr=name_param(args,'with',1)
-        if expr is None: expr=name
-        else: expr=expr.eval
+        args = parse_params(args, name='', expr='', mapping=1, only=1)
+        name, expr = name_param(args, 'with', 1)
+        if expr is None:
+            expr = name
+        else:
+            expr = expr.eval
         self.__name__, self.expr = name, expr
-        self.section=section.blocks
-        if args.has_key('mapping') and args['mapping']: self.mapping=1
-        if args.has_key('only') and args['only']: self.only=1
+        self.section = section.blocks
+        if 'mapping' in args and args['mapping']:
+            self.mapping = 1
+        if 'only' in args and args['only']:
+            self.only = 1
 
     def render(self, md):
-        expr=self.expr
-        if type(expr) is type(''): v=md[expr]
-        else: v=expr(md)
+        expr = self.expr
+        if isinstance(expr, str):
+            v = md[expr]
+        else:
+            v = expr(md)
 
         if not self.mapping:
-            if type(v) is type(()) and len(v)==1: v=v[0]
-            v=InstanceDict(v,md)
+            if isinstance(v, tuple) and len(v) == 1:
+                v = v[0]
+            v = InstanceDict(v, md)
 
         if self.only:
-            _md=md
-            md=TemplateDict()
+            _md = md
+            md = TemplateDict()
             if hasattr(_md, 'guarded_getattr'):
                 md.guarded_getattr = _md.guarded_getattr
             if hasattr(_md, 'guarded_getitem'):
                 md.guarded_getitem = _md.guarded_getitem
 
         md._push(v)
-        try: return render_blocks(self.section, md)
-        finally: md._pop(1)
+        try:
+            return render_blocks(self.section, md)
+        finally:
+            md._pop(1)
 
-    __call__=render
+    __call__ = render

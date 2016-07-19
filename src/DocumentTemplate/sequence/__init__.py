@@ -13,4 +13,4 @@
 
 __allow_access_to_unprotected_subobjects__ = 1
 
-from DocumentTemplate.sequence.SortEx import *
+from DocumentTemplate.sequence.SortEx import *  # NOQA
