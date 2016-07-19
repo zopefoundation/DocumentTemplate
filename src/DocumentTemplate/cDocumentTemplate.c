@@ -166,7 +166,7 @@ InstanceDict_ass_sub( InstanceDictobject *self, PyObject *v, PyObject *w)
 }
 
 static PyMappingMethods InstanceDict_as_mapping = {
-  (inquiry)InstanceDict_length,		/*mp_length*/
+  (lenfunc)InstanceDict_length,		/*mp_length*/
   (binaryfunc)InstanceDict_subscript,		/*mp_subscript*/
   (objobjargproc)InstanceDict_ass_sub,	/*mp_ass_subscript*/
 };
@@ -180,7 +180,7 @@ static char InstanceDicttype__doc__[] =
 
 static PyExtensionClass InstanceDictType = {
   PyVarObject_HEAD_INIT(NULL, 0) 	/*ob_size*/
-  "InstanceDict",			/*tp_name*/
+  "DocumentTemplate.InstanceDict",			/*tp_name*/
   sizeof(InstanceDictobject),	/*tp_basicsize*/
   0,				/*tp_itemsize*/
   /* methods */
@@ -190,17 +190,16 @@ static PyExtensionClass InstanceDictType = {
   (setattrfunc)0,		/*obsolete tp_setattr*/
   (cmpfunc)0,	/*tp_compare*/
   (reprfunc)InstanceDict_repr,		/*tp_repr*/
-  0,		/*tp_as_number*/
-  0,		/*tp_as_sequence*/
-  &InstanceDict_as_mapping,		/*tp_as_mapping*/
+  0,        /*tp_as_number*/
+  0,        /*tp_as_sequence*/
+  &InstanceDict_as_mapping,     /*tp_as_mapping*/
   (hashfunc)0,		/*tp_hash*/
   (ternaryfunc)0,	/*tp_call*/
   (reprfunc)0,		/*tp_str*/
   (getattrofunc)InstanceDict_getattr,			/*tp_getattro*/
   0,			/*tp_setattro*/
-  
-  /* Space for future expansion */
-  0L,0L,
+  0,            /*tp_as_buffer*/
+  0,            /*tp_flags*/
   InstanceDicttype__doc__, /* Documentation string */
   METHOD_CHAIN(InstanceDict_methods)
 };
@@ -411,6 +410,21 @@ MM_has_key(MM *self, PyObject *args)
   return PyInt_FromLong(0);
 }
 
+static PyObject *
+MM_contains(MM *self, PyObject *key)
+{
+  PyObject *r;
+
+  if ((r=MM_cget(self, key, 0)))
+    {
+      Py_DECREF(r);
+      return PyInt_FromLong(1);
+    }
+  PyErr_Clear();
+  return PyInt_FromLong(0);
+}
+
+
 static struct PyMethodDef MM_methods[] = {
   {"__init__", (PyCFunction)MM__init__, 0,
    "__init__() -- Create a new empty multi-mapping"},
@@ -528,7 +542,7 @@ DictInstance_getattr(DictInstance *self, PyObject *name)
 
 static PyTypeObject DictInstanceType = {
   PyVarObject_HEAD_INIT(NULL, 0) 	/*ob_size*/
-  "DictInstance",			/*tp_name*/
+  "DocumentTemplate.DictInstance",			/*tp_name*/
   sizeof(DictInstance),		/*tp_basicsize*/
   0,				/*tp_itemsize*/
   (destructor)DictInstance_dealloc,
@@ -543,7 +557,8 @@ static PyTypeObject DictInstanceType = {
   (reprfunc)0,
   (getattrofunc)DictInstance_getattr,
   (setattrofunc)0,
-  0L,0L,
+  0,            /*tp_as_buffer*/
+  0,            /*tp_flags*/
   "Wrap a mapping object to look like an instance"
 };
 
@@ -594,8 +609,20 @@ err:
   return NULL;
 }
 
+static PySequenceMethods MM_as_sequence = {
+  (lenfunc)MM_length,   /*sq_length*/
+  0,    /*sq_concat*/
+  0,    /*sq_repeat*/
+  0,    /*sq_item*/
+  0,    /*sq_slice*/
+  0,    /*sq_ass_item*/
+  0,    /*sq_ass_slice*/
+  (objobjproc)MM_contains, /*sq_contains*/
+
+};
+
 static PyMappingMethods MM_as_mapping = {
-	(inquiry)MM_length,		/*mp_length*/
+	(lenfunc)MM_length,		/*mp_length*/
 	(binaryfunc)MM_subscript,      	/*mp_subscript*/
 	(objobjargproc)NULL,		/*mp_ass_subscript*/
 };
@@ -608,7 +635,7 @@ static char MMtype__doc__[] =
 
 static PyExtensionClass MMtype = {
         PyVarObject_HEAD_INIT(NULL, 0)  /*ob_size*/
-	"TemplateDict",			/*tp_name*/
+	"DocumentTemplate.TemplateDict",			/*tp_name*/
 	sizeof(MM),			/*tp_basicsize*/
 	0,				/*tp_itemsize*/
 	/* methods */
@@ -619,16 +646,15 @@ static PyExtensionClass MMtype = {
 	(cmpfunc)0,			/*tp_compare*/
 	(reprfunc)0,			/*tp_repr*/
 	0,				/*tp_as_number*/
-	0,				/*tp_as_sequence*/
-	&MM_as_mapping,			/*tp_as_mapping*/
+	&MM_as_sequence,   /*tp_as_sequence*/
+	&MM_as_mapping,    /*tp_as_mapping*/
 	(hashfunc)0,			/*tp_hash*/
 	(ternaryfunc)MM_call,		/*tp_call*/
 	(reprfunc)0,			/*tp_str*/
 	(getattrofunc)MM_getattro,	/*tp_getattro*/
 	(setattrofunc)MM_setattro,	/*tp_setattro*/
-
-	/* Space for future expansion */
-	0L,0L,
+    0,            /*tp_as_buffer*/
+    0,            /*tp_flags*/
 	MMtype__doc__, /* Documentation string */
 	METHOD_CHAIN(MM_methods)
 };

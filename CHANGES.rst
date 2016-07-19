@@ -4,6 +4,8 @@ Changelog
 3.0 (unreleased)
 ----------------
 
+- Add `__contains__` support to DocumentTemplate.TemplateDict.
+
 - Modernised C code in preparation of porting to Python 3.
 
 2.13.2 (2011-12-12)
