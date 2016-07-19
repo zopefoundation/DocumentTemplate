@@ -1,8 +1,8 @@
 Changelog
 =========
 
-2.13.3 (unreleased)
--------------------
+3.0 (unreleased)
+----------------
 
 - Modernised C code in preparation of porting to Python 3.
 
