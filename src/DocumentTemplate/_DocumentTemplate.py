@@ -374,7 +374,7 @@ class TemplateDict(object):
         If call is false, the object will be returns without any attempt
         to call it. If not specified, call is false by default.
         """
-        for e in self._data:
+        for e in reversed(self._data):
             try:
                 e = e[key]
             except (KeyError, TypeError):
@@ -398,7 +398,7 @@ class TemplateDict(object):
         return total
 
     def __contains__(self, key):
-        for e in self._data:
+        for e in reversed(self._data):
             try:
                 e = e[key]
             except (KeyError, TypeError):
