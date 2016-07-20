@@ -86,7 +86,7 @@ class SecurityTests(DTMLTests):
         class c(object):
             y = 10
         res = html(c=c)
-        assert res == '10', res
+        self.assertEqual(res, '10')
 
     def testNewDTMLBuiltins(self):
 

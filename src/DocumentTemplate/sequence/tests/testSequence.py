@@ -29,23 +29,26 @@ from DocumentTemplate.sequence.tests.results import (
 class TestCase(unittest.TestCase):
 
     def test1(self):
-        assert res1 == SortEx(wordlist)
+        self.assertEqual(res1, SortEx(wordlist))
 
     def test2(self):
-        assert res2 == SortEx(wordlist, (("key",),), mapping=1)
+        self.assertEqual(res2, SortEx(wordlist, (("key",),), mapping=1))
 
     def test3(self):
-        assert res3 == SortEx(wordlist, (("key", "cmp"),), mapping=1)
+        self.assertEqual(res3, SortEx(wordlist, (("key", "cmp"),), mapping=1))
 
     def test4(self):
-        assert res4 == SortEx(wordlist, (("key", "cmp", "desc"),), mapping=1)
+        self.assertEqual(
+            res4, SortEx(wordlist, (("key", "cmp", "desc"),), mapping=1))
 
     def test5(self):
-        assert res5 == SortEx(wordlist, (("weight",), ("key",)), mapping=1)
+        self.assertEqual(
+            res5, SortEx(wordlist, (("weight",), ("key",)), mapping=1))
 
     def test6(self):
-        assert res6 == SortEx(
-            wordlist, (("weight",), ("key", "nocase", "desc")), mapping=1)
+        self.assertEqual(
+            res6, SortEx(wordlist, (("weight",), ("key", "nocase", "desc")),
+                         mapping=1))
 
     def test7(self):
         def myCmp(s1, s2):
@@ -62,5 +65,7 @@ class TestCase(unittest.TestCase):
         # ... and push out function onto the namespace
         md._push({"myCmp": myCmp})
 
-        assert res7 == SortEx(
-            wordlist, (("weight",), ("key", "myCmp", "desc")), md, mapping=1)
+        self.assertEqual(
+            res7,
+            SortEx(wordlist, (("weight",), ("key", "myCmp", "desc")), md,
+                   mapping=1))

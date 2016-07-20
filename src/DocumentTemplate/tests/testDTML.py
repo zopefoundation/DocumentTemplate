@@ -138,7 +138,6 @@ class DTMLTests(unittest.TestCase):
 
     def testSequenceSummaries(self):
         data = (dict(name='jim', age=38),
-                # dict(name='kak', age=40),
                 dict(name='will', age=7),
                 dict(name='drew', age=4),
                 dict(name='ches', age=1),
@@ -169,7 +168,7 @@ class DTMLTests(unittest.TestCase):
                     'median=between jim and drew '
                     'Variable "age": min=1 max=38 count=4 total=50 '
                     'median=5 mean=12.5 s.d.=17')
-        assert res == expected, res
+        self.assertEqual(res, expected)
 
     def testDTMLDateFormatting(self):
         import DateTime
@@ -180,14 +179,14 @@ class DTMLTests(unittest.TestCase):
         res = html(date=DateTime.DateTime("1995-12-25"),
                    name='christmas_day')
         expected = 'Christmas day is 1995/12/25'
-        assert res == expected, res
+        self.assertEqual(res, expected)
 
     def testSimpleString(self):
         from DocumentTemplate.DT_HTML import String
         dt = String('%(name)s')
         res = dt(name='Chris')
         expected = 'Chris'
-        assert res == expected, res
+        self.assertEqual(res, expected)
 
     def testStringDateFormatting(self):
         import DateTime
@@ -197,7 +196,7 @@ class DTMLTests(unittest.TestCase):
         res = html(date=DateTime.DateTime("2001-04-27"),
                    name='the_date')
         expected = 'The date is 2001/4/27'
-        assert res == expected, res
+        self.assertEqual(res, expected)
 
     def testSequence1(self):
         html = self.doc_class(
@@ -205,7 +204,7 @@ class DTMLTests(unittest.TestCase):
             '</dtml-in sequence-item></dtml-in spam>')
         expected = '1 2 3 4 5 6 '
         res = html(spam=[[1, 2, 3], [4, 5, 6]])
-        assert res == expected, res
+        self.assertEqual(res, expected)
 
     def testSequence2(self):
         html = self.doc_class(
@@ -213,14 +212,14 @@ class DTMLTests(unittest.TestCase):
             '</dtml-in sequence-item></dtml-in spam>')
         expected = '1-2-3-4-5-6-'
         res = html(spam=[[1, 2, 3], [4, 5, 6]])
-        assert res == expected, res
+        self.assertEqual(res, expected)
 
     def testNull(self):
         html = self.doc_class('<dtml-var spam fmt="$%.2f bobs your uncle" '
                               'null="spam%eggs!|">')
         expected = '$42.00 bobs your unclespam%eggs!|'
         res = html(spam=42) + html(spam=None)
-        assert res == expected, res
+        self.assertEqual(res, expected)
 
     def testUrlUnquote(self):
         html1 = self.doc_class(
@@ -349,7 +348,7 @@ foo bar
 
         expected = "1, 2, The h method, 1 2"
         res = self.doc_class("<dtml-var x>, <dtml-var y>, <dtml-var h>")(C())
-        assert res == expected, res
+        self.assertEqual(res, expected)
 
         expected = (
             '''
@@ -361,7 +360,7 @@ foo bar
             <dtml-var expr="_.render(i.x)">,
             <dtml-var expr="_.render(i.y)">,
             <dtml-var expr="_.render(i.h2)">''')(i=C())
-        assert res == expected, res
+        self.assertEqual(res, expected)
 
     def testWith(self):
         class person:
@@ -376,7 +375,7 @@ foo bar
             '<dtml-with person>Hi, my name is <dtml-var name> '
             'and my height is <dtml-var "_.int(height_inches*2.54)"> '
             'cm.</dtml-with>')(person=person)
-        assert res == expected, res
+        self.assertEqual(res, expected)
 
     def testRaise(self):
         try:
@@ -398,7 +397,7 @@ foo bar
         expected = """
     B.b1    B.b2"""
         result = self.doc_class(html)(data=data)
-        assert result == expected, result
+        self.assertEqual(result, expected)
 
     def testBasicHTMLIn(self):
         data = (
@@ -422,7 +421,7 @@ foo bar
    chessie, 2
 """
         result = self.doc_class(html)(data=data)
-        assert result == expected, result
+        self.assertEqual(result, expected)
 
     def testBasicHTMLIn2(self):
         xxx = (Dummy(name=1), Dummy(name=2), Dummy(name=3))
@@ -437,7 +436,7 @@ foo bar
    3
 """
         result = self.doc_class(html)(xxx=xxx)
-        assert result == expected, result
+        self.assertEqual(result, expected)
 
     def testBasicHTMLIn3(self):
         ns = {'prop_ids': ('title', 'id'), 'title': 'good', 'id': 'times'}
@@ -445,8 +444,7 @@ foo bar
         expr="_[_['sequence-item']]">:</dtml-in>"""
         result = self.doc_class(html)(None, ns)
         expected = ":title=good:id=times:"
-
-        assert result == expected, result
+        self.assertEqual(result, expected)
 
     def testHTMLInElse(self):
         xxx = (Dummy(name=1), Dummy(name=2), Dummy(name=3))
@@ -465,7 +463,7 @@ foo bar
 3
 """
         result = self.doc_class(html)(xxx=xxx, data={})
-        assert result == expected, result
+        self.assertEqual(result, expected)
 
     def testBasicStringIn(self):
         from DocumentTemplate.DT_HTML import String
@@ -489,7 +487,7 @@ foo bar
    chessie, 2
 """
         result = String(s)(data=data)
-        assert expected == result, result
+        self.assertEqual(result, expected)
 
 
 class RESTTests(DTMLTests):
