@@ -12,8 +12,7 @@
 #
 ##############################################################################
 
-from os.path import join
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
 
 setup(name='DocumentTemplate',
       version='3.0.dev0',
@@ -36,14 +35,6 @@ setup(name='DocumentTemplate',
           "Programming Language :: Python :: 2 :: Only",
           "Programming Language :: Python :: 2.7",
           "Programming Language :: Python :: Implementation :: CPython",
-      ],
-      ext_modules=[
-          Extension(
-              name='DocumentTemplate.cDocumentTemplate',
-              include_dirs=['include', 'src'],
-              sources=[join('src', 'DocumentTemplate', 'cDocumentTemplate.c')],
-              depends=[join('include', 'ExtensionClass', 'ExtensionClass.h')],
-          ),
       ],
       install_requires=[
           'AccessControl',
