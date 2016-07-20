@@ -107,6 +107,7 @@ Document Templates may be created 4 ways:
 import sys
 import types
 
+from Acquisition import aq_base
 from ExtensionClass import ExtensionClass
 
 from DocumentTemplate.html_quote import html_quote
@@ -307,6 +308,119 @@ class InstanceDict(object):
         return r
 
 
-from DocumentTemplate.cDocumentTemplate import (  # NOQA
-    TemplateDict,
-)
+class DictInstance(object):
+
+    def __init__(self, data):
+        self._data = data
+
+    def __getattr__(self, name):
+        try:
+            return self._data[name]
+        except KeyError:
+            raise AttributeError(name)
+        return object.__getattribute__(self, name)
+
+
+class TemplateDict(object):
+    """TemplateDict -- Combine multiple mapping objects for lookup
+    """
+
+    level = 0
+    _data = None
+    _dict = None
+
+    def __init__(self):
+        """__init__() -- Create a new empty multi-mapping"""
+        self._data = []
+        self._dict = {}
+        self.level = 0
+
+    def _pop(self, i=1):
+        """_pop() -- Remove and return the last data source added"""
+        l = len(self._data)
+        i = l - i
+        r = self._data[l - 1]
+        self._data[i:l] = []
+        return r
+
+    def _push(self, src):
+        """_push(mapping_object) -- Add a data source"""
+        self._data.append(src)
+
+    def __getattr__(self, name):
+        if name == 'level':
+            return self.level
+        if self._dict:
+            try:
+                return self._dict[name]
+            except KeyError:
+                pass
+        return object.__getattribute__(self, name)
+
+    def __setattr__(self, name, value):
+        if name in ('level', '_data', '_dict'):
+            object.__setattr__(self, name, value)
+        else:
+            self._dict[name] = value
+
+    def __getitem__(self, name):
+        return self.getitem(name, call=1)
+
+    def getitem(self, key, call=0):
+        """getitem(key[,call]) -- Get a value from the MultiDict
+
+        If call is true, callable objects that can be called without
+        arguments are called during retrieval.
+        If call is false, the object will be returns without any attempt
+        to call it. If not specified, call is false by default.
+        """
+        for e in self._data:
+            try:
+                e = e[key]
+            except (KeyError, TypeError):
+                continue
+
+            if call:
+                if hasattr(e, '__render_with_namespace__'):
+                    return e.__render_with_namespace__(self)
+
+                base = aq_base(e)
+                if safe_callable(base):
+                    if getattr(base, 'isDocTemp', False):
+                        return e(None, self)
+                    return e()
+            return e
+
+    def __len__(self):
+        total = 0
+        for d in self._data:
+            total += len(d)
+        return total
+
+    def __contains__(self, key):
+        for e in self._data:
+            try:
+                e = e[key]
+            except (KeyError, TypeError):
+                continue
+            return True
+        return False
+
+    def has_key(self, key):
+        """has_key(key) -- Test whether the mapping has the given key"""
+        return key in self
+
+    def __call__(self, *args, **kw):
+        l = len(args)
+        if l:
+            r = self.__class__()
+            for arg in args:
+                r._push(arg)
+            if kw:
+                r._push(kw)
+        else:
+            if not kw:
+                return None
+            else:
+                r = kw
+        return (DictInstance(r), )
