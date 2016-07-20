@@ -18,7 +18,6 @@ static char cDocumentTemplate_module_documentation[] =
 
 static PyObject *py_isDocTemp=0;
 static PyObject *py___call__;
-static PyObject *py_guarded_getattr;
 static PyObject *py_aq_base, *py_renderNS;
 static PyObject *py___class__;
 
@@ -29,176 +28,6 @@ static void PyVar_Assign(PyObject **v, PyObject *e) { Py_XDECREF(*v); *v=e;}
 #define UNLESS(E) if (!(E))
 #define UNLESS_ASSIGN(V,E) ASSIGN(V,E); UNLESS(V)
 #define OBJECT(O)(((PyObject*)O))
-
-typedef struct {
-  PyObject_HEAD
-  PyObject *inst;
-  PyObject *cache;
-  PyObject *namespace;
-  PyObject *guarded_getattr;
-} InstanceDictobject;
-
-staticforward PyExtensionClass InstanceDictType;
-
-static PyObject *
-InstanceDict___init__(InstanceDictobject *self, PyObject *args)
-{
-  self->guarded_getattr=NULL;
-  UNLESS(PyArg_ParseTuple(args, "OO|O",
-			  &(self->inst),
-			  &(self->namespace),
-			  &(self->guarded_getattr)))
-    return NULL;
-  Py_INCREF(self->inst);
-  Py_INCREF(self->namespace);
-  if (self->guarded_getattr)
-    Py_INCREF(self->guarded_getattr);
-  else
-    UNLESS(self->guarded_getattr=PyObject_GetAttr(self->namespace,
-                                                  py_guarded_getattr))
-       return NULL;
-    
-  UNLESS(self->cache=PyDict_New()) return NULL;
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-
-static struct PyMethodDef InstanceDict_methods[] = {
-  {"__init__",	(PyCFunction)InstanceDict___init__, 1,
-   ""},
-  
-  {NULL,		NULL}		/* sentinel */
-};
-
-/* ---------- */
-
-static void
-InstanceDict_dealloc(InstanceDictobject *self)
-{
-  Py_XDECREF(self->inst);
-  Py_XDECREF(self->cache);
-  Py_XDECREF(self->namespace);
-  Py_XDECREF(self->guarded_getattr);
-  Py_DECREF(Py_TYPE(self));
-  PyObject_DEL(self);
-}
-
-static PyObject *
-InstanceDict_getattr(InstanceDictobject *self, PyObject *name)
-{
-  return Py_FindAttr((PyObject *)self, name);
-}
-
-static PyObject *
-InstanceDict_repr(InstanceDictobject *self)
-{
-  return PyObject_Repr(self->inst);
-}
-
-/* Code to access InstanceDict objects as mappings */
-
-static int
-InstanceDict_length( InstanceDictobject *self)
-{
-  return 1;
-}
-
-static PyObject *
-InstanceDict_subscript( InstanceDictobject *self, PyObject *key)
-{
-  PyObject *r, *v;
-  char *name;
-  
-  /* Try to get value from the cache */
-  if ((r=PyObject_GetItem(self->cache, key))) return r;
-  PyErr_Clear();
-  
-  /* Check for __str__ */
-  UNLESS(name=PyString_AsString(key)) return NULL;
-  if (*name=='_')
-    {
-      UNLESS(strcmp(name,"__str__")==0) goto KeyError;
-      return PyObject_Str(self->inst);
-    }
-  
-  if (self->guarded_getattr != Py_None) {
-    r = PyObject_CallFunction(self->guarded_getattr, "OO", self->inst, key);
-  }
-  else {
-    r = PyObject_GetAttr(self->inst, key);
-  }
-
-  if (!r) {
-    PyObject *tb;
-
-    PyErr_Fetch(&r, &v, &tb);
-    if (r != PyExc_AttributeError) /* || PyObject_Compare(v,key)) */
-      {
-	PyErr_Restore(r,v,tb);
-	return NULL;
-      }
-    Py_XDECREF(r);
-    Py_XDECREF(v);
-    Py_XDECREF(tb);
-
-    goto KeyError;
-  }
-  
-  if (r && PyObject_SetItem(self->cache, key, r) < 0) PyErr_Clear();
-  
-  return r;
-  
-KeyError:
-  PyErr_SetObject(PyExc_KeyError, key);
-  return NULL;
-}
-
-static int
-InstanceDict_ass_sub( InstanceDictobject *self, PyObject *v, PyObject *w)
-{
-  PyErr_SetString(PyExc_TypeError,
-		  "InstanceDict objects do not support item assignment");
-  return -1;
-}
-
-static PyMappingMethods InstanceDict_as_mapping = {
-  (lenfunc)InstanceDict_length,		/*mp_length*/
-  (binaryfunc)InstanceDict_subscript,		/*mp_subscript*/
-  (objobjargproc)InstanceDict_ass_sub,	/*mp_ass_subscript*/
-};
-
-/* -------------------------------------------------------- */
-
-
-static char InstanceDicttype__doc__[] = 
-""
-;
-
-static PyExtensionClass InstanceDictType = {
-  PyVarObject_HEAD_INIT(NULL, 0) 	/*ob_size*/
-  "DocumentTemplate.InstanceDict",			/*tp_name*/
-  sizeof(InstanceDictobject),	/*tp_basicsize*/
-  0,				/*tp_itemsize*/
-  /* methods */
-  (destructor)InstanceDict_dealloc,	/*tp_dealloc*/
-  (printfunc)0,	/*tp_print*/
-  (getattrfunc)0,		/*obsolete tp_getattr*/
-  (setattrfunc)0,		/*obsolete tp_setattr*/
-  (cmpfunc)0,	/*tp_compare*/
-  (reprfunc)InstanceDict_repr,		/*tp_repr*/
-  0,        /*tp_as_number*/
-  0,        /*tp_as_sequence*/
-  &InstanceDict_as_mapping,     /*tp_as_mapping*/
-  (hashfunc)0,		/*tp_hash*/
-  (ternaryfunc)0,	/*tp_call*/
-  (reprfunc)0,		/*tp_str*/
-  (getattrofunc)InstanceDict_getattr,			/*tp_getattro*/
-  0,			/*tp_setattro*/
-  0,            /*tp_as_buffer*/
-  0,            /*tp_flags*/
-  InstanceDicttype__doc__, /* Documentation string */
-  METHOD_CHAIN(InstanceDict_methods)
-};
 
 typedef struct {
   PyObject_HEAD
@@ -671,7 +500,6 @@ initcDocumentTemplate(void)
   UNLESS(py_isDocTemp=PyString_FromString("isDocTemp")) return;
   UNLESS(py_renderNS=PyString_FromString("__render_with_namespace__")) return;
   UNLESS(py___call__=PyString_FromString("__call__")) return;
-  UNLESS(py_guarded_getattr=PyString_FromString("guarded_getattr")) return;
   UNLESS(py_aq_base=PyString_FromString("aq_base")) return;
   UNLESS(py___class__=PyString_FromString("__class__")) return;
   UNLESS(ExtensionClassImported) return;
@@ -682,6 +510,5 @@ initcDocumentTemplate(void)
 
   d = PyModule_GetDict(m);
 
-  PyExtensionClass_Export(d,"InstanceDict",InstanceDictType);
   PyExtensionClass_Export(d,"TemplateDict",MMtype);
 }

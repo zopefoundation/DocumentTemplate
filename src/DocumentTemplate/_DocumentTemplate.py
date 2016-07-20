@@ -116,6 +116,8 @@ if sys.version_info > (3, 0):
     basestring = str
     unicode = str
 
+_marker = object()
+
 
 def join_unicode(rendered):
     """join a list of plain strings into a single plain string,
@@ -260,7 +262,51 @@ def safe_callable(ob):
     return callable(ob)
 
 
+class InstanceDict(object):
+    """"""
+
+    def __init__(self, inst, namespace, guarded_getattr=None):
+        self.inst = inst
+        self.namespace = namespace
+        self.cache = {}
+        if guarded_getattr is None:
+            self.guarded_getattr = namespace.guarded_getattr
+        else:
+            self.guarded_getattr = guarded_getattr
+
+    def __repr__(self):
+        return 'InstanceDict(%r)' % self.inst
+
+    def __len__(self):
+        return 1
+
+    def __setitem__(self, key, value):
+        raise TypeError('InstanceDict objects do not support item assignment')
+
+    def __getitem__(self, key):
+        value = self.cache.get(key, _marker)
+        if value is not _marker:
+            return value
+
+        if key[0] == '_':
+            if key != '__str__':
+                raise KeyError(key)  # Don't divuldge private data
+            else:
+                return str(self.inst)
+
+        get = self.guarded_getattr
+        if get is None:
+            get = getattr
+
+        try:
+            r = get(self.inst, key)
+        except AttributeError:
+            raise KeyError(key)
+
+        self.cache[key] = r
+        return r
+
+
 from DocumentTemplate.cDocumentTemplate import (  # NOQA
-    InstanceDict,
     TemplateDict,
 )

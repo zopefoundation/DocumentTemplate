@@ -14,6 +14,7 @@
 """
 
 from DocumentTemplate._DocumentTemplate import (  # NOQA
+    InstanceDict,
     join_unicode,
     render_blocks,
     safe_callable,
@@ -23,60 +24,6 @@ import warnings
 warnings.warn('pDocumentTemplate is not longer in active use. '
               'It remains only as an implementation reference.',
               DeprecationWarning)
-
-
-class InstanceDict(object):
-
-    guarded_getattr = None
-
-    def __init__(self, o, namespace, guarded_getattr=None):
-        self.self = o
-        self.cache = {}
-        self.namespace = namespace
-        if guarded_getattr is None:
-            self.guarded_getattr = namespace.guarded_getattr
-        else:
-            self.guarded_getattr = guarded_getattr
-
-    def __contains__(self, key):
-        return hasattr(self.self, key)
-
-    def has_key(self, key):
-        return key in self
-
-    def keys(self):
-        return self.self.__dict__.keys()
-
-    def __repr__(self):
-        return 'InstanceDict(%s)' % str(self.self)
-
-    def __getitem__(self, key):
-        cache = self.cache
-        if key in cache:
-            return cache[key]
-
-        inst = self.self
-
-        if key[:1] == '_':
-            if key != '__str__':
-                raise KeyError(key)  # Don't divuldge private data
-            else:
-                return str(inst)
-
-        get = self.guarded_getattr
-        if get is None:
-            get = getattr
-
-        try:
-            r = get(inst, key)
-        except AttributeError:
-            raise KeyError(key)
-
-        self.cache[key] = r
-        return r
-
-    def __len__(self):
-        return 1
 
 
 class MultiMapping(object):
