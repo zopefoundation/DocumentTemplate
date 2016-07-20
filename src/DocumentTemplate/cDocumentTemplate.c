@@ -12,17 +12,15 @@
  ****************************************************************************/
 static char cDocumentTemplate_module_documentation[] = 
 ""
-"\n$Id$"
 ;
 
 #include "ExtensionClass/ExtensionClass.h"
 
-static PyObject *py_isDocTemp=0, *py_blocks=0, *py_=0, *join=0, *py_acquire;
-static PyObject *py___call__, *py___roles__, *py_AUTHENTICATED_USER;
-static PyObject *py__proxy_roles, *py_Unauthorized;
-static PyObject *py_Unauthorized_fmt, *py_guarded_getattr;
-static PyObject *py__push, *py__pop, *py_aq_base, *py_renderNS;
-static PyObject *py___class__, *html_quote, *ustr, *untaint_name;
+static PyObject *py_isDocTemp=0;
+static PyObject *py___call__;
+static PyObject *py_guarded_getattr;
+static PyObject *py_aq_base, *py_renderNS;
+static PyObject *py___class__;
 
 /* ----------------------------------------------------- */
 
@@ -41,8 +39,6 @@ typedef struct {
 } InstanceDictobject;
 
 staticforward PyExtensionClass InstanceDictType;
-
-staticforward PyObject *_join_unicode(PyObject *prejoin);
 
 static PyObject *
 InstanceDict___init__(InstanceDictobject *self, PyObject *args)
@@ -662,329 +658,7 @@ static PyExtensionClass MMtype = {
 
 /* List of methods defined in the module */
 
-static int
-if_finally(PyObject *md, int err)
-{
-  PyObject *t, *v, *tb;
-
-  if (err) PyErr_Fetch(&t, &v, &tb);
-
-  md=PyObject_GetAttr(md,py__pop);
-  if (md) ASSIGN(md, PyObject_CallObject(md,NULL));
-  
-  if (err) PyErr_Restore(t,v,tb);
-  
-  if (md)
-    {
-      Py_DECREF(md);
-      return -1;
-    }
-  else 
-    return -2;
-}
-
-static int
-render_blocks_(PyObject *blocks, PyObject *rendered,
-	       PyObject *md, PyObject *mda)
-{
-  PyObject *block, *t, *args;
-  int l, i, k=0, append;
-  int skip_html_quote;
-
-  if ((l=PyList_Size(blocks)) < 0) return -1;
-  for (i=0; i < l; i++)
-    {
-      block=PyList_GET_ITEM(((PyListObject*)blocks), i);
-      append=1;
-
-      if (PyTuple_Check(block) 
-          && PyTuple_GET_SIZE(block) > 1 
-          && PyTuple_GET_ITEM(block, 0)
-          && PyString_Check(PyTuple_GET_ITEM(block, 0)))
-	{
-          switch (PyString_AS_STRING(PyTuple_GET_ITEM(block, 0))[0])
-            {
-            case 'v': /* var  */
-	      t=PyTuple_GET_ITEM(block,1);
-
-	      if (t == NULL) return -1;
-
-	      if (PyString_Check(t)) t=PyObject_GetItem(md, t);
-	      else t=PyObject_CallObject(t, mda);
-
-              if (t == NULL) return -1;
-
-	      skip_html_quote = 0;
-	      if (! ( PyString_Check(t) || PyUnicode_Check(t) ) )
-	        {
-		  /* This might be a TaintedString object */
-		  PyObject *untaintmethod = NULL;
-
-		  untaintmethod = PyObject_GetAttr(t, untaint_name);
-		  if (untaintmethod) {
-		     /* Quote it */
-		     UNLESS_ASSIGN(t,
-		   	    PyObject_CallObject(untaintmethod, NULL)) return -1;
-		     skip_html_quote = 1;
-
-		  } else PyErr_Clear();
-
-		  Py_XDECREF(untaintmethod);
-	        }
-
-              if (! ( PyString_Check(t) || PyUnicode_Check(t) ) )
-                {
-                  args = PyTuple_New(1);
-                  if(!args) return -1;
-                  PyTuple_SET_ITEM(args,0,t);
-                  t = PyObject_CallObject(ustr, args);
-                  Py_DECREF(args);
-                  args = NULL;
-                  UNLESS(t) return -1;
-                }
-
-              if (skip_html_quote == 0 && PyTuple_GET_SIZE(block) == 3)
-		       /* html_quote */
-                {
-                  if (PyString_Check(t))
-                    {
-                      if (strchr(PyString_AS_STRING(t), '&') ||
-                          strchr(PyString_AS_STRING(t), '<') ||
-                          strchr(PyString_AS_STRING(t), '>') ||
-                          strchr(PyString_AS_STRING(t), '"')     )
-                        {
-                          /* string includes html problem characters, so
-                             we cant skip the quoting process */
-                          skip_html_quote = 0;
-                        }
-                      else
-                        {
-                          skip_html_quote = 1;
-                        }
-                    }
-                  else
-                    {
-                      /* never skip the quoting for unicode strings */
-                      skip_html_quote = 0;
-                    }
-                  if (!skip_html_quote)
-                    {
-                      ASSIGN(t, PyObject_CallFunction(html_quote, "O", t));
-                      if (t == NULL) return -1;
-                    }
-                }
-                  
-              block = t;
-              break;
-            case 'i': /* if */
-              {
-                int icond, m, bs;
-                PyObject *cond, *n, *cache;
-
-                bs = PyTuple_GET_SIZE(block) - 1; /* subtract code */
-
-                UNLESS(cache=PyDict_New()) return -1;
-                cond=PyObject_GetAttr(md,py__push);
-                if (cond) ASSIGN(cond, PyObject_CallFunction(cond,"O",cache));
-                Py_DECREF(cache);
-                if (cond) Py_DECREF(cond);
-                else return -1;
-	      
-                append=0;
-                m=bs-1;
-                for (icond=0; icond < m; icond += 2)
-                  {
-                    cond=PyTuple_GET_ITEM(block,icond+1);
-                    if (PyString_Check(cond))
-                      {
-                        /* We have to be careful to handle key errors here */
-                        n=cond;
-                        if ((cond=PyObject_GetItem(md,cond)))
-                          {
-                            if (PyDict_SetItem(cache, n, cond) < 0)
-                              {
-                                Py_DECREF(cond);
-                                return if_finally(md,1);
-                              }
-                          }
-                        else
-                          {
-                            PyObject *t, *v, *tb;
-                            
-                            PyErr_Fetch(&t, &v, &tb);
-                            if (t != PyExc_KeyError || PyObject_Compare(v,n))
-                              {
-                                PyErr_Restore(t,v,tb);
-                                return if_finally(md,1);
-                              }
-                            Py_XDECREF(t);
-                            Py_XDECREF(v);
-                            Py_XDECREF(tb);
-                            cond=Py_None;
-                            Py_INCREF(cond);
-                          }
-                      }
-                    else
-                      UNLESS(cond=PyObject_CallObject(cond,mda))
-                        return if_finally(md,1);
-                    
-                    if (PyObject_IsTrue(cond))
-                      {
-                        Py_DECREF(cond);
-                        block=PyTuple_GET_ITEM(block,icond+1+1);
-                        if (block!=Py_None &&
-                            render_blocks_(block, rendered, md, mda) < 0)
-                          return if_finally(md,1);
-                        m=-1;
-                        break;
-                      }
-                    else Py_DECREF(cond);
-                  }
-		if (icond==m)
-		  {
-		    block=PyTuple_GET_ITEM(block,icond+1);
-		    if (block!=Py_None &&
-                        render_blocks_(block, rendered, md, mda) < 0)
-		      return if_finally(md,1);
-		  }
-                
-		if (if_finally(md,0) == -2) return -1;
-              }
-              break;
-            default:
-              PyErr_Format(PyExc_ValueError,
-                           "Invalid DTML command code, %s",
-                           PyString_AS_STRING(PyTuple_GET_ITEM(block, 0)));
-              return -1;
-            }
-        }
-      else if (PyString_Check(block) || PyUnicode_Check(block))
-	{
-	  Py_INCREF(block);
-	}
-      else
-	{
-	  UNLESS(block=PyObject_CallObject(block,mda)) return -1;
-	}
-
-      if (append && PyObject_IsTrue(block))
-	{
-	  k=PyList_Append(rendered,block);
-	  Py_DECREF(block);
-	  if (k < 0) return -1;
-	}
-    }
-
-  return 0;
-}
-
-static PyObject *
-render_blocks(PyObject *self, PyObject *args)
-{
-  PyObject *md, *blocks, *mda=0, *rendered=0;
-  int l;
-
-  UNLESS(PyArg_ParseTuple(args,"OO", &blocks, &md)) return NULL;
-  UNLESS(rendered=PyList_New(0)) goto err;
-  UNLESS(mda=Py_BuildValue("(O)",md)) goto err;
-  
-  if (render_blocks_(blocks, rendered, md, mda) < 0) goto err;
-
-  Py_DECREF(mda);
-
-  l=PyList_Size(rendered);
-  if (l==0)
-    {
-      Py_INCREF(py_);
-      ASSIGN(rendered, py_);
-    }
-  else if (l==1)
-    ASSIGN(rendered, PySequence_GetItem(rendered,0));
-  else
-    ASSIGN(rendered, _join_unicode(rendered));
-
-  return rendered;
-
-err:
-  Py_XDECREF(mda);
-  Py_XDECREF(rendered);
-  return NULL;
-}  
-  
-static PyObject *
-safe_callable(PyObject *self, PyObject *args)
-{
-  PyObject *ob;
-  int res;
-
-  UNLESS(PyArg_ParseTuple(args,"O", &ob)) return NULL;
-  res = safe_PyCallable_Check(ob);
-  if (res)
-    return PyInt_FromLong(1);
-  else
-    return PyInt_FromLong(0);
-}
-
-static PyObject *
-_join_unicode(PyObject *prejoin)
-{
-    PyObject *joined;
-    joined = PyObject_CallFunction(join,"OO",prejoin,py_);
-    if(!joined && PyErr_ExceptionMatches(PyExc_UnicodeError))
-    {
-        int i,l;
-        PyObject *list;
-        PyErr_Clear();
-        list = PySequence_List(prejoin);
-        if(!list)
-        {
-            return NULL;
-        }
-        l = PyList_Size(list);
-        for(i=0;i<l;++i)
-        {
-            PyObject *item = PyList_GetItem(list,i);
-            if(PyString_Check(item))
-            {
-                PyObject *unicode = PyUnicode_DecodeLatin1(PyString_AsString(item),PyString_Size(item),NULL);
-                if(unicode)
-                {
-                    PyList_SetItem(list,i,unicode);
-                }
-                else
-                {
-                    Py_DECREF(list);
-                    return NULL;
-                }
-           }
-       }
-       joined = PyObject_CallFunction(join,"OO",list,py_);
-       Py_DECREF(list);
-    }
-    return joined;
-}
-
-static PyObject *
-join_unicode(PyObject *self, PyObject *args)
-{
-  PyObject *ob;
-
-  UNLESS(PyArg_ParseTuple(args,"O", &ob)) return NULL;
-  return _join_unicode(ob);
-}
-
-
 static struct PyMethodDef Module_Level__methods[] = {
-  {"render_blocks", (PyCFunction)render_blocks,	METH_VARARGS,
-   ""},
-  {"join_unicode", (PyCFunction)join_unicode,	METH_VARARGS,
-   "join a list of plain strings into a single plain string,\n"
-   "a list of unicode strings into a single unicode strings,\n"
-   "or a list containing a mix into a single unicode string with\n"
-   "the plain strings converted from latin-1"},
-  {"safe_callable", (PyCFunction)safe_callable,	METH_VARARGS,
-   "callable() with a workaround for a problem with ExtensionClasses\n"
-   "and __call__()."},
   {NULL, (PyCFunction)NULL, 0, NULL}		/* sentinel */
 };
 
@@ -992,39 +666,14 @@ void
 initcDocumentTemplate(void)
 {
   PyObject *m, *d;
-
   Py_TYPE(&DictInstanceType)=&PyType_Type;
-
-  UNLESS (html_quote = PyImport_ImportModule("DocumentTemplate.html_quote")) return;
-  ASSIGN(ustr, PyObject_GetAttrString(html_quote, "ustr"));
-  UNLESS (ustr) return;
-  ASSIGN(html_quote, PyObject_GetAttrString(html_quote, "html_quote"));
-  UNLESS (html_quote) return;
 
   UNLESS(py_isDocTemp=PyString_FromString("isDocTemp")) return;
   UNLESS(py_renderNS=PyString_FromString("__render_with_namespace__")) return;
-  UNLESS(py_blocks=PyString_FromString("blocks")) return;
-  UNLESS(untaint_name=PyString_FromString("__untaint__")) return;
-  UNLESS(py_acquire=PyString_FromString("aq_acquire")) return;
   UNLESS(py___call__=PyString_FromString("__call__")) return;
-  UNLESS(py___roles__=PyString_FromString("__roles__")) return;
-  UNLESS(py__proxy_roles=PyString_FromString("_proxy_roles")) return;
   UNLESS(py_guarded_getattr=PyString_FromString("guarded_getattr")) return;
-  UNLESS(py__push=PyString_FromString("_push")) return;
-  UNLESS(py__pop=PyString_FromString("_pop")) return;
   UNLESS(py_aq_base=PyString_FromString("aq_base")) return;
-  UNLESS(py_Unauthorized=PyString_FromString("Unauthorized")) return;
-  UNLESS(py_Unauthorized_fmt=PyString_FromString(
-	 "You are not authorized to access <em>%s</em>.")) return;
   UNLESS(py___class__=PyString_FromString("__class__")) return;
-
-  UNLESS(py_AUTHENTICATED_USER=PyString_FromString("AUTHENTICATED_USER"))
-    return;
-
-  UNLESS(py_=PyString_FromString("")) return;
-  UNLESS(join=PyImport_ImportModule("string")) return;
-  ASSIGN(join,PyObject_GetAttrString(join,"join"));
-  UNLESS(join) return;
   UNLESS(ExtensionClassImported) return;
 
   m = Py_InitModule4("cDocumentTemplate", Module_Level__methods,
@@ -1035,5 +684,4 @@ initcDocumentTemplate(void)
 
   PyExtensionClass_Export(d,"InstanceDict",InstanceDictType);
   PyExtensionClass_Export(d,"TemplateDict",MMtype);
-
 }

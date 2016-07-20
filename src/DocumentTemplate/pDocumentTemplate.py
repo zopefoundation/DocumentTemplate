@@ -10,46 +10,19 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""Python implementations of document template some features
-
-XXX This module is no longer actively used, but is left as an
-XXX implementation reference for cDocumentTemplate
+"""This module is no longer actively used.
 """
 
-import sys
-import types
-from types import StringType, UnicodeType, TupleType
-from DocumentTemplate.ustr import ustr
+from DocumentTemplate._DocumentTemplate import (  # NOQA
+    join_unicode,
+    render_blocks,
+    safe_callable,
+)
 
 import warnings
 warnings.warn('pDocumentTemplate is not longer in active use. '
               'It remains only as an implementation reference.',
               DeprecationWarning)
-
-ClassTypes = [types.ClassType]
-
-try:
-    from ExtensionClass import Base
-except ImportError:
-    pass
-else:
-    class c(Base):
-        pass
-    ClassTypes.append(c.__class__)
-
-if sys.version_info > (3, 0):
-    unicode = str
-
-
-def safe_callable(ob):
-    # Works with ExtensionClasses and Acquisition.
-    if hasattr(ob, '__class__'):
-        if hasattr(ob, '__call__'):
-            return 1
-        else:
-            return type(ob) in ClassTypes
-    else:
-        return callable(ob)
 
 
 class InstanceDict(object):
@@ -210,88 +183,3 @@ class TemplateDict(object):
         else:
             m = kw
         return (DictInstance(m),)
-
-
-def render_blocks(blocks, md):
-    rendered = []
-    for section in blocks:
-        if type(section) is TupleType:
-            l = len(section)
-            if l == 1:
-                # Simple var
-                section = section[0]
-                if type(section) is StringType:
-                    section = md[section]
-                else:
-                    section = section(md)
-                section = ustr(section)
-            else:
-                # if
-                cache = {}
-                md._push(cache)
-                try:
-                    i = 0
-                    m = l - 1
-                    while i < m:
-                        cond = section[i]
-                        if type(cond) is StringType:
-                            n = cond
-                            try:
-                                cond = md[cond]
-                                cache[n] = cond
-                            except KeyError as v:
-                                v = str(v)
-                                if n != v:
-                                    raise KeyError(v)
-                                cond = None
-                        else:
-                            cond = cond(md)
-                        if cond:
-                            section = section[i + 1]
-                            if section:
-                                section = render_blocks(section, md)
-                            else:
-                                section = ''
-                            m = 0
-                            break
-                        i = i + 2
-                    if m:
-                        if i == m:
-                            section = render_blocks(section[i], md)
-                        else:
-                            section = ''
-
-                finally:
-                    md._pop()
-
-        elif (type(section) is not StringType and
-              type(section) is not UnicodeType):
-            section = section(md)
-
-        if section:
-            rendered.append(section)
-
-    l = len(rendered)
-    if l == 0:
-        return ''
-    elif l == 1:
-        return rendered[0]
-    return join_unicode(rendered)
-
-
-def join_unicode(rendered):
-    """join a list of plain strings into a single plain string,
-    a list of unicode strings into a single unicode strings,
-    or a list containing a mix into a single unicode string with
-    the plain strings converted from latin-1
-    """
-    try:
-        return ''.join(rendered)
-    except UnicodeError:
-        # A mix of unicode string and non-ascii plain strings.
-        # Fix up the list, treating normal strings as latin-1
-        rendered = list(rendered)
-        for i in range(len(rendered)):
-            if type(rendered[i]) is StringType:
-                rendered[i] = unicode(rendered[i], 'latin-1')
-        return u''.join(rendered)

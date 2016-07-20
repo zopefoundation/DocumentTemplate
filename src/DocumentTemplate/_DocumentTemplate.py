@@ -104,6 +104,163 @@ Document Templates may be created 4 ways:
 
 '''
 
-from DocumentTemplate.DT_Raise import ParseError  # NOQA
-from DocumentTemplate.DT_String import String, File  # NOQA
-from DocumentTemplate.DT_HTML import HTML, HTMLFile, HTMLDefault  # NOQA
+import sys
+import types
+
+from ExtensionClass import ExtensionClass
+
+from DocumentTemplate.html_quote import html_quote
+from DocumentTemplate.ustr import ustr
+
+if sys.version_info > (3, 0):
+    basestring = str
+    unicode = str
+
+
+def join_unicode(rendered):
+    """join a list of plain strings into a single plain string,
+    a list of unicode strings into a single unicode strings,
+    or a list containing a mix into a single unicode string with
+    the plain strings converted from latin-1
+    """
+    try:
+        return ''.join(rendered)
+    except UnicodeError:
+        # A mix of unicode string and non-ascii plain strings.
+        # Fix up the list, treating normal strings as latin-1
+        rendered = list(rendered)
+        for i in range(len(rendered)):
+            if isinstance(rendered[i], str):
+                rendered[i] = unicode(rendered[i], 'latin-1')
+        return u''.join(rendered)
+
+
+def render_blocks(blocks, md):
+    rendered = []
+
+    render_blocks_(blocks, rendered, md)
+
+    l = len(rendered)
+    if l == 0:
+        return ''
+    elif l == 1:
+        return rendered[0]
+    return join_unicode(rendered)
+
+
+def render_blocks_(blocks, rendered, md):
+    for block in blocks:
+        append = True
+
+        if (isinstance(block, tuple) and
+                len(block) > 1 and
+                isinstance(block[0], basestring)):
+
+            first_char = block[0][0]
+            if first_char == 'v':  # var
+                t = block[1]
+                if isinstance(t, str):
+                    t = md[t]
+                else:
+                    t = t(md)
+
+                skip_html_quote = 0
+                if not isinstance(t, basestring):
+                    # This might be a TaintedString object
+                    untaintmethod = getattr(t, '__untaint__', None)
+                    if untaintmethod is not None:
+                        # Quote it
+                        t = untaintmethod()
+                        skip_html_quote = 1
+
+                if not isinstance(t, basestring):
+                    t = ustr(t)
+
+                if (skip_html_quote == 0 and len(block) == 3):
+                    # html_quote
+                    if isinstance(t, str):
+                        if t in ('&', '<', '>', '"'):
+                            # string includes html problem characters,
+                            # so we cant skip the quoting process
+                            skip_html_quote = 0
+                        else:
+                            skip_html_quote = 1
+                    else:
+                        # never skip the quoting for unicode strings
+                        skip_html_quote = 0
+
+                    if not skip_html_quote:
+                        t = html_quote(t)
+
+                block = t
+
+            elif first_char == 'i':  # if
+                bs = len(block) - 1  # subtract code
+                cache = {}
+                md._push(cache)
+                try:
+                    append = False
+                    m = bs - 1
+                    icond = 0
+                    while icond < m:
+                        cond = block[icond + 1]
+                        if isinstance(cond, str):
+                            # We have to be careful to handle key errors here
+                            n = cond
+                            try:
+                                cond = md[cond]
+                            except KeyError as t:
+                                if n != t.args[0]:
+                                    raise
+                                cond = None
+                            else:
+                                cache[n] = cond
+                        else:
+                            cond = cond(md)
+
+                        if cond:
+                            block = block[icond + 2]
+                            if block:
+                                render_blocks_(block, rendered, md)
+                            m = -1
+                            break
+
+                        if icond == m:
+                            block = block[icond + 1]
+                            if block:
+                                render_blocks_(block, rendered, md)
+
+                        icond += 2
+                finally:
+                    md._pop()
+
+            else:
+                raise ValueError(
+                    'Invalid DTML command code, %s', block[0])
+
+        elif not isinstance(block, basestring):
+            block = block(md)
+
+        if append and block:
+            rendered.append(block)
+
+
+def safe_callable(ob):
+    """callable() with a workaround for a problem with ExtensionClasses
+    and __call__().
+    """
+    if hasattr(ob, '__class__'):
+        if hasattr(ob, '__call__'):
+            return True
+        else:
+            if type(ob) in (types.ClassType, ExtensionClass):
+                return True
+            else:
+                return False
+    return callable(ob)
+
+
+from DocumentTemplate.cDocumentTemplate import (  # NOQA
+    InstanceDict,
+    TemplateDict,
+)
