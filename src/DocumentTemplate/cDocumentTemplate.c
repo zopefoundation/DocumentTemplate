@@ -665,6 +665,7 @@ render_blocks_(PyObject *blocks, PyObject *rendered,
 	       PyObject *md, PyObject *mda)
 {
   PyObject *block, *t, *args;
+  size_t n;
   int l, i, k=0, append;
   int skip_html_quote;
 
@@ -725,10 +726,11 @@ render_blocks_(PyObject *blocks, PyObject *rendered,
                 {
                   if (PyString_Check(t))
                     {
-                      if (strchr(PyString_AS_STRING(t), '&') ||
-                          strchr(PyString_AS_STRING(t), '<') ||
-                          strchr(PyString_AS_STRING(t), '>') ||
-                          strchr(PyString_AS_STRING(t), '"')     )
+                      n = (size_t) PyString_GET_SIZE(t);
+                      if (memchr(PyString_AS_STRING(t), '&', n) ||
+                          memchr(PyString_AS_STRING(t), '<', n) ||
+                          memchr(PyString_AS_STRING(t), '>', n) ||
+                          memchr(PyString_AS_STRING(t), '"', n))
                         {
                           /* string includes html problem characters, so
                              we cant skip the quoting process */
