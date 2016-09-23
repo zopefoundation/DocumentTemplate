@@ -10,9 +10,8 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""This module is no longer actively used.
-"""
 
+# BBB imports for former C implementation.
 from DocumentTemplate._DocumentTemplate import (  # NOQA
     DictInstance,
     InstanceDict,
@@ -23,6 +22,5 @@ from DocumentTemplate._DocumentTemplate import (  # NOQA
 )
 
 import warnings
-warnings.warn('pDocumentTemplate is not longer in active use. '
-              'It remains only as an implementation reference.',
-              DeprecationWarning)
+warnings.warn('cDocumentTemplate is deprecated, use '
+              '_DocumentTemplate instead.', DeprecationWarning)

@@ -27,14 +27,14 @@ from zExceptions import Unauthorized as ValidationError
 
 # for import by other modules, dont remove!
 from DocumentTemplate.html_quote import html_quote, ustr  # NOQA
-from DocumentTemplate.cDocumentTemplate import (  # NOQA
+from DocumentTemplate._DocumentTemplate import (  # NOQA
     InstanceDict,
     join_unicode,
     render_blocks,
 )
 
-from DocumentTemplate.cDocumentTemplate import TemplateDict
-from DocumentTemplate.cDocumentTemplate import safe_callable
+from DocumentTemplate._DocumentTemplate import TemplateDict
+from DocumentTemplate._DocumentTemplate import safe_callable
 from DocumentTemplate import sequence
 
 if 'test' not in utility_builtins:

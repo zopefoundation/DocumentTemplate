@@ -104,6 +104,331 @@ Document Templates may be created 4 ways:
 
 '''
 
-from DocumentTemplate.DT_Raise import ParseError  # NOQA
-from DocumentTemplate.DT_String import String, File  # NOQA
-from DocumentTemplate.DT_HTML import HTML, HTMLFile, HTMLDefault  # NOQA
+import sys
+import types
+
+from Acquisition import aq_base
+from ExtensionClass import Base
+
+from DocumentTemplate.html_quote import html_quote
+from DocumentTemplate.ustr import ustr
+
+if sys.version_info > (3, 0):
+    basestring = str
+    unicode = str
+
+_marker = object()
+
+
+def join_unicode(rendered):
+    """join a list of plain strings into a single plain string,
+    a list of unicode strings into a single unicode strings,
+    or a list containing a mix into a single unicode string with
+    the plain strings converted from latin-1
+    """
+    try:
+        return ''.join(rendered)
+    except UnicodeError:
+        # A mix of unicode string and non-ascii plain strings.
+        # Fix up the list, treating normal strings as latin-1
+        rendered = list(rendered)
+        for i in range(len(rendered)):
+            if isinstance(rendered[i], str):
+                rendered[i] = unicode(rendered[i], 'latin-1')
+        return u''.join(rendered)
+
+
+def render_blocks(blocks, md):
+    rendered = []
+
+    render_blocks_(blocks, rendered, md)
+
+    l = len(rendered)
+    if l == 0:
+        return ''
+    elif l == 1:
+        return rendered[0]
+    return join_unicode(rendered)
+
+
+def render_blocks_(blocks, rendered, md):
+    for block in blocks:
+        append = True
+
+        if (isinstance(block, tuple) and
+                len(block) > 1 and
+                isinstance(block[0], basestring)):
+
+            first_char = block[0][0]
+            if first_char == 'v':  # var
+                t = block[1]
+                if isinstance(t, str):
+                    t = md[t]
+                else:
+                    t = t(md)
+
+                skip_html_quote = 0
+                if not isinstance(t, basestring):
+                    # This might be a TaintedString object
+                    untaintmethod = getattr(t, '__untaint__', None)
+                    if untaintmethod is not None:
+                        # Quote it
+                        t = untaintmethod()
+                        skip_html_quote = 1
+
+                if not isinstance(t, basestring):
+                    t = ustr(t)
+
+                if (skip_html_quote == 0 and len(block) == 3):
+                    # html_quote
+                    if isinstance(t, str):
+                        if t in ('&', '<', '>', '"'):
+                            # string includes html problem characters,
+                            # so we cant skip the quoting process
+                            skip_html_quote = 0
+                        else:
+                            skip_html_quote = 1
+                    else:
+                        # never skip the quoting for unicode strings
+                        skip_html_quote = 0
+
+                    if not skip_html_quote:
+                        t = html_quote(t)
+
+                block = t
+
+            elif first_char == 'i':  # if
+                bs = len(block) - 1  # subtract code
+                cache = {}
+                md._push(cache)
+                try:
+                    append = False
+                    m = bs - 1
+                    icond = 0
+                    while icond < m:
+                        cond = block[icond + 1]
+                        if isinstance(cond, str):
+                            # We have to be careful to handle key errors here
+                            n = cond
+                            try:
+                                cond = md[cond]
+                            except KeyError as t:
+                                if n != t.args[0]:
+                                    raise
+                                cond = None
+                            else:
+                                cache[n] = cond
+                        else:
+                            cond = cond(md)
+
+                        if cond:
+                            block = block[icond + 2]
+                            if block:
+                                render_blocks_(block, rendered, md)
+                            m = -1
+                            break
+
+                        if icond == m:
+                            block = block[icond + 1]
+                            if block:
+                                render_blocks_(block, rendered, md)
+
+                        icond += 2
+                finally:
+                    md._pop()
+
+            else:
+                raise ValueError(
+                    'Invalid DTML command code, %s', block[0])
+
+        elif not isinstance(block, basestring):
+            block = block(md)
+
+        if append and block:
+            rendered.append(block)
+
+
+def safe_callable(ob):
+    """callable() with a workaround for a problem with ExtensionClasses
+    and __call__().
+    """
+    if hasattr(ob, '__class__'):
+        if hasattr(ob, '__call__'):
+            return True
+        else:
+            if type(ob) in (types.ClassType, Base):
+                return True
+            else:
+                return False
+    return callable(ob)
+
+
+class InstanceDict(Base):
+    """"""
+
+    guarded_getattr = None
+
+    def __init__(self, inst, namespace, guarded_getattr=None):
+        self.inst = inst
+        self.namespace = namespace
+        self.cache = {}
+        if guarded_getattr is None:
+            self.guarded_getattr = namespace.guarded_getattr
+        else:
+            self.guarded_getattr = guarded_getattr
+
+    def __repr__(self):
+        return 'InstanceDict(%r)' % self.inst
+
+    def __len__(self):
+        return 1
+
+    def __setitem__(self, key, value):
+        raise TypeError('InstanceDict objects do not support item assignment')
+
+    def __getitem__(self, key):
+        value = self.cache.get(key, _marker)
+        if value is not _marker:
+            return value
+
+        if key[0] == '_':
+            if key != '__str__':
+                raise KeyError(key)  # Don't divuldge private data
+            else:
+                return str(self.inst)
+
+        get = self.guarded_getattr
+        if get is None:
+            get = getattr
+
+        try:
+            result = get(self.inst, key)
+        except AttributeError:
+            raise KeyError(key)
+
+        self.cache[key] = result
+        return result
+
+
+class DictInstance(object):
+
+    def __init__(self, data):
+        self._data = data
+
+    def __getattr__(self, name):
+        try:
+            return self._data[name]
+        except KeyError:
+            raise AttributeError(name)
+
+
+class TemplateDict(Base):
+    """TemplateDict -- Combine multiple mapping objects for lookup
+    """
+
+    level = 0
+    _data = None
+    _dict = None
+
+    def __init__(self):
+        """__init__() -- Create a new empty multi-mapping"""
+        self._data = []
+        self._dict = {}
+        self.level = 0
+
+    def _pop(self, i=1):
+        """_pop() -- Remove and return the last data source added"""
+        l = len(self._data)
+        i = l - i
+        r = self._data[l - 1]
+        self._data[i:l] = []
+        return r
+
+    def _push(self, src):
+        """_push(mapping_object) -- Add a data source"""
+        self._data.append(src)
+
+    def __getattr__(self, name):
+        if name == 'level':
+            return self.level
+        if self._dict:
+            try:
+                return self._dict[name]
+            except KeyError:
+                pass
+        return Base.__getattribute__(self, name)
+
+    def __delattr__(self, name):
+        if name in ('level', '_data', '_dict'):
+            del self.__dict__[name]
+        else:
+            del self._dict[name]
+
+    def __setattr__(self, name, value):
+        if name in ('level', '_data', '_dict'):
+            self.__dict__[name] = value
+        else:
+            self._dict[name] = value
+
+    def __getitem__(self, name):
+        return self.getitem(name, call=1)
+
+    def getitem(self, key, call=0):
+        """getitem(key[,call]) -- Get a value from the MultiDict
+
+        If call is true, callable objects that can be called without
+        arguments are called during retrieval.
+        If call is false, the object will be returns without any attempt
+        to call it. If not specified, call is false by default.
+        """
+        for e in reversed(self._data):
+            try:
+                e = e[key]
+            except KeyError:
+                continue
+
+            if call:
+                if hasattr(e, '__render_with_namespace__'):
+                    return e.__render_with_namespace__(self)
+
+                base = aq_base(e)
+                if safe_callable(base):
+                    if getattr(base, 'isDocTemp', False):
+                        return e(None, self)
+                    return e()
+            return e
+        raise KeyError(key)
+
+    def __len__(self):
+        total = 0
+        for d in self._data:
+            total += len(d)
+        return total
+
+    def __contains__(self, key):
+        for e in reversed(self._data):
+            try:
+                e = e[key]
+            except KeyError:
+                continue
+            return True
+        return False
+
+    def has_key(self, key):
+        """has_key(key) -- Test whether the mapping has the given key"""
+        return key in self
+
+    def __call__(self, *args, **kw):
+        l = len(args)
+        if l:
+            r = type(self)()
+            for arg in args:
+                r._push(arg)
+            if kw:
+                r._push(kw)
+        else:
+            if not kw:
+                return None
+            else:
+                r = kw
+        return (DictInstance(r), )

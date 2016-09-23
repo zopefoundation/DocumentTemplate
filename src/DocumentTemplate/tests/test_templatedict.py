@@ -16,7 +16,7 @@
 import unittest
 
 from ExtensionClass import Base
-from DocumentTemplate.cDocumentTemplate import TemplateDict
+from DocumentTemplate._DocumentTemplate import TemplateDict
 
 
 class DummyDocTemp(object):
@@ -53,8 +53,11 @@ class TestTemplateDict(unittest.TestCase):
         self.assertEqual(td.level, 0)
         self.assertRaises(AttributeError, getattr, td, 'foo')
         self.assertFalse(td.has_key('foo'))  # NOQA
+        self.assertFalse('foo' in td)
         self.assertFalse(td.has_key('level'))  # NOQA
+        self.assertFalse('level' in td)
         self.assertRaises(KeyError, td.getitem, 0)
+        self.assertFalse(0 in td)
         with self.assertRaises(KeyError):
             td['foo']
         self.assertTrue(td() is None)
@@ -85,6 +88,7 @@ class TestTemplateDict(unittest.TestCase):
         self.assertEqual(len(td), 0)
         self.assertRaises(KeyError, td.getitem, 0)
         self.assertFalse(td.has_key('foo'))  # NOQA
+        self.assertFalse('foo' in td)
         self.assertEqual(td.foo, 1)
         self.assertEqual(td.bar, 2)
         self.assertEqual(td.baz, None)
@@ -107,9 +111,13 @@ class TestTemplateDict(unittest.TestCase):
         td._push(object())
         td._push({'two': 22, 'three': 3})
         td._push({'four': None})
+        self.assertTrue('three' in td)
         self.assertEqual(td.getitem('three'), 3)
+        self.assertTrue('two' in td)
         self.assertEqual(td.getitem('two'), 22)
+        self.assertRaises(TypeError, td.__contains__, 'one')
         self.assertRaises(TypeError, td.getitem, 'one')
+        self.assertTrue('four' in td)
         self.assertEqual(td.getitem('four'), None)
 
     def test_callable_doctemp(self):
