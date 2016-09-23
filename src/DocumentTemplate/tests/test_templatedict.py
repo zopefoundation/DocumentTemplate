@@ -10,13 +10,15 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""Document Template Tests
-"""
 
 import unittest
 
 from ExtensionClass import Base
-from DocumentTemplate._DocumentTemplate import TemplateDict
+from DocumentTemplate._DocumentTemplate import (
+    InstanceDict,
+    TemplateDict,
+)
+from DocumentTemplate.security import RestrictedDTML
 
 
 class DummyDocTemp(object):
@@ -38,6 +40,10 @@ class DummyNamespace(object):
 
     def __render_with_namespace__(self, *args):
         return ('namespace', self.name, args)
+
+
+class RestrictedTemplateDict(RestrictedDTML, TemplateDict):
+    this = None
 
 
 class TestTemplateDict(unittest.TestCase):
@@ -134,3 +140,43 @@ class TestTemplateDict(unittest.TestCase):
         td = TemplateDict()
         td._push({'one': DummyNamespace('one')})
         self.assertEqual(td['one'], ('namespace', 'one', (td, )))
+
+
+class TestRestrictedTemplateDict(unittest.TestCase):
+    # Based on tests for Products.PageTemplates.ZRPythonExpr.
+
+    def test_instancedict(self):
+        context = ['context']
+        here = ['here']
+        request = {'request': 1}
+        names = {'context': context, 'here': here, 'request': request}
+        td = RestrictedTemplateDict()
+        td.this = context
+        td._push(request)
+        td._push(InstanceDict(td.this, td))
+        td._push(names)
+
+        def func(td):
+            return td.this
+        result = func(td)
+        self.assertTrue(result is context)
+
+    def test_taintwrapper(self):
+        class Request(dict):
+            def taintWrapper(self):
+                return {'tainted': 'found'}
+
+        context = ['context']
+        here = ['here']
+        request = Request().taintWrapper()
+        names = {'context': context, 'here': here, 'request': request}
+        td = RestrictedTemplateDict()
+        td.this = context
+        td._push(request)
+        td._push(InstanceDict(td.this, td))
+        td._push(names)
+
+        def func(td):
+            return td['tainted']
+        found = func(td)
+        self.assertEqual(found, 'found')

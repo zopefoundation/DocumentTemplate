@@ -348,12 +348,13 @@ class TemplateDict(Base):
         """_push(mapping_object) -- Add a data source"""
         self._data.append(src)
 
-    def __getattr__(self, name):
+    def __getattribute__(self, name):
         if name == 'level':
-            return self.level
-        if self._dict:
+            return Base.__getattribute__(self, name)
+        _dict = Base.__getattribute__(self, '_dict')
+        if _dict:
             try:
-                return self._dict[name]
+                return _dict[name]
             except KeyError:
                 pass
         return Base.__getattribute__(self, name)
