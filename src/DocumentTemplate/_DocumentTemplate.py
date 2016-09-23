@@ -228,12 +228,12 @@ def render_blocks_(blocks, rendered, md):
                             m = -1
                             break
 
-                        if icond == m:
-                            block = block[icond + 1]
-                            if block:
-                                render_blocks_(block, rendered, md)
-
                         icond += 2
+
+                    if icond == m:
+                        block = block[icond + 1]
+                        if block:
+                            render_blocks_(block, rendered, md)
                 finally:
                     md._pop()
 
