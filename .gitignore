@@ -6,6 +6,7 @@ parts
 *.pyc
 *.pyo
 .installed.cfg
+.tox
 develop-eggs/
 eggs/
 *.egg-info/

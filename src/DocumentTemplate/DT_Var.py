@@ -154,7 +154,8 @@ import logging
 import re
 import string
 import sys
-from urllib import quote, quote_plus, unquote, unquote_plus
+
+from six.moves.urllib.parse import quote, quote_plus, unquote, unquote_plus
 
 from Acquisition import aq_base
 from AccessControl.tainted import TaintedString

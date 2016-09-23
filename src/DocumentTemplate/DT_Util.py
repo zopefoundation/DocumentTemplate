@@ -25,7 +25,7 @@ from RestrictedPython.Utilities import utility_builtins
 from RestrictedPython.Eval import RestrictionCapableEval
 from zExceptions import Unauthorized as ValidationError
 
-# for import by other modules, dont remove!
+# backwards compatibility
 from DocumentTemplate.html_quote import html_quote, ustr  # NOQA
 from DocumentTemplate._DocumentTemplate import (  # NOQA
     InstanceDict,
@@ -41,14 +41,13 @@ if 'test' not in utility_builtins:
     from RestrictedPython.Utilities import test
     utility_builtins['test'] = test
 
-test = utility_builtins['test']  # for backwards compatibility, dont remove!
+test = utility_builtins['test']  # backwards compatibility
 utility_builtins['sequence'] = sequence
 safe_builtins['sequence'] = sequence
 _safe_globals['sequence'] = sequence
 
 LIMITED_BUILTINS = 1
-
-str = __builtins__['str']  # Waaaaa, waaaaaaaa needed for pickling waaaaa
+str = str  # NOQA - backwards compatibility for pickling
 
 
 class ParseError(Exception):
@@ -74,7 +73,7 @@ class NotBindable:
     def __init__(self, f):
         self.__call__ = f
 
-for name, f in safe_builtins.items() + utility_builtins.items():
+for name, f in list(safe_builtins.items()) + list(utility_builtins.items()):
     if type(f) is functype:
         f = NotBindable(f)
     setattr(TemplateDict, name, f)

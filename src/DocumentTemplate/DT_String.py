@@ -13,20 +13,17 @@
 
 import os
 import re
-import sys
-import thread
+from threading import Lock
+
+import six
 
 from DocumentTemplate.DT_Util import ParseError, InstanceDict
-from DocumentTemplate.DT_Util import TemplateDict, render_blocks, str
+from DocumentTemplate.DT_Util import TemplateDict, render_blocks
 from DocumentTemplate.DT_Var import Var, Call, Comment
 from DocumentTemplate.DT_Return import ReturnTag, DTReturn
 
-
-PY3 = False
-if sys.version_info > (3, 0):
-    PY3 = True
-
 _marker = []  # Create a new marker object.
+COOKLOCK = Lock()
 
 
 class String(object):
@@ -53,13 +50,13 @@ class String(object):
     class func_code:
         pass
 
-    func_code = func_code()
-    func_code.co_varnames = 'self', 'REQUEST'
-    func_code.co_argcount = 2
-    func_code.__roles__ = ()
+    __code__ = func_code = func_code()
+    __code__.co_varnames = 'self', 'REQUEST'
+    __code__.co_argcount = 2
+    __code__.__roles__ = ()
 
-    func_defaults__roles__ = ()
-    func_defaults = ()
+    __defaults__ = func_defaults = ()
+    __defaults____roles__ = func_defaults__roles__ = ()
 
     errQuote__roles__ = ()
     def errQuote(self, s):
@@ -111,17 +108,10 @@ class String(object):
             cname, module, name = command
             d = {}
             try:
-                if PY3:
-                    exec('from %s import %s' % (module, name), d)
-                else:
-                    exec 'from %s import %s' % (module, name) in d
+                six.exec_('from %s import %s' % (module, name), d)
             except ImportError:
-                if PY3:
-                    exec('from DocumentTemplate.%s import %s' % (
-                        module, name), d)
-                else:
-                    exec 'from DocumentTemplate.%s import %s' % (
-                        module, name) in d
+                six.exec_('from DocumentTemplate.%s import %s' % (
+                    module, name), d)
             command = d[name]
             self.commands[cname] = command
         return tag, args, command, coname
@@ -379,14 +369,10 @@ class String(object):
         return self.read_raw()
 
     cook__roles__ = ()
-    def cook(self,
-             cooklock=thread.allocate_lock()):
-        cooklock.acquire()
-        try:
+    def cook(self):
+        with COOKLOCK:
             self._v_blocks = self.parse(self.read())
             self._v_cooked = None
-        finally:
-            cooklock.release()
 
     initvars__roles__ = ()
     def initvars(self, globals, vars):
@@ -577,7 +563,7 @@ class FileMixin(object):
         if self.edited_source:
             return self.edited_source
         if not os.path.exists(self.raw):
-            print 'file not found: %s' % self.raw
+            print('file not found: %s' % self.raw)
 
         if self.raw:
             return open(self.raw, 'r').read()

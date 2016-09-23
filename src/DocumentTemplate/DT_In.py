@@ -343,6 +343,9 @@ from DocumentTemplate.DT_InSV import sequence_variables, opt
 if sys.version_info > (3, 0):
     unicode = str
 
+    def cmp(a, b):
+        return (a > b) - (a < b)
+
 TupleType = tuple
 StringTypes = (str, unicode)
 
