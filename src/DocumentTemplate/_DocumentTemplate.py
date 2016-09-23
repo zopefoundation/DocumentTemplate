@@ -293,7 +293,7 @@ class InstanceDict(Base):
 
         if key[0] == '_':
             if key != '__str__':
-                raise KeyError(key)  # Don't divuldge private data
+                raise KeyError(key)  # Don't divulge private data
             else:
                 return str(self.inst)
 
@@ -385,7 +385,7 @@ class TemplateDict(Base):
         for e in reversed(self._data):
             try:
                 e = e[key]
-            except KeyError:
+            except (KeyError, NameError):
                 continue
 
             if call:
@@ -410,7 +410,7 @@ class TemplateDict(Base):
         for e in reversed(self._data):
             try:
                 e = e[key]
-            except KeyError:
+            except (KeyError, NameError):
                 continue
             return True
         return False
