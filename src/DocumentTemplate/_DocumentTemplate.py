@@ -108,7 +108,7 @@ import sys
 import types
 
 from Acquisition import aq_base
-from ExtensionClass import ExtensionClass
+from ExtensionClass import Base
 
 from DocumentTemplate.html_quote import html_quote
 from DocumentTemplate.ustr import ustr
@@ -256,15 +256,17 @@ def safe_callable(ob):
         if hasattr(ob, '__call__'):
             return True
         else:
-            if type(ob) in (types.ClassType, ExtensionClass):
+            if type(ob) in (types.ClassType, Base):
                 return True
             else:
                 return False
     return callable(ob)
 
 
-class InstanceDict(object):
+class InstanceDict(Base):
     """"""
+
+    guarded_getattr = None
 
     def __init__(self, inst, namespace, guarded_getattr=None):
         self.inst = inst
@@ -300,12 +302,12 @@ class InstanceDict(object):
             get = getattr
 
         try:
-            r = get(self.inst, key)
+            result = get(self.inst, key)
         except AttributeError:
             raise KeyError(key)
 
-        self.cache[key] = r
-        return r
+        self.cache[key] = result
+        return result
 
 
 class DictInstance(object):
@@ -318,10 +320,9 @@ class DictInstance(object):
             return self._data[name]
         except KeyError:
             raise AttributeError(name)
-        return object.__getattribute__(self, name)
 
 
-class TemplateDict(object):
+class TemplateDict(Base):
     """TemplateDict -- Combine multiple mapping objects for lookup
     """
 
@@ -355,11 +356,17 @@ class TemplateDict(object):
                 return self._dict[name]
             except KeyError:
                 pass
-        return object.__getattribute__(self, name)
+        return Base.__getattribute__(self, name)
+
+    def __delattr__(self, name):
+        if name in ('level', '_data', '_dict'):
+            del self.__dict__[name]
+        else:
+            del self._dict[name]
 
     def __setattr__(self, name, value):
         if name in ('level', '_data', '_dict'):
-            object.__setattr__(self, name, value)
+            self.__dict__[name] = value
         else:
             self._dict[name] = value
 
@@ -377,7 +384,7 @@ class TemplateDict(object):
         for e in reversed(self._data):
             try:
                 e = e[key]
-            except (KeyError, TypeError):
+            except KeyError:
                 continue
 
             if call:
@@ -401,7 +408,7 @@ class TemplateDict(object):
         for e in reversed(self._data):
             try:
                 e = e[key]
-            except (KeyError, TypeError):
+            except KeyError:
                 continue
             return True
         return False
@@ -413,7 +420,7 @@ class TemplateDict(object):
     def __call__(self, *args, **kw):
         l = len(args)
         if l:
-            r = self.__class__()
+            r = type(self)()
             for arg in args:
                 r._push(arg)
             if kw:
