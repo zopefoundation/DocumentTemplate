@@ -397,6 +397,7 @@ class TemplateDict(Base):
                         return e(None, self)
                     return e()
             return e
+        raise KeyError(key)
 
     def __len__(self):
         total = 0
