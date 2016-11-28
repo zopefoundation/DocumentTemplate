@@ -15,6 +15,7 @@
 
 import unittest
 
+
 class DTMLTests(unittest.TestCase):
 
     def _get_doc_class(self):
