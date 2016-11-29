@@ -6,5 +6,6 @@ __pycache__
 bin/
 build/
 develop-eggs/
+dist/
 eggs/
 .installed.cfg

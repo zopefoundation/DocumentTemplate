@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.13.3 (2016-11-29)
+-------------------
+
+- Ensure html_quote is being applied to content with null characters.
+
 2.13.2 (2011-12-12)
 -------------------
 
