@@ -182,7 +182,7 @@ def render_blocks_(blocks, rendered, md):
                 if (skip_html_quote == 0 and len(block) == 3):
                     # html_quote
                     if isinstance(t, str):
-                        if t in ('&', '<', '>', '"'):
+                        if ('&' in t or '<' in t or '>' in t or '"' in t):
                             # string includes html problem characters,
                             # so we cant skip the quoting process
                             skip_html_quote = 0

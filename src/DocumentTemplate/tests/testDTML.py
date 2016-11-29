@@ -15,6 +15,8 @@
 
 import unittest
 
+from DocumentTemplate.html_quote import html_quote
+
 
 class DTMLTests(unittest.TestCase):
 
@@ -220,6 +222,15 @@ class DTMLTests(unittest.TestCase):
         expected = '$42.00 bobs your unclespam%eggs!|'
         res = html(spam=42) + html(spam=None)
         self.assertEqual(res, expected)
+
+    def testSkipQuote(self):
+        methods = "html_quote",
+        a = '\0he>llo'
+        for method in methods:
+            html = self.doc_class('<dtml-var a %s>' % method)
+            expected = html_quote(a)
+            res = html(a=a)
+            self.assertEqual(res, expected)
 
     def testUrlUnquote(self):
         html1 = self.doc_class(

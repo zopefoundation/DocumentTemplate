@@ -4,6 +4,8 @@ Changelog
 3.0 (unreleased)
 ----------------
 
+- Ensure html_quote is being applied to content.
+
 - Replace C code with a pure-Python implementation.
 
 - Add `__contains__` support to DocumentTemplate.TemplateDict.
