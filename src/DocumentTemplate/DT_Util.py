@@ -65,6 +65,7 @@ def int_param(params, md, name, default=0, st=type('')):
                 v = int(v)
     return v or 0
 
+
 functype = type(int_param)
 
 
@@ -72,6 +73,7 @@ class NotBindable:
     # Used to prevent TemplateDict from trying to bind to functions.
     def __init__(self, f):
         self.__call__ = f
+
 
 for name, f in list(safe_builtins.items()) + list(utility_builtins.items()):
     if type(f) is functype:
@@ -122,6 +124,7 @@ class StringFunctionWrapper(object):
             retval = TaintedString(retval)
         return retval
 
+
 TemplateDict.string = StringModuleWrapper()
 TemplateDict.__allow_access_to_unprotected_subobjects__ = 1
 
@@ -155,6 +158,7 @@ def careful_hasattr(md, inst, name):
     else:
         return 1
 
+
 TemplateDict.getattr = careful_getattr
 TemplateDict.hasattr = careful_hasattr
 
@@ -169,6 +173,7 @@ def namespace(self, **kw):
         is not yet compatible with this version of Zope.  The traceback
         information may contain more details.)''')
     return self(**kw)
+
 
 TemplateDict.namespace = namespace
 
@@ -185,6 +190,7 @@ def render(self, v):
             else:
                 v = v()
     return v
+
 
 TemplateDict.render = render
 
@@ -223,6 +229,7 @@ class Eval(RestrictionCapableEval):
         md = TemplateDict()
         md._push(kw)
         return self.eval(md)
+
 
 simple_name = re.compile('[a-z][a-z0-9_]*', re.I).match
 
@@ -299,6 +306,7 @@ def name_param(params, tag='', expr=0, attr='name', default_unnamed=1):
         return (name, expr)
 
     raise ParseError('No %s given' % attr, tag)
+
 
 Expr_doc = """
 

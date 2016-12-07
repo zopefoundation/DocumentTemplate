@@ -115,6 +115,7 @@ class Tree(object):
 
     __call__ = render
 
+
 String.commands['tree'] = Tree
 
 pyid = id  # Copy builtin
@@ -772,36 +773,3 @@ class MiniUnpickler(pickle.Unpickler):
                 pass
     del k
     del v
-
-
-def _should_succeed(x, binary=1):
-    if x != MiniUnpickler(StringIO(pickle.dumps(x, binary))).load():
-        raise ValueError(x)
-
-
-def _should_fail(x, binary=1):
-    try:
-        MiniUnpickler(StringIO(pickle.dumps(x, binary))).load()
-        raise ValueError(x)
-    except pickle.UnpicklingError as e:
-        if e[0] != 'Refused':
-            raise ValueError(x)
-
-
-class _junk_class(object):
-    pass
-
-
-def _test():
-    _should_succeed('hello')
-    _should_succeed(1)
-    _should_succeed(1.0)
-    _should_succeed((1, 2, 3))
-    _should_succeed([1, 2, 3])
-    _should_succeed({1: 2, 3: 4})
-    _should_fail(open)
-    _should_fail(_junk_class)
-    _should_fail(_junk_class())
-
-# Test MiniPickle on every import
-_test()

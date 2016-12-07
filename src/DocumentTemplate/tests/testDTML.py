@@ -314,15 +314,18 @@ foo bar
             class testob(Base):
 
                 __roles__ = None  # Public
+
                 def __init__(self, index):
                     self.index = index
                     self.value = 'item %s' % index
 
                 getValue__roles__ = None  # Public
+
                 def getValue(self):
                     return self.value
 
                 puke__roles__ = None  # Public
+
                 def puke(self):
                     raise PukeError('raaalf')
 
@@ -573,6 +576,7 @@ class Dummy(object):
 
     def __repr__(self):
         return "Dummy(%r)" % self.__dict__
+
 
 docutils_include_warning = (
     '<p class="system-message-title">System Message: WARNING/2 '

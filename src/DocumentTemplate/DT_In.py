@@ -361,6 +361,7 @@ class InFactory(object):
         else:
             return i.renderwob
 
+
 In = InFactory()
 
 
@@ -868,6 +869,7 @@ def int_param(params, md, name, default=0, st=type('')):
 
 def nocase(str1, str2):
     return cmp(str1.lower(), str2.lower())
+
 
 if 'locale' in sys.modules:  # only if locale is already imported
     from locale import strcoll

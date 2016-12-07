@@ -133,6 +133,7 @@ from AccessControl.SimpleObjectPolicies import ContainerAssertions  # NOQA
 class _dummy_class(object):
     pass
 
+
 templateDict = DT_Util.TemplateDict()
 try:
     dictInstance = templateDict(dummy=1)[0]

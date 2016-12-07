@@ -538,6 +538,7 @@ def spacify(val):
         val = val.replace('_', ' ')
     return val
 
+
 modifiers = (
     html_quote, url_quote, url_quote_plus, url_unquote,
     url_unquote_plus, newline_to_br,
