@@ -1,8 +1,8 @@
 Changelog
 =========
 
-3.0 (unreleased)
-----------------
+3.0a1 (2017-01-19)
+------------------
 
 - Ensure html_quote is being applied to content.
 

@@ -15,7 +15,7 @@
 from setuptools import setup, find_packages
 
 setup(name='DocumentTemplate',
-      version='3.0.dev0',
+      version='3.0a1',
       url='http://pypi.python.org/pypi/DocumentTemplate',
       license='ZPL 2.1',
       description="Document Templating Markup Language (DTML)",
