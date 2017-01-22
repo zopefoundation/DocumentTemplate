@@ -1,11 +1,11 @@
 language: python
 sudo: false
 python:
-    - 2.7
-    # - 3.3
-    # - 3.4
-    # - 3.5
-    # - pypy
+    - "2.7"
+    - "3.4"
+    - "3.5"
+    - "3.6"
+    - "pypy"
 install:
     - pip install zc.buildout
     - buildout bootstrap
