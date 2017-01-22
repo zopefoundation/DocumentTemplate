@@ -18,9 +18,8 @@ class standard_html:  # Base class for using with ZTemplates
 
 
 def test(s):
-    outfile = open("test.out", 'w')
-    outfile.write(s)
-    outfile.close()
+    with open("test.out", 'w') as outfile:
+        outfile.write(s)
 
 
 def exception():
@@ -28,9 +27,8 @@ def exception():
     import traceback
     exc_type, exc_value, exc_tb = sys.exc_info()
 
-    outfile = open("test.err", 'w')
-    traceback.print_exception(exc_type, exc_value, exc_tb, None, outfile)
-    outfile.close()
+    with open("test.err", 'w') as outfile:
+        traceback.print_exception(exc_type, exc_value, exc_tb, None, outfile)
 
 
 wordlist = [

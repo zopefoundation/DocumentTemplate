@@ -36,6 +36,7 @@ class ReturnTag(object):
     __call__ = render
 
 
-class DTReturn(object):
+class DTReturn(Exception):
+
     def __init__(self, v):
         self.v = v

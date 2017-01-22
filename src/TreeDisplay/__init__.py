@@ -11,4 +11,4 @@
 #
 ##############################################################################
 
-import TreeTag  # NOQA
+from TreeDisplay import TreeTag  # NOQA

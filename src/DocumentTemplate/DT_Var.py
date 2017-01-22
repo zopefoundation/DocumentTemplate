@@ -152,7 +152,6 @@ Evaluating expressions without rendering results
 
 import logging
 import re
-import string
 import sys
 
 from six.moves.urllib.parse import quote, quote_plus, unquote, unquote_plus
@@ -533,6 +532,18 @@ special_formats = {
 }
 
 
+def lower(val):
+    return val.lower()
+
+
+def upper(val):
+    return val.upper()
+
+
+def capitalize(val):
+    return val.capitalize()
+
+
 def spacify(val):
     if val.find('_') >= 0:
         val = val.replace('_', ' ')
@@ -542,7 +553,7 @@ def spacify(val):
 modifiers = (
     html_quote, url_quote, url_quote_plus, url_unquote,
     url_unquote_plus, newline_to_br,
-    string.lower, string.upper, string.capitalize, spacify,
+    lower, upper, capitalize, spacify,
     thousands_commas, sql_quote, url_unquote, url_unquote_plus,
 )
 modifiers = map(lambda f: (f.__name__, f), modifiers)

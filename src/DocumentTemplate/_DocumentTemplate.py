@@ -116,6 +116,9 @@ from DocumentTemplate.ustr import ustr
 if sys.version_info > (3, 0):
     basestring = str
     unicode = str
+    classtype = type
+else:
+    classtype = types.ClassType
 
 _marker = object()
 
@@ -256,7 +259,7 @@ def safe_callable(ob):
         if hasattr(ob, '__call__'):
             return True
         else:
-            if type(ob) in (types.ClassType, Base):
+            if type(ob) in (classtype, Base):
                 return True
             else:
                 return False
