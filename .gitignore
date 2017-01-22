@@ -1,4 +1,7 @@
 bin
+build
+coverage
+develop
 dist
 lib
 parts
@@ -6,6 +9,7 @@ parts
 *.pyc
 *.pyo
 .installed.cfg
+.mr.developer.cfg
 .tox
 develop-eggs/
 eggs/

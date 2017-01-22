@@ -14,15 +14,22 @@
 
 from setuptools import setup, find_packages
 
+with open('README.rst') as f:
+    README = f.read()
+
+with open('CHANGES.rst') as f:
+    CHANGES = f.read()
+
+__version__ = '3.0.dev0'
+
 setup(name='DocumentTemplate',
-      version='3.0.dev0',
+      version=__version__,
       url='http://pypi.python.org/pypi/DocumentTemplate',
       license='ZPL 2.1',
       description="Document Templating Markup Language (DTML)",
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
-      long_description=(open('README.rst').read() + '\n' +
-                        open('CHANGES.rst').read()),
+      long_description='\n\n'.join([README, CHANGES]),
       packages=find_packages('src'),
       package_dir={'': 'src'},
       classifiers=[
