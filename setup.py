@@ -15,31 +15,44 @@
 from os.path import join
 from setuptools import setup, find_packages, Extension
 
+__version__ = '2.13.4.dev0'
+
 setup(name='DocumentTemplate',
-      version = '2.13.4.dev',
+      version=__version__,
       url='http://pypi.python.org/pypi/DocumentTemplate',
       license='ZPL 2.1',
       description="Document Templating Markup Language (DTML)",
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
-      long_description=open('README.txt').read() + '\n' +
-                       open('CHANGES.txt').read(),
+      long_description=(open('README.txt').read() + '\n' +
+                        open('CHANGES.txt').read()),
       packages=find_packages('src'),
       package_dir={'': 'src'},
       ext_modules=[Extension(
-            name='DocumentTemplate.cDocumentTemplate',
-            include_dirs=['include', 'src'],
-            sources=[join('src', 'DocumentTemplate', 'cDocumentTemplate.c')],
-            depends=[join('include', 'ExtensionClass', 'ExtensionClass.h')]),
+          name='DocumentTemplate.cDocumentTemplate',
+          include_dirs=['include', 'src'],
+          sources=[join('src', 'DocumentTemplate', 'cDocumentTemplate.c')],
+          depends=[join('include', 'ExtensionClass', 'ExtensionClass.h')]),
+      ],
+      classifiers=[
+          "Development Status :: 6 - Mature",
+          "Environment :: Web Environment",
+          "Framework :: Zope2",
+          "License :: OSI Approved :: Zope Public License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 2",
+          "Programming Language :: Python :: 2.7",
+          "Programming Language :: Python :: Implementation :: CPython",
       ],
       install_requires=[
-        'AccessControl',
-        'Acquisition',
-        'ExtensionClass',
-        'RestrictedPython',
-        'zExceptions',
-        'zope.sequencesort',
-        'zope.structuredtext',
+          'AccessControl',
+          'Acquisition',
+          'ExtensionClass',
+          'RestrictedPython',
+          'zExceptions',
+          'zope.sequencesort',
+          'zope.structuredtext',
       ],
       include_package_data=True,
       zip_safe=False,
