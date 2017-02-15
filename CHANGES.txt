@@ -4,6 +4,7 @@ Changelog
 2.13.4 (unreleased)
 -------------------
 
+- Switch TreeTag to use JSON to encode tree state.
 
 2.13.3 (2016-11-29)
 -------------------

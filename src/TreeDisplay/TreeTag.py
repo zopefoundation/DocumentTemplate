@@ -15,10 +15,9 @@
 
 from binascii import a2b_base64
 from binascii import b2a_base64
-from cPickle import dumps
-from string import translate
-from zlib import compress
-from zlib import decompressobj
+import json
+import sys
+import zlib
 
 from DocumentTemplate.DT_Util import add_with_prefix
 from DocumentTemplate.DT_Util import Eval
@@ -31,13 +30,14 @@ from DocumentTemplate.DT_Util import simple_name
 from DocumentTemplate.DT_String import String
 
 tbl = ''.join(map(chr, range(256)))
-tplus = tbl[:ord('+')]+'-'+tbl[ord('+')+1:]
-tminus = tbl[:ord('-')]+'+'+tbl[ord('-')+1:]
+tplus = tbl[:ord('+')] + b'-' + tbl[ord('+') + 1:]
+tminus = tbl[:ord('-')] + b'+' + tbl[ord('-') + 1:]
+
 
 class Tree:
-    name='tree'
-    blockContinuations=()
-    expand=None
+    name = 'tree'
+    blockContinuations = ()
+    expand = None
 
     def __init__(self, blocks):
         tname, args, section = blocks[0]
@@ -358,13 +358,15 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
 
             ####################################
             # Mostly inline encode_seq for speed
-            s=compress(dumps(diff,1))
-            if len(s) > 57: s=encode_str(s)
+            s = compress(json.dumps(diff))
+            if len(s) > 57:
+                s = encode_str(s)
             else:
-                s=b2a_base64(s)[:-1]
-                l=s.find('=')
-                if l >= 0: s=s[:l]
-            s=translate(s, tplus)
+                s = b2a_base64(s)[:-1]
+                l = s.find('=')
+                if l >= 0:
+                    s = s[:l]
+            s = s.translate(tplus)
             ####################################
 
             script=md['BASEPATH1']
@@ -551,21 +553,24 @@ def apply_diff(state, diff, expand):
 
 def encode_seq(state):
     "Convert a sequence to an encoded string"
-    state=compress(dumps(state))
-    l=len(state)
+    state = compress(json.dumps(state))
+    l = len(state)
 
     if l > 57:
-        states=[]
-        for i in range(0,l,57):
-            states.append(b2a_base64(state[i:i+57])[:-1])
-        state=''.join(states)
-    else: state=b2a_base64(state)[:-1]
+        states = []
+        for i in range(0, l, 57):
+            states.append(b2a_base64(state[i:i + 57])[:-1])
+        state = b''.join(states)
+    else:
+        state = b2a_base64(state)[:-1]
 
-    l=state.find('=')
-    if l >= 0: state=state[:l]
+    l = state.find(b'=')
+    if l >= 0:
+        state = state[:l]
 
-    state=translate(state, tplus)
+    state = state.translate(tplus)
     return state
+
 
 def encode_str(state):
     "Convert a sequence to an encoded string"
@@ -581,19 +586,20 @@ def encode_str(state):
     l=state.find('=')
     if l >= 0: state=state[:l]
 
-    state=translate(state, tplus)
+    state = state.translate(tplus)
     return state
+
 
 def decode_seq(state):
     "Convert an encoded string to a sequence"
-    state=translate(state, tminus)
-    l=len(state)
+    state = state.translate(tminus)
+    l = len(state)
 
     if l > 76:
-        states=[]
-        j=0
-        for i in range(l/76):
-            k=j+76
+        states = []
+        j = 0
+        for i in range(l // 76):
+            k = j + 76
             states.append(a2b_base64(state[j:k]))
             j=k
 
@@ -610,21 +616,20 @@ def decode_seq(state):
         if k: state=state+'='*(4-k)
         state=a2b_base64(state)
 
-    state=decompress(state)
-    try: return list(MiniUnpickler(StringIO(state)).load())
-    except: return []
+    state = decompress(state)
+    try:
+        return json.loads(state)
+    except Exception:
+        return []
 
-def decompress(input,max_size=10240):
-    # This sillyness can go away in python 2.2
-    d = decompressobj()
-    output = ''
-    while input:
-        fragment_size = max(1,(max_size-len(output))/1000)
-        fragment,input = input[:fragment_size],input[fragment_size:]
-        output += d.decompress(fragment)
-        if len(output)>max_size:
-            raise ValueError('Compressed input too large')
-    return output+d.flush()
+
+def compress(input):
+    return zlib.compress(input.encode('utf-8'))
+
+
+def decompress(input):
+    return zlib.decompress(input).decode('utf-8')
+
 
 def tpStateLevel(state, level=0):
     for sub in state:
@@ -665,79 +670,3 @@ def tpValuesIds(self, get_items, args,
 
 def oid(self):
     return b2a_base64(str(self._p_oid))[:-1]
-
-
-#icoSpace='<IMG SRC="Blank_icon" BORDER="0">'
-#icoPlus ='<IMG SRC="Plus_icon" BORDER="0">'
-#icoMinus='<IMG SRC="Minus_icon" BORDER="0">'
-
-
-
-
-
-###############################################################################
-## Everthing below here should go in a MiniPickle.py module, but keeping it
-## internal makes an easier patch
-
-
-import pickle
-from cStringIO import StringIO
-
-
-if pickle.format_version!="2.0":
-    # Maybe the format changed, and opened a security hole
-    raise 'Invalid pickle version'
-
-
-class MiniUnpickler(pickle.Unpickler):
-    """An unpickler that can only handle simple types.
-    """
-    def refuse_to_unpickle(self):
-        raise pickle.UnpicklingError, 'Refused'
-
-    dispatch = pickle.Unpickler.dispatch.copy()
-
-    for k,v in dispatch.items():
-        if k=='' or k in '().012FGIJKLMNTUVXS]adeghjlpqrstu}':
-            # This key is necessary and safe, so leave it in the map
-            pass
-        else:
-            dispatch[k] = refuse_to_unpickle
-            # Anything unnecessary is banned, but here is some logic to explain why
-            if k in [pickle.GLOBAL, pickle.OBJ, pickle.INST, pickle.REDUCE, pickle.BUILD]:
-                # These are definite security holes
-                pass
-            elif k in [pickle.PERSID, pickle.BINPERSID]:
-                # These are just unnecessary
-                pass
-    del k
-    del v
-
-def _should_succeed(x,binary=1):
-    if x != MiniUnpickler(StringIO(pickle.dumps(x,binary))).load():
-        raise ValueError(x)
-
-def _should_fail(x,binary=1):
-    try:
-        MiniUnpickler(StringIO(pickle.dumps(x,binary))).load()
-        raise ValueError(x)
-    except pickle.UnpicklingError, e:
-        if e[0]!='Refused': raise ValueError(x)
-
-class _junk_class:
-    pass
-
-def _test():
-    _should_succeed('hello')
-    _should_succeed(1)
-    _should_succeed(1L)
-    _should_succeed(1.0)
-    _should_succeed((1,2,3))
-    _should_succeed([1,2,3])
-    _should_succeed({1:2,3:4})
-    _should_fail(open)
-    _should_fail(_junk_class)
-    _should_fail(_junk_class())
-
-# Test MiniPickle on every import
-_test()

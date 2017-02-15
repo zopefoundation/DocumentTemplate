@@ -11,4 +11,13 @@
 #
 ##############################################################################
 
-from TreeDisplay import TreeTag  # NOQA
+import unittest
+
+from TreeDisplay import TreeTag
+
+
+class TestTreeTag(unittest.TestCase):
+
+    def test_encode_decode_seq(self):
+        state = [['AAAAAAAAAAE=', [['AAAAAAAAAAY=']]]]
+        self.assertEqual(TreeTag.decode_seq(TreeTag.encode_seq(state)), state)
