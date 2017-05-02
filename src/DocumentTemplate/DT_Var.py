@@ -154,6 +154,7 @@ import logging
 import re
 import sys
 
+import six
 from six.moves.urllib.parse import quote, quote_plus, unquote, unquote_plus
 
 from Acquisition import aq_base
@@ -359,34 +360,42 @@ class Call(object):
 
 
 def url_quote(v, name='(Unknown name)', md={}):
-    if isinstance(v, unicode):
+    if six.PY2 and isinstance(v, unicode):
         # quote does not handle unicode. Encoding to a "safe"
         # intermediate encoding before quoting, then unencoding the result.
-        return quote(v.encode('utf-8')).decode('UTF-8')
+        return quote(v.encode('utf-8')).decode('utf-8')
+    elif six.PY3 and isinstance(v, bytes):
+        return quote(v.decode('utf-8')).encode('utf-8')
     return quote(str(v))
 
 
 def url_quote_plus(v, name='(Unknown name)', md={}):
-    if isinstance(v, unicode):
+    if six.PY2 and isinstance(v, unicode):
         # quote_plus does not handle unicode. Encoding to a "safe"
         # intermediate encoding before quoting, then unencoding the result.
-        return quote_plus(v.encode('utf-8')).decode('UTF-8')
+        return quote_plus(v.encode('utf-8')).decode('utf-8')
+    elif six.PY3 and isinstance(v, bytes):
+        return quote_plus(v.decode('utf-8')).encode('utf-8')
     return quote_plus(str(v))
 
 
 def url_unquote(v, name='(Unknown name)', md={}):
-    if isinstance(v, unicode):
+    if six.PY2 and isinstance(v, unicode):
         # unquote does not handle unicode. Encoding to a "safe"
         # intermediate encoding before quoting, then unencoding the result.
-        return unquote(v.encode('utf-8')).decode('UTF-8')
+        return unquote(v.encode('utf-8')).decode('utf-8')
+    elif six.PY3 and isinstance(v, bytes):
+        return unquote(v.decode('utf-8')).encode('utf-8')
     return unquote(str(v))
 
 
 def url_unquote_plus(v, name='(Unknown name)', md={}):
-    if isinstance(v, unicode):
+    if six.PY2 and isinstance(v, unicode):
         # unquote_plus does not handle unicode. Encoding to a "safe"
         # intermediate encoding before quoting, then unencoding the result.
-        return unquote_plus(v.encode('utf-8')).decode('UTF-8')
+        return unquote_plus(v.encode('utf-8')).decode('utf-8')
+    elif six.PY3 and isinstance(v, bytes):
+        return unquote_plus(v.decode('utf-8')).encode('utf-8')
     return unquote_plus(str(v))
 
 
@@ -556,7 +565,7 @@ modifiers = (
     lower, upper, capitalize, spacify,
     thousands_commas, sql_quote, url_unquote, url_unquote_plus,
 )
-modifiers = map(lambda f: (f.__name__, f), modifiers)
+modifiers = list(map(lambda f: (f.__name__, f), modifiers))
 
 
 class Comment(object):

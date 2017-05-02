@@ -70,7 +70,7 @@ class TestUrlQuoting(unittest.TestCase):
         unicode_value = u'G\xfcnther M\xfcller'
         quoted_unicode_value = u'G%C3%BCnther%20M%C3%BCller'
         utf8_value = unicode_value.encode('UTF-8')
-        quoted_utf8_value = 'G%C3%BCnther%20M%C3%BCller'
+        quoted_utf8_value = b'G%C3%BCnther%20M%C3%BCller'
 
         self.assertEquals(url_quote(unicode_value), quoted_unicode_value)
         self.assertEquals(url_quote(utf8_value), quoted_utf8_value)
@@ -84,7 +84,7 @@ class TestUrlQuoting(unittest.TestCase):
         unicode_value = u'G\xfcnther M\xfcller'
         quoted_unicode_value = u'G%C3%BCnther+M%C3%BCller'
         utf8_value = unicode_value.encode('UTF-8')
-        quoted_utf8_value = 'G%C3%BCnther+M%C3%BCller'
+        quoted_utf8_value = b'G%C3%BCnther+M%C3%BCller'
 
         self.assertEquals(url_quote_plus(unicode_value), quoted_unicode_value)
         self.assertEquals(url_quote_plus(utf8_value), quoted_utf8_value)

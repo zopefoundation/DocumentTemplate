@@ -275,19 +275,18 @@ class sequence_variables(object):
             if count == 1:
                 data['median-%s' % name] = min
             else:
-                n = count + 1
-                if n / 2 * 2 == n:
-                    data['median-%s' % name] = values[n / 2 - 1]
+                if count % 2 != 0:
+                    data['median-%s' % name] = values[count // 2]
                 else:
-                    n = n / 2
+                    half = count // 2
                     try:
-                        data['median-%s' % name] = (values[n] +
-                                                    values[n - 1]) / 2
+                        data['median-%s' % name] = (values[half] +
+                                                    values[half - 1]) // 2
                     except Exception:
                         try:
                             data['median-%s' % name] = (
-                                "between %s and %s" % (values[n],
-                                                       values[n - 1]))
+                                "between %s and %s" % (values[half],
+                                                       values[half - 1]))
                         except Exception:
                             pass
 

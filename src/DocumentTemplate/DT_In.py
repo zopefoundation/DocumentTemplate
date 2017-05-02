@@ -777,7 +777,7 @@ class InClass(object):
 
             # clean the mess a bit
             if multsort:  # More than one sort key.
-                sortfields = map(lambda x: x[0], sf_list)
+                sortfields = tuple(map(lambda x: x[0], sf_list))
             else:
                 sort = sf_list[0][0]
 
