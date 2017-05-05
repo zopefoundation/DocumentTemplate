@@ -6,12 +6,15 @@ python:
     - 3.5
     - 3.6
 install:
-    - pip install -U setuptools==33.1.1
+    - pip install -U setuptools==33.1.1 coveralls coverage
     - pip install zc.buildout
     - buildout bootstrap
     - buildout
 script:
-    - bin/test -v1
+    - coverage run bin/test -v1
+after_success:
+    - coverage combine
+    - coveralls
 notifications:
     email: false
 cache:
