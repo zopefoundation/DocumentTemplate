@@ -1,10 +1,10 @@
 Changelog
 =========
 
-3.0 (unreleased)
-----------------
+3.0a2 (unreleased)
+------------------
 
-
+- Add support for Python 3.4 up to 3.6.
 
 3.0a1 (2017-01-19)
 ------------------
@@ -14,8 +14,6 @@ Changelog
 - Replace C code with a pure-Python implementation.
 
 - Add `__contains__` support to DocumentTemplate.TemplateDict.
-
-- Modernised C code in preparation of porting to Python 3.
 
 2.13.2 (2011-12-12)
 -------------------
