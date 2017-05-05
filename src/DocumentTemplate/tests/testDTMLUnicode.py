@@ -12,10 +12,11 @@
 ##############################################################################
 """Document Template Tests
 """
-import sys
 import unittest
 
-if sys.version_info > (3, 0):
+import six
+
+if six.PY3:
     unichr = chr
 
 
@@ -85,7 +86,11 @@ class DTMLUnicodeTests(unittest.TestCase):
         self.assertEqual(res, expected)
 
     def testSize(self):
-        html = self.doc_class('<dtml-var "_.unichr(200)*4" size=2>')
-        expected = unichr(200) * 2 + '...'
+        if six.PY3:
+            html = self.doc_class('<dtml-var "_.chr(200)*4" size=2>')
+            expected = chr(200) * 2 + '...'
+        else:
+            html = self.doc_class('<dtml-var "_.unichr(200)*4" size=2>')
+            expected = unichr(200) * 2 + '...'
         res = html()
         self.assertEqual(res, expected)

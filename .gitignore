@@ -3,14 +3,17 @@ build
 coverage
 develop
 dist
+htmlcov
 lib
 parts
 
+*.egg-info/
 *.pyc
 *.pyo
+.coverage
 .installed.cfg
 .mr.developer.cfg
 .tox
 develop-eggs/
 eggs/
-*.egg-info/
+coverage.xml

@@ -95,15 +95,15 @@ class SecurityTests(DTMLTests):
         <dtml-var expr="_.max([2,3])">
         <dtml-var expr="_.sum([1,2,3,4])">
         <dtml-var expr="_.hasattr(1, 'foo') and 'Yes' or 'No'">
-        <dtml-var expr="_.None">
-        <dtml-var expr="_.string.strip(' testing ')">
+        <dtml-var expr="None">
+        <dtml-var expr="_.string.capwords('i am testing.')">
         <dtml-var expr="[x for x in (1, 2, 3)]">
         """
 
-        EXPECTED = ['1', '3', '10', 'No', 'None', 'testing', '[1, 2, 3]']
+        EXPECTED = ['1', '3', '10', 'No', 'None', 'I Am Testing.', '[1, 2, 3]']
 
         template = self.doc_class(NEW_BUILTINS_TEMPLATE)
         res = template()
-        lines = filter(None, [x.strip() for x in res.split('\n')])
+        lines = list(filter(None, [x.strip() for x in res.split('\n')]))
 
         self.assertEqual(lines, EXPECTED)

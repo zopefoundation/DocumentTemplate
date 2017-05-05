@@ -69,10 +69,13 @@ def int_param(params, md, name, default=0, st=type('')):
 functype = type(int_param)
 
 
-class NotBindable:
+class NotBindable(object):
     # Used to prevent TemplateDict from trying to bind to functions.
     def __init__(self, f):
-        self.__call__ = f
+        self._func = f
+
+    def __call__(self, *args, **kw):
+        return self._func(*args, **kw)
 
 
 for name, f in list(safe_builtins.items()) + list(utility_builtins.items()):

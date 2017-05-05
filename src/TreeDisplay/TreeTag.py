@@ -15,11 +15,9 @@
 
 from binascii import a2b_base64
 from binascii import b2a_base64
-from cPickle import dumps
-from string import translate
+import json
 import sys
-from zlib import compress
-from zlib import decompressobj
+import zlib
 
 from DocumentTemplate.DT_Util import add_with_prefix
 from DocumentTemplate.DT_Util import Eval
@@ -32,12 +30,14 @@ from DocumentTemplate.DT_Util import simple_name
 from DocumentTemplate.DT_Util import ValidationError
 from DocumentTemplate.DT_String import String
 
-tbl = ''.join(map(chr, range(256)))
-tplus = tbl[:ord('+')] + '-' + tbl[ord('+') + 1:]
-tminus = tbl[:ord('-')] + '+' + tbl[ord('-') + 1:]
-
 if sys.version_info > (3, 0):
     unicode = str
+    tbl = b''.join([chr(i).encode('latin-1') for i in range(256)])
+else:
+    tbl = b''.join([chr(i) for i in range(256)])
+
+tplus = tbl[:ord('+')] + b'-' + tbl[ord('+') + 1:]
+tminus = tbl[:ord('-')] + b'+' + tbl[ord('-') + 1:]
 
 
 class Tree(object):
@@ -377,7 +377,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
 
             ####################################
             # Mostly inline encode_seq for speed
-            s = compress(dumps(diff, 1))
+            s = compress(json.dumps(diff))
             if len(s) > 57:
                 s = encode_str(s)
             else:
@@ -385,7 +385,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                 l = s.find('=')
                 if l >= 0:
                     s = s[:l]
-            s = translate(s, tplus)
+            s = s.translate(tplus)
             ####################################
 
             script = md['BASEPATH1']
@@ -598,22 +598,22 @@ def apply_diff(state, diff, expand):
 
 def encode_seq(state):
     "Convert a sequence to an encoded string"
-    state = compress(dumps(state))
+    state = compress(json.dumps(state))
     l = len(state)
 
     if l > 57:
         states = []
         for i in range(0, l, 57):
             states.append(b2a_base64(state[i:i + 57])[:-1])
-        state = ''.join(states)
+        state = b''.join(states)
     else:
         state = b2a_base64(state)[:-1]
 
-    l = state.find('=')
+    l = state.find(b'=')
     if l >= 0:
         state = state[:l]
 
-    state = translate(state, tplus)
+    state = state.translate(tplus)
     return state
 
 
@@ -633,19 +633,19 @@ def encode_str(state):
     if l >= 0:
         state = state[:l]
 
-    state = translate(state, tplus)
+    state = state.translate(tplus)
     return state
 
 
 def decode_seq(state):
     "Convert an encoded string to a sequence"
-    state = translate(state, tminus)
+    state = state.translate(tminus)
     l = len(state)
 
     if l > 76:
         states = []
         j = 0
-        for i in range(l / 76):
+        for i in range(l // 76):
             k = j + 76
             states.append(a2b_base64(state[j:k]))
             j = k
@@ -667,22 +667,17 @@ def decode_seq(state):
 
     state = decompress(state)
     try:
-        return list(MiniUnpickler(StringIO(state)).load())
+        return json.loads(state)
     except Exception:
         return []
 
 
-def decompress(input, max_size=10240):
-    # This sillyness can go away in python 2.2
-    d = decompressobj()
-    output = ''
-    while input:
-        fragment_size = max(1, (max_size - len(output)) / 1000)
-        fragment, input = input[:fragment_size], input[fragment_size:]
-        output += d.decompress(fragment)
-        if len(output) > max_size:
-            raise ValueError('Compressed input too large')
-    return output + d.flush()
+def compress(input):
+    return zlib.compress(input.encode('utf-8'))
+
+
+def decompress(input):
+    return zlib.decompress(input).decode('utf-8')
 
 
 def tpStateLevel(state, level=0):
@@ -735,41 +730,3 @@ def tpValuesIds(self, get_items, args,
 
 def oid(self):
     return b2a_base64(str(self._p_oid))[:-1]
-
-# Everthing below here should go in a MiniPickle.py module, but keeping it
-# internal makes an easier patch
-
-import pickle  # NOQA
-from cStringIO import StringIO  # NOQA
-
-if pickle.format_version != "2.0":
-    # Maybe the format changed, and opened a security hole
-    raise RuntimeError('Invalid pickle version')
-
-
-class MiniUnpickler(pickle.Unpickler):
-    """An unpickler that can only handle simple types.
-    """
-
-    def refuse_to_unpickle(self):
-        raise pickle.UnpicklingError('Refused')
-
-    dispatch = pickle.Unpickler.dispatch.copy()
-
-    for k, v in dispatch.items():
-        if k == '' or k in '().012FGIJKLMNTUVXS]adeghjlpqrstu}':
-            # This key is necessary and safe, so leave it in the map
-            pass
-        else:
-            dispatch[k] = refuse_to_unpickle
-            # Anything unnecessary is banned,
-            # but here is some logic to explain why
-            if k in [pickle.GLOBAL, pickle.OBJ, pickle.INST,
-                     pickle.REDUCE, pickle.BUILD]:
-                # These are definite security holes
-                pass
-            elif k in [pickle.PERSID, pickle.BINPERSID]:
-                # These are just unnecessary
-                pass
-    del k
-    del v

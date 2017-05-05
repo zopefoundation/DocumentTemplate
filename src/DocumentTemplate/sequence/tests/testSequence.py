@@ -11,6 +11,7 @@
 #
 ##############################################################################
 
+import sys
 import unittest
 
 from DocumentTemplate.sequence.SortEx import SortEx
@@ -29,7 +30,9 @@ from DocumentTemplate.sequence.tests.results import (
 class TestCase(unittest.TestCase):
 
     def test1(self):
-        self.assertEqual(res1, SortEx(wordlist))
+        if sys.version_info < (3, 0):
+            # There is no sort order defined for dictionaries.
+            self.assertEqual(res1, SortEx(wordlist))
 
     def test2(self):
         self.assertEqual(res2, SortEx(wordlist, (("key",),), mapping=1))

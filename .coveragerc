@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = DocumentTemplate
+
+[report]
+precision = 3
