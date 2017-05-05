@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0a2 (unreleased)
+3.0a2 (2017-05-05)
 ------------------
 
 - Add support for Python 3.4 up to 3.6.

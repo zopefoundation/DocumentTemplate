@@ -21,7 +21,7 @@ with open('CHANGES.rst') as f:
     CHANGES = f.read()
 
 setup(name='DocumentTemplate',
-      version='3.0a2.dev0',
+      version='3.0a2',
       url='http://pypi.python.org/pypi/DocumentTemplate',
       license='ZPL 2.1',
       description="Document Templating Markup Language (DTML)",
