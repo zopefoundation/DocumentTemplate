@@ -562,9 +562,8 @@ def read_file(name):
     import os
     from DocumentTemplate import tests
     here = tests.__path__[0]
-    f = open(os.path.join(here, name), 'r')
-    res = f.read()
-    f.close()
+    with open(os.path.join(here, name), 'r') as fd:
+        res = fd.read()
     return res
 
 

@@ -566,7 +566,9 @@ class FileMixin(object):
             print('file not found: %s' % self.raw)
 
         if self.raw:
-            return open(self.raw, 'r').read()
+            with open(self.raw, 'r') as fd:
+                raw = fd.read()
+            return raw
         return ''
 
 
