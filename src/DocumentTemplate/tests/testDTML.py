@@ -17,6 +17,11 @@ import unittest
 
 from DocumentTemplate.html_quote import html_quote
 
+try:
+    from html import escape
+except ImportError:  # PY2
+    from cgi import escape
+
 
 class DTMLTests(unittest.TestCase):
 
@@ -519,7 +524,6 @@ class RESTTests(DTMLTests):
         self.assert_(docutils_include_warning in result)
 
     def test_fmt_reST_raw_directive_disabled(self):
-        from cgi import escape
         EXPECTED = '<h1>HELLO WORLD</h1>'
         source = '.. raw:: html\n\n  %s\n' % EXPECTED
         html = self.doc_class('<dtml-var name="foo" fmt="restructured-text">')

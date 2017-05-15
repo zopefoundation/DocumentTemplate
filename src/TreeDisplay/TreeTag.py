@@ -16,8 +16,9 @@
 from binascii import a2b_base64
 from binascii import b2a_base64
 import json
-import sys
 import zlib
+
+from six import PY3
 
 from DocumentTemplate.DT_Util import add_with_prefix
 from DocumentTemplate.DT_Util import Eval
@@ -30,7 +31,7 @@ from DocumentTemplate.DT_Util import simple_name
 from DocumentTemplate.DT_Util import ValidationError
 from DocumentTemplate.DT_String import String
 
-if sys.version_info > (3, 0):
+if PY3:
     unicode = str
     tbl = b''.join([chr(i).encode('latin-1') for i in range(256)])
 else:
@@ -614,7 +615,9 @@ def encode_seq(state):
         state = state[:l]
 
     state = state.translate(tplus)
-    return state.decode('ascii')
+    if PY3:
+        state = state.decode('ascii')
+    return state
 
 
 def encode_str(state):
@@ -729,4 +732,7 @@ def tpValuesIds(self, get_items, args,
 
 
 def oid(self):
-    return b2a_base64(self._p_oid)[:-1].decode('ascii')
+    value = b2a_base64(self._p_oid)[:-1]
+    if PY3:
+        value = value.decode('ascii')
+    return value
