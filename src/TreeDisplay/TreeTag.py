@@ -614,7 +614,7 @@ def encode_seq(state):
         state = state[:l]
 
     state = state.translate(tplus)
-    return state
+    return state.decode('ascii')
 
 
 def encode_str(state):
@@ -729,4 +729,4 @@ def tpValuesIds(self, get_items, args,
 
 
 def oid(self):
-    return b2a_base64(str(self._p_oid))[:-1]
+    return b2a_base64(self._p_oid)[:-1].decode('ascii')

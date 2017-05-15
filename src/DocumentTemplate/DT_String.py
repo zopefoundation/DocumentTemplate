@@ -292,7 +292,7 @@ class String(object):
     shared_globals__roles__ = ()
     shared_globals = {}
 
-    def __init__(self, source_string=b'', mapping=None, __name__='<string>',
+    def __init__(self, source_string='', mapping=None, __name__='<string>',
                  **vars):
         """\
         Create a document template from a string.
