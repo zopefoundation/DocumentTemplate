@@ -14,7 +14,7 @@
 import sys
 import traceback
 
-from cStringIO import StringIO
+from io import StringIO
 from DocumentTemplate.DT_Util import ParseError, parse_params, render_blocks
 from DocumentTemplate.DT_Util import namespace, InstanceDict
 from DocumentTemplate.DT_Return import DTReturn
