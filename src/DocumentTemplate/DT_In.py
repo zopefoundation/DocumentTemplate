@@ -465,6 +465,11 @@ class InClass(object):
             raise ValueError(
                 'Strings are not allowed as input to the in tag.')
 
+        # Turn iterable like dict.keys() into a list.
+        sequence = list(sequence)
+        if cache is not None:
+            cache[name] = sequence
+
         section = self.section
         params = self.args
 
@@ -667,6 +672,11 @@ class InClass(object):
         if isinstance(sequence, str):
             raise ValueError(
                 'Strings are not allowed as input to the in tag.')
+
+        # Turn iterable like dict.keys() into a list.
+        sequence = list(sequence)
+        if cache is not None:
+            cache[name] = sequence
 
         section = self.section
         mapping = self.mapping

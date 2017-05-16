@@ -31,6 +31,9 @@ class sequence_variables(object):
 
     def __init__(self, items=None, query_string='', start_name_re=None,
                  alt_prefix=''):
+        if items is not None:
+            # Turn iterable into a list, to support key lookup
+            items = list(items)
         self.items = items
         self.query_string = query_string
         self.start_name_re = start_name_re
