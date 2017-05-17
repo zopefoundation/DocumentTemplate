@@ -1,11 +1,10 @@
 Changelog
 =========
 
-3.0a3 (unreleased)
+3.0a3 (2017-05-17)
 ------------------
 
-- Nothing changed yet.
-
+- Further fixes for Python 3 compatibility.
 
 3.0a2 (2017-05-05)
 ------------------

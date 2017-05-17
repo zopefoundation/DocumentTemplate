@@ -20,8 +20,11 @@ with open('README.rst') as f:
 with open('CHANGES.rst') as f:
     CHANGES = f.read()
 
+__version__ = '3.0a3'
+
+
 setup(name='DocumentTemplate',
-      version='3.0a3.dev0',
+      version=__version__,
       url='http://pypi.python.org/pypi/DocumentTemplate',
       license='ZPL 2.1',
       description="Document Templating Markup Language (DTML)",
