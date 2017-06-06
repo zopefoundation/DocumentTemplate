@@ -18,7 +18,7 @@ from binascii import b2a_base64
 import json
 import zlib
 
-from six import PY3
+import six
 
 from DocumentTemplate.DT_Util import add_with_prefix
 from DocumentTemplate.DT_Util import Eval
@@ -31,7 +31,7 @@ from DocumentTemplate.DT_Util import simple_name
 from DocumentTemplate.DT_Util import ValidationError
 from DocumentTemplate.DT_String import String
 
-if PY3:
+if six.PY3:
     unicode = str
     tbl = b''.join([chr(i).encode('latin-1') for i in range(256)])
 else:
@@ -376,18 +376,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                     exp = i + 1
                     break
 
-            ####################################
-            # Mostly inline encode_seq for speed
-            s = compress(json.dumps(diff))
-            if len(s) > 57:
-                s = encode_str(s)
-            else:
-                s = b2a_base64(s)[:-1]
-                l = s.find('=')
-                if l >= 0:
-                    s = s[:l]
-            s = s.translate(tplus)
-            ####################################
+            s = encode_str(compress(json.dumps(diff)))  # bytes in ASCII enc.
 
             script = md['BASEPATH1']
 
@@ -615,24 +604,31 @@ def encode_seq(state):
         state = state[:l]
 
     state = state.translate(tplus)
-    if PY3:
+    if six.PY3:
         state = state.decode('ascii')
     return state
 
 
 def encode_str(state):
-    "Convert a sequence to an encoded string"
+    """Convert bytes to a base64-encoded bytes.
+
+    'state' should be bytes
+    """
+    if not isinstance(state, bytes):
+        raise ValueError("state should be bytes")
+
     l = len(state)
 
     if l > 57:
         states = []
         for i in range(0, l, 57):
             states.append(b2a_base64(state[i:i + 57])[:-1])
-        state = ''.join(states)
+        state = b''.join(states)
     else:
         state = b2a_base64(state)[:-1]
 
-    l = state.find('=')
+    # state is still bytes, but all in 'ascii' encoding.
+    l = state.find(b'=')
     if l >= 0:
         state = state[:l]
 
@@ -676,10 +672,24 @@ def decode_seq(state):
 
 
 def compress(input):
-    return zlib.compress(input.encode('utf-8'))
+    """Compress text to bytes.
+
+    'input' should be text.
+    """
+    if not isinstance(input, six.string_types):
+        raise ValueError("Input should be text")
+    if not isinstance(input, bytes):
+        input = input.encode('utf-8')
+    return zlib.compress(input)
 
 
 def decompress(input):
+    """Decompress bytes to text.
+
+    'input' should be bytes.
+    """
+    if not isinstance(input, bytes):
+        raise ValueError("Input should be bytes")
     return zlib.decompress(input).decode('utf-8')
 
 
@@ -733,6 +743,6 @@ def tpValuesIds(self, get_items, args,
 
 def oid(self):
     value = b2a_base64(self._p_oid)[:-1]
-    if PY3:
+    if six.PY3:
         value = value.decode('ascii')
     return value
