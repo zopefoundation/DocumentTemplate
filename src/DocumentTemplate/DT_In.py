@@ -514,7 +514,7 @@ class InClass(object):
                                   self.start_name_re, prefix)
         kw = vars.data
         pkw = add_with_prefix(kw, 'sequence', prefix)
-        for k, v in kw.items():
+        for k, v in list(kw.items()):
             pkw[k] = v
         pkw['sequence-step-size'] = sz
         pkw['sequence-step-overlap'] = overlap
@@ -697,7 +697,7 @@ class InClass(object):
         vars = sequence_variables(sequence, alt_prefix=prefix)
         kw = vars.data
         pkw = add_with_prefix(kw, 'sequence', prefix)
-        for k, v in kw.items():
+        for k, v in list(kw.items()):
             pkw[k] = v
         kw['mapping'] = mapping
 
