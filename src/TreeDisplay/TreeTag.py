@@ -396,11 +396,11 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                 ptreeData['tree-item-expanded'] = 1
                 output('<a name="%s" href="%s?%stree-c=%s#%s">'
                        '<img src="%s/p_/mi" alt="-" border="0" /></a>' %
-                       (id, root_url, param, s.decode('ascii'), id, script))
+                       (id, root_url, param, s, id, script))
             else:
                 output('<a name="%s" href="%s?%stree-e=%s#%s">'
                        '<img src="%s/p_/pl" alt="+" border="0" /></a>' %
-                       (id, root_url, param, s.decode('ascii'), id, script))
+                       (id, root_url, param, s, id, script))
             output('</td>\n')
 
         else:
