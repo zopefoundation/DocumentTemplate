@@ -10,6 +10,7 @@ install:
     - pip install -U setuptools==33.1.1
     - pip install coveralls coverage
     - pip install zc.buildout
+    - pip install -U six==$(curl $(grep versions-prod.cfg buildout.cfg) 2>/dev/null | awk '$1 == "six" {print $3}')
     - buildout bootstrap
     - buildout
 
