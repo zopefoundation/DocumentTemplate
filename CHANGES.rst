@@ -4,7 +4,8 @@ Changelog
 3.0b2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Under Python 3, make sure no binary representations end up in the
+  state string used for the tree tag.
 
 
 3.0b1 (2017-09-15)

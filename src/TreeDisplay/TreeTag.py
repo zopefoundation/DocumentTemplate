@@ -378,6 +378,11 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
 
             s = encode_str(compress(json.dumps(diff)))  # bytes in ASCII enc.
 
+            # For rendering the encoded state string in a URL under Python 3,
+            # we must lose the "b" prefix by decoding
+            if six.PY3:
+                s = s.decode('ASCII')
+
             script = md['BASEPATH1']
 
             # Propagate extra args through tree.
