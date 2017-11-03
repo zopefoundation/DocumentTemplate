@@ -396,11 +396,11 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                 ptreeData['tree-item-expanded'] = 1
                 output('<a name="%s" href="%s?%stree-c=%s#%s">'
                        '<img src="%s/p_/mi" alt="-" border="0" /></a>' %
-                       (id, root_url, param, s, id, script))
+                       (id, root_url, param, s.decode('ascii'), id, script))
             else:
                 output('<a name="%s" href="%s?%stree-e=%s#%s">'
                        '<img src="%s/p_/pl" alt="+" border="0" /></a>' %
-                       (id, root_url, param, s, id, script))
+                       (id, root_url, param, s.decode('ascii'), id, script))
             output('</td>\n')
 
         else:
@@ -643,6 +643,9 @@ def encode_str(state):
 
 def decode_seq(state):
     "Convert an encoded string to a sequence"
+    if not isinstance(state, bytes):
+        state = state.encode('ascii')
+
     state = state.translate(tminus)
     l = len(state)
 
@@ -659,14 +662,14 @@ def decode_seq(state):
             l = len(state)
             k = l % 4
             if k:
-                state = state + '=' * (4 - k)
+                state = state + b'=' * (4 - k)
             states.append(a2b_base64(state))
-        state = ''.join(states)
+        state = b''.join(states)
     else:
         l = len(state)
         k = l % 4
         if k:
-            state = state + '=' * (4 - k)
+            state = state + b'=' * (4 - k)
         state = a2b_base64(state)
 
     state = decompress(state)
