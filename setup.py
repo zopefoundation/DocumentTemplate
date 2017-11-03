@@ -20,7 +20,7 @@ with open('README.rst') as f:
 with open('CHANGES.rst') as f:
     CHANGES = f.read()
 
-version = '3.0b2.dev0'
+version = '3.0b2'
 
 
 setup(name='DocumentTemplate',

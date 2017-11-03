@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0b2 (unreleased)
+3.0b2 (2017-11-03)
 ------------------
 
 - Under Python 3, make sure no binary representations end up in the
