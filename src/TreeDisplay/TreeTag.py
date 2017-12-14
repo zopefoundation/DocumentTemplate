@@ -643,6 +643,9 @@ def encode_str(state):
 
 def decode_seq(state):
     "Convert an encoded string to a sequence"
+    if not isinstance(state, bytes):
+        state = state.encode('ascii')
+
     state = state.translate(tminus)
     l = len(state)
 
@@ -659,14 +662,14 @@ def decode_seq(state):
             l = len(state)
             k = l % 4
             if k:
-                state = state + '=' * (4 - k)
+                state = state + b'=' * (4 - k)
             states.append(a2b_base64(state))
-        state = ''.join(states)
+        state = b''.join(states)
     else:
         l = len(state)
         k = l % 4
         if k:
-            state = state + '=' * (4 - k)
+            state = state + b'=' * (4 - k)
         state = a2b_base64(state)
 
     state = decompress(state)

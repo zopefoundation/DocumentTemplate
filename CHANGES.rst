@@ -4,6 +4,9 @@ Changelog
 3.0b3 (unreleased)
 ------------------
 
+- Fixed a problem with Python 3 compatibility when computing the
+  state strings in tree tags.
+
 
 3.0b2 (2017-11-03)
 ------------------
