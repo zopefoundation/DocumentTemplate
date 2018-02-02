@@ -65,7 +65,8 @@ class SecurityTests(DTMLTests):
                 return "This is a protected operation of public object"
 
         html = self.doc_class('<dtml-var expr="myinst.somemethod()">')
-        self.failUnlessRaises(Unauthorized, html, myinst=myclass())
+        with self.assertRaises(Unauthorized):
+            html(myinst=myclass())
 
     def testSecurityInSyntax(self):
         # Ensures syntax errors are thrown for an expr with restricted
