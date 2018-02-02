@@ -3,6 +3,7 @@ build
 coverage
 develop
 dist
+flake8
 htmlcov
 lib
 parts
