@@ -7,6 +7,8 @@ Changelog
 - Fixed a problem with Python 3 compatibility when computing the
   state strings in tree tags.
 
+- No longer use icons which got deleted in Zope 4.
+
 
 3.0b2 (2017-11-03)
 ------------------
