@@ -330,6 +330,7 @@
 
 '''
 
+from operator import itemgetter
 import sys
 import re
 
@@ -837,7 +838,10 @@ class InClass(object):
             by = SortBy(multsort, sf_list)
             s.sort(by)
         else:
-            s.sort(key=lambda k: k[0])
+            # In python 3 a key is required when tuples in the list have
+            # the same sort key to prevent attempting to compare the second
+            # item which is dict.
+            s.sort(key=itemgetter(0))
 
         sequence = []
         for k, client in s:
