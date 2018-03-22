@@ -837,7 +837,7 @@ class InClass(object):
             by = SortBy(multsort, sf_list)
             s.sort(by)
         else:
-            s.sort()
+            s.sort(key=lambda k: k[0])
 
         sequence = []
         for k, client in s:
