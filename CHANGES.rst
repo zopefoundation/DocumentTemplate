@@ -9,6 +9,8 @@ Changelog
 
 - No longer use icons which got deleted in Zope 4.
 
+- Fix sorting in <dtml-in> for duplicate entries in Python 3.
+
 
 3.0b2 (2017-11-03)
 ------------------
