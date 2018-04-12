@@ -73,11 +73,11 @@ class TestUrlQuoting(unittest.TestCase):
         utf8_value = unicode_value.encode('UTF-8')
         quoted_utf8_value = b'G%C3%BCnther%20M%C3%BCller'
 
-        self.assertEquals(url_quote(unicode_value), quoted_unicode_value)
-        self.assertEquals(url_quote(utf8_value), quoted_utf8_value)
+        self.assertEqual(url_quote(unicode_value), quoted_unicode_value)
+        self.assertEqual(url_quote(utf8_value), quoted_utf8_value)
 
-        self.assertEquals(url_unquote(quoted_unicode_value), unicode_value)
-        self.assertEquals(url_unquote(quoted_utf8_value), utf8_value)
+        self.assertEqual(url_unquote(quoted_unicode_value), unicode_value)
+        self.assertEqual(url_unquote(quoted_utf8_value), utf8_value)
 
     def test_url_quoting_plus(self):
         from DocumentTemplate.DT_Var import url_quote_plus
@@ -87,10 +87,10 @@ class TestUrlQuoting(unittest.TestCase):
         utf8_value = unicode_value.encode('UTF-8')
         quoted_utf8_value = b'G%C3%BCnther+M%C3%BCller'
 
-        self.assertEquals(url_quote_plus(unicode_value), quoted_unicode_value)
-        self.assertEquals(url_quote_plus(utf8_value), quoted_utf8_value)
+        self.assertEqual(url_quote_plus(unicode_value), quoted_unicode_value)
+        self.assertEqual(url_quote_plus(utf8_value), quoted_utf8_value)
 
-        self.assertEquals(
+        self.assertEqual(
             url_unquote_plus(quoted_unicode_value), unicode_value)
-        self.assertEquals(
+        self.assertEqual(
             url_unquote_plus(quoted_utf8_value), utf8_value)
