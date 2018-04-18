@@ -395,10 +395,10 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
             if exp:
                 ptreeData['tree-item-expanded'] = 1
                 output('<a name="%s" href="%s?%stree-c=%s#%s">-</a>' %
-                       (id, root_url, param, s, id, script))
+                       (id, root_url, param, s, id))
             else:
                 output('<a name="%s" href="%s?%stree-e=%s#%s">+</a>' %
-                       (id, root_url, param, s, id, script))
+                       (id, root_url, param, s, id))
             output('</td>\n')
 
         else:
