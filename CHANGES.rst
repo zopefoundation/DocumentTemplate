@@ -4,7 +4,7 @@ Changelog
 3.0b4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Improve compatibility with flake8.
 
 
 3.0b3 (2018-04-18)
