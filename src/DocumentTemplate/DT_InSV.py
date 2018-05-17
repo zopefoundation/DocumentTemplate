@@ -19,7 +19,7 @@ import re
 try:
     import Missing
     mv = Missing.Value
-except:
+except ImportError:
     mv = None
 
 TupleType = tuple
@@ -226,7 +226,7 @@ class sequence_variables(object):
                             min = item
                         if item > max:
                             max = item
-                except:
+                except TypeError:
                     if item is not None and item is not mv:
                         if smin is None:
                             smin = smax = item
@@ -259,7 +259,7 @@ class sequence_variables(object):
             else:
                 data['variance-%s' % name] = ''
                 data['standard-deviation-%s' % name] = ''
-        except:
+        except ZeroDivisionError:
             if min is None:
                 min, max, values = smin, smax, svalues
             else:

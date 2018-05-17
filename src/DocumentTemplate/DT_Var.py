@@ -266,7 +266,8 @@ class Var(object):
                             val = TaintedString(fmt % val)
                         else:
                             val = fmt % val
-                except:
+                except Exception:
+                    # Not clear which specific error has to be caught.
                     t, v = sys.exc_type, sys.exc_value
                     if hasattr(sys, 'exc_info'):
                         t, v = sys.exc_info()[:2]

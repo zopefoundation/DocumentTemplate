@@ -59,7 +59,7 @@ def int_param(params, md, name, default=0, st=type('')):
     if v:
         try:
             v = int(v)
-        except:
+        except (TypeError, ValueError):
             v = md[v]
             if isinstance(v, str):
                 v = int(v)
