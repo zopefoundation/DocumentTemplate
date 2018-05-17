@@ -383,8 +383,6 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
             if six.PY3:
                 s = s.decode('ASCII')
 
-            script = md['BASEPATH1']
-
             # Propagate extra args through tree.
             if 'urlparam' in args:
                 param = args['urlparam']
