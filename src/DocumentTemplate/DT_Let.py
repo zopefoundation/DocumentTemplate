@@ -104,11 +104,11 @@ def parse_let_params(
     if mo is not None:
         name = mo.group(2)
         value = mo.group(3)
-        l = len(mo.group(1))
+        l_ = len(mo.group(1))
     elif mo1 is not None:
         name = mo1.group(2)
         value = '"%s"' % mo1.group(3)
-        l = len(mo1.group(1))
+        l_ = len(mo1.group(1))
     else:
         if not text or not text.strip():
             return result
@@ -116,7 +116,7 @@ def parse_let_params(
 
     result.append((name, value))
 
-    text = text[l:].strip()
+    text = text[l_:].strip()
     if text:
         return parse_let_params(text, result, tag, **parms)
     else:

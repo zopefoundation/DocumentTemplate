@@ -45,9 +45,9 @@ class dtml_re_class:
 
                 mo = end_match(text, n)
                 if mo is not None:
-                    l = mo.end(0) - mo.start(0)
-                    end = text[n:n + l].strip()
-                    n = n + l
+                    l_ = mo.end(0) - mo.start(0)
+                    end = text[n:n + l_].strip()
+                    n = n + l_
                 else:
                     end = ''
 
@@ -83,10 +83,10 @@ class dtml_re_class:
                     e = text.find(';', n)
                     if e >= 0:
                         args = text[n:e]
-                        l = len(args)
+                        l_ = len(args)
                         mo = ent_name(args)
                         if mo is not None:
-                            if mo.end(0) - mo.start(0) == l:
+                            if mo.end(0) - mo.start(0) == l_:
                                 d = self.__dict__
                                 if text[s + 5] == '-':
                                     d[1] = d['end'] = ''
@@ -97,7 +97,7 @@ class dtml_re_class:
                                     return self
                                 else:
                                     nn = args.find('-')
-                                    if nn >= 0 and nn < l - 1:
+                                    if nn >= 0 and nn < l_ - 1:
                                         d[1] = d['end'] = ''
                                         d[2] = d['name'] = 'var'
                                         d[0] = text[s:e + 1]
@@ -115,9 +115,9 @@ class dtml_re_class:
         mo = name_match(text, n)
         if mo is None:
             return None
-        l = mo.end(0) - mo.start(0)
+        l_ = mo.end(0) - mo.start(0)
 
-        a = n + l
+        a = n + l_
         name = text[n:a].strip()
 
         args = text[a:e].strip()
@@ -184,9 +184,10 @@ class HTML(String):
             if name == 'else' and args:
                 # Waaaaaah! Have to special case else because of
                 # old else start tag usage. Waaaaaaah!
-                l = len(args)
+                l_ = len(args)
                 if not (args == sargs or
-                        args == sargs[:l] and sargs[l:l + 1] in ' \t\n'):
+                        args == sargs[:l_] and
+                        sargs[l_:l_ + 1] in ' \t\n'):
                     return tag, args, self.commands[name], None
 
             return tag, args, None, name

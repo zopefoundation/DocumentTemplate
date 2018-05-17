@@ -414,14 +414,14 @@ def parse_params(text,
     if mo_p:
         name = mo_p.group(2).lower()
         value = mo_p.group(3)
-        l = len(mo_p.group(1))
+        l_ = len(mo_p.group(1))
     elif mo_q:
         name = mo_q.group(2).lower()
         value = mo_q.group(3)
-        l = len(mo_q.group(1))
+        l_ = len(mo_q.group(1))
     elif mo_unp:
         name = mo_unp.group(2)
-        l = len(mo_unp.group(1))
+        l_ = len(mo_unp.group(1))
         if result:
             if name in parms:
                 if parms[name] is None:
@@ -434,16 +434,16 @@ def parse_params(text,
                     'Invalid attribute name, "%s"' % name, tag)
         else:
             result[''] = name
-        return parse_params(text[l:], result, **parms)
+        return parse_params(text[l_:], result, **parms)
     elif mo_unq:
         name = mo_unq.group(2)
-        l = len(mo_unq.group(1))
+        l_ = len(mo_unq.group(1))
         if result:
             raise ParseError(
                 'Invalid attribute name, "%s"' % name, tag)
         else:
             result[''] = name
-        return parse_params(text[l:], result, **parms)
+        return parse_params(text[l_:], result, **parms)
     else:
         if not text or not text.strip():
             return result
@@ -461,7 +461,7 @@ def parse_params(text,
 
     result[name] = value
 
-    text = text[l:].strip()
+    text = text[l_:].strip()
     if text:
         return parse_params(text, result, **parms)
     else:

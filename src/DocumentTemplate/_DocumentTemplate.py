@@ -146,10 +146,10 @@ def render_blocks(blocks, md):
 
     render_blocks_(blocks, rendered, md)
 
-    l = len(rendered)
-    if l == 0:
+    l_ = len(rendered)
+    if l_ == 0:
         return ''
-    elif l == 1:
+    elif l_ == 1:
         return rendered[0]
     return join_unicode(rendered)
 
@@ -341,10 +341,10 @@ class TemplateDict(Base):
 
     def _pop(self, i=1):
         """_pop() -- Remove and return the last data source added"""
-        l = len(self._data)
-        i = l - i
-        r = self._data[l - 1]
-        self._data[i:l] = []
+        l_ = len(self._data)
+        i = l_ - i
+        r = self._data[l_ - 1]
+        self._data[i:l_] = []
         return r
 
     def _push(self, src):
@@ -423,8 +423,8 @@ class TemplateDict(Base):
         return key in self
 
     def __call__(self, *args, **kw):
-        l = len(args)
-        if l:
+        l_ = len(args)
+        if l_:
             r = type(self)()
             for arg in args:
                 r._push(arg)

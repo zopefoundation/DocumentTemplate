@@ -141,9 +141,10 @@ class String(object):
                 if name == 'else' and args:
                     # Waaaaaah! Have to special case else because of
                     # old else start tag usage. Waaaaaaah!
-                    l = len(args)
+                    l_ = len(args)
                     if not (args == sargs or
-                            args == sargs[:l] and sargs[l:l + 1] in ' \t\n'):
+                            args == sargs[:l_] and
+                            sargs[l_:l_ + 1] in ' \t\n'):
                         return tag, args, self.commands[name], None
 
                 return tag, args, None, name
@@ -169,21 +170,21 @@ class String(object):
             tagre = self.tagre()
         mo = tagre.search(text, start)
         while mo:
-            l = mo.start(0)
+            l_ = mo.start(0)
 
             try:
                 tag, args, command, coname = self._parseTag(mo)
             except ParseError as m:
-                self.parse_error(m[0], m[1], text, l)
+                self.parse_error(m[0], m[1], text, l_)
 
-            s = text[start:l]
+            s = text[start:l_]
             if s:
                 result.append(s)
-            start = l + len(tag)
+            start = l_ + len(tag)
 
             if hasattr(command, 'blockContinuations'):
                 start = self.parse_block(text, start, result, tagre,
-                                         tag, l, args, command)
+                                         tag, l_, args, command)
             else:
                 try:
                     if command is Var:
@@ -194,7 +195,7 @@ class String(object):
                         r = r.simple_form
                     result.append(r)
                 except ParseError as m:
-                    self.parse_error(m[0], tag, text, l)
+                    self.parse_error(m[0], tag, text, l_)
 
             mo = tagre.search(text, start)
 
@@ -228,28 +229,28 @@ class String(object):
             mo = tagre.search(text, start)
             if mo is None:
                 self.parse_error('No closing tag', stag, text, sloc)
-            l = mo.start(0)
+            l_ = mo.start(0)
 
             try:
                 tag, args, command, coname = self._parseTag(mo, scommand, sa)
             except ParseError as m:
-                self.parse_error(m[0], m[1], text, l)
+                self.parse_error(m[0], m[1], text, l_)
 
             if command:
-                start = l + len(tag)
+                start = l_ + len(tag)
                 if hasattr(command, 'blockContinuations'):
                     # New open tag.  Need to find closing tag.
-                    start = self.parse_close(text, start, tagre, tag, l,
+                    start = self.parse_close(text, start, tagre, tag, l_,
                                              command, args)
             else:
                 # Either a continuation tag or an end tag
                 section = self.SubTemplate(sname)
                 section._v_blocks = section.blocks = self.parse(
-                    text[:l], sstart)
+                    text[:l_], sstart)
                 section._v_cooked = None
                 blocks.append((tname, sargs, section))
 
-                start = self.skip_eol(text, l + len(tag))
+                start = self.skip_eol(text, l_ + len(tag))
 
                 if coname:
                     tname = coname
@@ -263,7 +264,7 @@ class String(object):
                             r = r.simple_form
                         result.append(r)
                     except ParseError as m:
-                        self.parse_error(m[0], stag, text, l)
+                        self.parse_error(m[0], stag, text, l_)
 
                     return start
 
@@ -273,18 +274,18 @@ class String(object):
             mo = tagre.search(text, start)
             if mo is None:
                 self.parse_error('No closing tag', stag, text, sloc)
-            l = mo.start(0)
+            l_ = mo.start(0)
 
             try:
                 tag, args, command, coname = self._parseTag(mo, scommand, sa)
             except ParseError as m:
-                self.parse_error(m[0], m[1], text, l)
+                self.parse_error(m[0], m[1], text, l_)
 
-            start = l + len(tag)
+            start = l_ + len(tag)
             if command:
                 if hasattr(command, 'blockContinuations'):
                     # New open tag.  Need to find closing tag.
-                    start = self.parse_close(text, start, tagre, tag, l,
+                    start = self.parse_close(text, start, tagre, tag, l_,
                                              command, args)
             elif not coname:
                 return start
