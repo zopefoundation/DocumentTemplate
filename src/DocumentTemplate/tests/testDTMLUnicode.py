@@ -55,25 +55,25 @@ class DTMLUnicodeTests (unittest.TestCase):
     def testUB(self):
         html=self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'hello\xc8'
-        res = html(a=u'hello',b=chr(200))
+        res = html(a=u'hello',b='\xc3\x88')
         assert res == expected, `res`
 
     def testUB2(self):
         html=self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'\u07d0\xc8'
-        res = html(a=unichr(2000),b=chr(200))
+        res = html(a=unichr(2000),b='\xc3\x88')
         assert res == expected, `res`
 
     def testUnicodeStr(self):
         html=self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'\u07d0\xc8'
-        res = html(a=force_str(unichr(2000)),b=chr(200))
+        res = html(a=force_str(unichr(2000)),b='\xc3\x88')
         assert res == expected, `res`
 
     def testUqB(self):
         html=self.doc_class('<dtml-var a html_quote><dtml-var b>')
         expected = u'he&gt;llo\xc8'
-        res = html(a=u'he>llo',b=chr(200))
+        res = html(a=u'he>llo',b='\xc3\x88')
         assert res == expected, `res`
 
     def testSize(self):

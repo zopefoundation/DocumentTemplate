@@ -925,7 +925,7 @@ _join_unicode(PyObject *prejoin)
             PyObject *item = PyList_GetItem(list,i);
             if(PyString_Check(item))
             {
-                PyObject *unicode = PyUnicode_DecodeLatin1(PyString_AsString(item),PyString_Size(item),NULL);
+                PyObject *unicode = PyUnicode_DecodeUTF8(PyString_AsString(item),PyString_Size(item),NULL);
                 if(unicode)
                 {
                     PyList_SetItem(list,i,unicode);
