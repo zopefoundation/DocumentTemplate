@@ -247,9 +247,9 @@ def join_unicode(rendered):
         return ''.join(rendered)
     except UnicodeError:
         # A mix of unicode string and non-ascii plain strings.
-        # Fix up the list, treating normal strings as latin-1
+        # Fix up the list, treating normal strings as UTF-8
         rendered = list(rendered)
         for i in range(len(rendered)):
             if type(rendered[i]) is StringType:
-                rendered[i] = unicode(rendered[i],'latin-1')
+                rendered[i] = unicode(rendered[i],'utf-8')
         return u''.join(rendered)
