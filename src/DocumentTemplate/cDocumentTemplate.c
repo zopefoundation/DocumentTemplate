@@ -960,7 +960,7 @@ static struct PyMethodDef Module_Level__methods[] = {
    "join a list of plain strings into a single plain string,\n"
    "a list of unicode strings into a single unicode strings,\n"
    "or a list containing a mix into a single unicode string with\n"
-   "the plain strings converted from latin-1"},
+   "the plain strings converted from UTF-8"},
   {"safe_callable", (PyCFunction)safe_callable,	METH_VARARGS,
    "callable() with a workaround for a problem with ExtensionClasses\n"
    "and __call__()."},
