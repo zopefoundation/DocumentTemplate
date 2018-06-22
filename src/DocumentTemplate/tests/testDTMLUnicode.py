@@ -58,37 +58,37 @@ class DTMLUnicodeTests(unittest.TestCase):
     def testAB(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = 'hello\xc8'
-        res = html(a='hello', b=chr(200))
+        res = html(a='hello', b='\xc8')
         self.assertEqual(res, expected)
 
     def testUB(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'hello\xc8'
-        res = html(a=u'hello', b=chr(200))
+        res = html(a=u'hello', b='\xc3\x88')
         self.assertEqual(res, expected)
 
     def testUB2(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'\u07d0\xc8'
-        res = html(a=unichr(2000), b=chr(200))
+        res = html(a=unichr(2000), b='\xc3\x88')
         self.assertEqual(res, expected)
 
     def testUnicodeStr(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'\u07d0\xc8'
-        res = html(a=force_str(unichr(2000)), b=chr(200))
+        res = html(a=force_str(unichr(2000)), b='\xc3\x88')
         self.assertEqual(res, expected)
 
     def testUqB(self):
         html = self.doc_class('<dtml-var a html_quote><dtml-var b>')
         expected = u'he&gt;llo\xc8'
-        res = html(a=u'he>llo', b=chr(200))
+        res = html(a=u'he>llo', b='\xc3\x88')
         self.assertEqual(res, expected)
 
     def testSize(self):
         if six.PY3:
             html = self.doc_class('<dtml-var "_.chr(200)*4" size=2>')
-            expected = chr(200) * 2 + '...'
+            expected = '\xc3\x88' * 2 + '...'
         else:
             html = self.doc_class('<dtml-var "_.unichr(200)*4" size=2>')
             expected = unichr(200) * 2 + '...'

@@ -4,8 +4,7 @@ Changelog
 3.0b4 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Use 'utf-8' to decode non-unicode strings instead of 'latin-1'.
 
 3.0b3 (2018-04-18)
 ------------------
