@@ -11,11 +11,13 @@ install:
     - pip install coveralls coverage
     - pip install zc.buildout
     - pip install -U six==1.10.0
+    - pip install flake8
     - buildout bootstrap
     - buildout
 
 script:
     - coverage run bin/test -v1
+    - flake8 --doctests src tests setup.py
 after_success:
     - coverage combine
     - coveralls

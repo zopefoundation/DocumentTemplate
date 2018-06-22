@@ -225,9 +225,9 @@ def tpRender(self, md, section, args,
 
         url = ''
         root = md['URL']
-        l = root.rfind('/')
-        if l >= 0:
-            root = root[l + 1:]
+        right_end = root.rfind('/')
+        if right_end >= 0:
+            root = root[right_end + 1:]
 
     treeData = {'tree-root-url': root,
                 'tree-colspan': colspan,
@@ -382,8 +382,6 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
             # we must lose the "b" prefix by decoding
             if six.PY3:
                 s = s.decode('ASCII')
-
-            script = md['BASEPATH1']
 
             # Propagate extra args through tree.
             if 'urlparam' in args:
@@ -592,19 +590,19 @@ def apply_diff(state, diff, expand):
 def encode_seq(state):
     "Convert a sequence to an encoded string"
     state = compress(json.dumps(state))
-    l = len(state)
+    l_ = len(state)
 
-    if l > 57:
+    if l_ > 57:
         states = []
-        for i in range(0, l, 57):
+        for i in range(0, l_, 57):
             states.append(b2a_base64(state[i:i + 57])[:-1])
         state = b''.join(states)
     else:
         state = b2a_base64(state)[:-1]
 
-    l = state.find(b'=')
-    if l >= 0:
-        state = state[:l]
+    l_ = state.find(b'=')
+    if l_ >= 0:
+        state = state[:l_]
 
     state = state.translate(tplus)
     if six.PY3:
@@ -620,20 +618,20 @@ def encode_str(state):
     if not isinstance(state, bytes):
         raise ValueError("state should be bytes")
 
-    l = len(state)
+    l_ = len(state)
 
-    if l > 57:
+    if l_ > 57:
         states = []
-        for i in range(0, l, 57):
+        for i in range(0, l_, 57):
             states.append(b2a_base64(state[i:i + 57])[:-1])
         state = b''.join(states)
     else:
         state = b2a_base64(state)[:-1]
 
     # state is still bytes, but all in 'ascii' encoding.
-    l = state.find(b'=')
-    if l >= 0:
-        state = state[:l]
+    l_ = state.find(b'=')
+    if l_ >= 0:
+        state = state[:l_]
 
     state = state.translate(tplus)
     return state
@@ -645,27 +643,27 @@ def decode_seq(state):
         state = state.encode('ascii')
 
     state = state.translate(tminus)
-    l = len(state)
+    l_ = len(state)
 
-    if l > 76:
+    if l_ > 76:
         states = []
         j = 0
-        for i in range(l // 76):
+        for i in range(l_ // 76):
             k = j + 76
             states.append(a2b_base64(state[j:k]))
             j = k
 
-        if j < l:
+        if j < l_:
             state = state[j:]
-            l = len(state)
-            k = l % 4
+            l_ = len(state)
+            k = l_ % 4
             if k:
                 state = state + b'=' * (4 - k)
             states.append(a2b_base64(state))
         state = b''.join(states)
     else:
-        l = len(state)
-        k = l % 4
+        l_ = len(state)
+        k = l_ % 4
         if k:
             state = state + b'=' * (4 - k)
         state = a2b_base64(state)

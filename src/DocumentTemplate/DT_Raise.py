@@ -57,14 +57,14 @@ class Raise(object):
         else:
             try:
                 t = expr.eval(md)
-            except:
+            except Exception:
                 t = convertExceptionType(self.__name__)
                 if t is None:
                     t = InvalidErrorTypeExpression
 
         try:
             v = render_blocks(self.section, md)
-        except:
+        except Exception:
             v = 'Invalid Error Value'
 
         # String Exceptions are deprecated on Python 2.5 and

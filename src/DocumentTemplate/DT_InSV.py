@@ -19,7 +19,7 @@ import re
 try:
     import Missing
     mv = Missing.Value
-except:
+except ImportError:
     mv = None
 
 TupleType = tuple
@@ -147,8 +147,8 @@ class sequence_variables(object):
         return self.value(index, name) != self.value(index + 1, name)
 
     def length(self, ignored):
-        l = self['sequence-length'] = len(self.items)
-        return l
+        l_ = self['sequence-length'] = len(self.items)
+        return l_
 
     def query(self, *ignored):
 
@@ -166,17 +166,17 @@ class sequence_variables(object):
                 mo = reg.search(query_string)
                 if mo is not None:
                     v = mo.group(0)
-                    l = mo.start(0)
-                    query_string = (query_string[:l] +
-                                    query_string[l + len(v) - 1:])
+                    l_ = mo.start(0)
+                    query_string = (query_string[:l_] +
+                                    query_string[l_ + len(v) - 1:])
 
             else:
-                l = reg.search_group(query_string, (0,))
-                if l:
-                    v = l[1]
-                    l = l[0]
-                    query_string = (query_string[:l] +
-                                    query_string[l + len(v) - 1:])
+                l_ = reg.search_group(query_string, (0,))
+                if l_:
+                    v = l_[1]
+                    l_ = l_[0]
+                    query_string = (query_string[:l_] +
+                                    query_string[l_ + len(v) - 1:])
 
             query_string = '?' + query_string[1:]
         else:
@@ -226,7 +226,7 @@ class sequence_variables(object):
                             min = item
                         if item > max:
                             max = item
-                except:
+                except TypeError:
                     if item is not None and item is not mv:
                         if smin is None:
                             smin = smax = item
@@ -259,7 +259,7 @@ class sequence_variables(object):
             else:
                 data['variance-%s' % name] = ''
                 data['standard-deviation-%s' % name] = ''
-        except:
+        except ZeroDivisionError:
             if min is None:
                 min, max, values = smin, smax, svalues
             else:
@@ -306,13 +306,13 @@ class sequence_variables(object):
             sz = data['sequence-step-size']
             start = data['sequence-step-start']
             end = data['sequence-step-end']
-            l = len(sequence)
+            l_ = len(sequence)
             orphan = data['sequence-step-orphan']
             overlap = data['sequence-step-overlap']
         except Exception:
             pass
         r = []
-        while end < l:
+        while end < l_:
             start, end, spam = opt(end + 1 - overlap, 0,
                                    sz, orphan, sequence)
             v = sequence_variables(self.items,
@@ -386,8 +386,8 @@ class sequence_variables(object):
         if key in data:
             return data[key]
 
-        l = key.rfind('-')
-        if l < 0:
+        l_ = key.rfind('-')
+        if l_ < 0:
             alt_prefix = self.alt_prefix
             if not (alt_prefix and key.startswith(alt_prefix)):
                 raise KeyError(key)
@@ -401,8 +401,8 @@ class sequence_variables(object):
             prefix = 'sequence'
             key = 'sequence-' + suffix
         else:
-            suffix = key[l + 1:]
-            prefix = key[:l]
+            suffix = key[l_ + 1:]
+            prefix = key[:l_]
 
         if hasattr(self, suffix):
             try:

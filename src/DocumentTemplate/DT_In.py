@@ -702,8 +702,8 @@ class InClass(object):
             pkw[k] = v
         kw['mapping'] = mapping
 
-        l = len(sequence)
-        last = l - 1
+        l_ = len(sequence)
+        last = l_ - 1
 
         push = md._push
         pop = md._pop
@@ -716,7 +716,7 @@ class InClass(object):
             result = []
             append = result.append
             guarded_getitem = getattr(md, 'guarded_getitem', None)
-            for index in range(l):
+            for index in range(l_):
                 if index == last:
                     pkw['sequence-end'] = 1
                 if guarded_getitem is not None:
@@ -901,14 +901,14 @@ def make_sortfunctions(sortfields, md):
     sf_list = []
     for field in sortfields:
         f = field.split('/')
-        l = len(f)
+        l_ = len(f)
 
-        if l == 1:
+        if l_ == 1:
             f.append("cmp")
             f.append("asc")
-        elif l == 2:
+        elif l_ == 2:
             f.append("asc")
-        elif l == 3:
+        elif l_ == 3:
             pass
         else:
             raise SyntaxError(
@@ -954,15 +954,15 @@ class SortBy(object):
             o2 = o2[0]
 
         sf_list = self.sf_list
-        l = len(sf_list)
+        l_ = len(sf_list)
 
         # assert that o1 and o2 are tuples of apropriate length
-        assert len(o1) == l + 1 - multsort, "%s, %d" % (o1, l + multsort)
-        assert len(o2) == l + 1 - multsort, "%s, %d" % (o2, l + multsort)
+        assert len(o1) == l_ + 1 - multsort, "%s, %d" % (o1, l_ + multsort)
+        assert len(o2) == l_ + 1 - multsort, "%s, %d" % (o2, l_ + multsort)
 
         # now run through the list of functions in sf_list and
         # compare every object in o1 and o2
-        for i in range(l):
+        for i in range(l_):
             # if multsort - we already extracted the key list
             # if not multsort - i is 0, and the 0th element is the key
             c1, c2 = o1[i], o2[i]

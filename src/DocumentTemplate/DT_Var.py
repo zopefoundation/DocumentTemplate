@@ -266,7 +266,8 @@ class Var(object):
                             val = TaintedString(fmt % val)
                         else:
                             val = fmt % val
-                except:
+                except Exception:
+                    # Not clear which specific error has to be caught.
                     t, v = sys.exc_type, sys.exc_value
                     if hasattr(sys, 'exc_info'):
                         t, v = sys.exc_info()[:2]
@@ -327,14 +328,14 @@ class Var(object):
                     '<code>var</code> tag with a non-integer value.')
             if len(val) > size:
                 val = val[:size]
-                l = val.rfind(' ')
-                if l > size / 2:
-                    val = val[:l + 1]
+                l_ = val.rfind(' ')
+                if l_ > size / 2:
+                    val = val[:l_ + 1]
                 if 'etc' in args:
-                    l = args['etc']
+                    l_ = args['etc']
                 else:
-                    l = '...'
-                val = val + l
+                    l_ = '...'
+                val = val + l_
 
         if isinstance(val, TaintedString):
             val = val.quoted()
@@ -439,8 +440,8 @@ def thousands_commas(v, name='(Unknown name)', md={},
         s = ''
     mo = thou(v)
     while mo is not None:
-        l = mo.start(0)
-        v = v[:l + 1] + ',' + v[l + 1:]
+        l_ = mo.start(0)
+        v = v[:l_ + 1] + ',' + v[l_ + 1:]
         mo = thou(v)
     return v + s
 

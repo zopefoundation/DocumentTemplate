@@ -151,7 +151,7 @@ class Try(object):
             result = render_blocks(self.section, md)
         except DTReturn:
             raise
-        except:
+        except Exception:
             # but an error occurs.. save the info.
             t, v = sys.exc_info()[:2]
             if isinstance(t, str):
