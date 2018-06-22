@@ -4,8 +4,10 @@ Changelog
 3.0b4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Define the encoding used to decode strings into unicode as a
+  module global.
 
+  The default encoding is "latin-1".
 
 3.0b3 (2018-04-18)
 ------------------
