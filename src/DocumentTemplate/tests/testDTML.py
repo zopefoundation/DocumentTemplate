@@ -520,8 +520,8 @@ class RESTTests(DTMLTests):
         # The include: directive hasn't been rendered, it remains
         # verbatimly in the rendered output.  Instead a warning
         # message is presented:
-        self.assertTrue(source in result)
-        self.assertTrue(docutils_include_warning in result)
+        self.assertIn(source, result)
+        self.assertIn(docutils_include_warning, result)
 
     def test_fmt_reST_raw_directive_disabled(self):
         EXPECTED = '<h1>HELLO WORLD</h1>'
@@ -533,9 +533,9 @@ class RESTTests(DTMLTests):
         # The raw: directive hasn't been rendered, it remains
         # verbatimly in the rendered output.  Instead a warning
         # message is presented:
-        self.assertTrue(EXPECTED not in result)
-        self.assertTrue(escape(EXPECTED) in result)
-        self.assertTrue(docutils_raw_warning in result)
+        self.assertNotIn(EXPECTED, result)
+        self.assertIn(escape(EXPECTED), result)
+        self.assertIn(docutils_raw_warning, result)
 
     def test_fmt_reST_raw_directive_file_option_raises(self):
         source = '.. raw:: html\n  :file: inclusion.txt'
@@ -546,8 +546,8 @@ class RESTTests(DTMLTests):
         # The raw: directive hasn't been rendered, it remains
         # verbatimly in the rendered output.  Instead a warning
         # message is presented:
-        self.assertTrue(source in result)
-        self.assertTrue(docutils_raw_warning in result)
+        self.assertIn(source, result)
+        self.assertIn(docutils_raw_warning, result)
 
     def test_fmt_reST_raw_directive_url_option_raises(self):
         source = '.. raw:: html\n  :url: http://www.zope.org'
@@ -558,8 +558,8 @@ class RESTTests(DTMLTests):
         # The raw: directive hasn't been rendered, it remains
         # verbatimly in the rendered output.  Instead a warning
         # message is presented:
-        self.assertTrue(source in result)
-        self.assertTrue(docutils_raw_warning in result)
+        self.assertIn(source, result)
+        self.assertIn(docutils_raw_warning, result)
 
 
 def read_file(name):
