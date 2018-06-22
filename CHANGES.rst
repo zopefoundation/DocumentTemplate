@@ -4,6 +4,9 @@ Changelog
 3.0b7 (unreleased)
 ------------------
 
+- Make the rendering encoding configurable to fix rendering on Zope 4
+  (`#43 <https://github.com/zopefoundation/DocumentTemplate/issues/43>`_)
+
 - Add unit tests for ``dtml-if``, ``dtml-unless`` and ``dtml-in`` variables
   (`#7 <https://github.com/zopefoundation/DocumentTemplate/issues/7>`_)
 
