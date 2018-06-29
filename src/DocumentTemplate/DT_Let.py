@@ -52,9 +52,10 @@ class Let(object):
     blockContinuations = ()
     name = 'let'
 
-    def __init__(self, blocks):
+    def __init__(self, blocks, encoding=None):
         tname, args, section = blocks[0]
         self.__name__ = args
+        self.encoding = encoding
         self.section = section.blocks
         self.args = args = parse_let_params(args)
 
@@ -81,7 +82,7 @@ class Let(object):
                     d[name] = md[expr]
                 else:
                     d[name] = expr(md)
-            return render_blocks(self.section, md)
+            return render_blocks(self.section, md, self.encoding)
         finally:
             md._pop(1)
 
