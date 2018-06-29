@@ -125,7 +125,7 @@ else:
 _marker = object()
 
 
-def join_unicode(rendered):
+def join_unicode(rendered, encoding=None):
     """join a list of plain strings into a single plain string,
     a list of unicode strings into a single unicode strings,
     or a list containing a mix into a single unicode string with
@@ -136,27 +136,29 @@ def join_unicode(rendered):
     except UnicodeError:
         # A mix of unicode string and non-ascii plain strings.
         # Fix up the list, treating normal strings as UTF-8
+        if encoding is None:
+            encoding = _dt.DEFAULT_ENCODING
         rendered = list(rendered)
         for i in range(len(rendered)):
             if isinstance(rendered[i], str):
-                rendered[i] = unicode(rendered[i], _dt.DEFAULT_ENCODING)
+                rendered[i] = unicode(rendered[i], encoding)
         return u''.join(rendered)
 
 
-def render_blocks(blocks, md):
+def render_blocks(blocks, md, encoding=None):
     rendered = []
 
-    render_blocks_(blocks, rendered, md)
+    render_blocks_(blocks, rendered, md, encoding)
 
     l = len(rendered)
     if l == 0:
         return ''
     elif l == 1:
         return rendered[0]
-    return join_unicode(rendered)
+    return join_unicode(rendered, encoding)
 
 
-def render_blocks_(blocks, rendered, md):
+def render_blocks_(blocks, rendered, md, encoding):
     for block in blocks:
         append = True
 
@@ -229,7 +231,7 @@ def render_blocks_(blocks, rendered, md):
                         if cond:
                             block = block[icond + 2]
                             if block:
-                                render_blocks_(block, rendered, md)
+                                render_blocks_(block, rendered, md, encoding)
                             m = -1
                             break
 
@@ -238,7 +240,7 @@ def render_blocks_(blocks, rendered, md):
                     if icond == m:
                         block = block[icond + 1]
                         if block:
-                            render_blocks_(block, rendered, md)
+                            render_blocks_(block, rendered, md, encoding)
                 finally:
                     md._pop()
 

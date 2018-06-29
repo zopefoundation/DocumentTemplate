@@ -4,10 +4,12 @@ Changelog
 3.0b4 (unreleased)
 ------------------
 
-- Define the encoding used to decode strings into unicode as a
-  module global.
+- Add keyword argument `encoding` to the publicly exposed rendering
+  functions and classes, allowing the specification of a custom
+  encoding.
 
-  The default encoding is "latin-1".
+  The default encoding is "latin-1" which is read at render time from
+  a module global `DocumentTemplate.DEFAULT_ENCODING`.
 
 3.0b3 (2018-04-18)
 ------------------
