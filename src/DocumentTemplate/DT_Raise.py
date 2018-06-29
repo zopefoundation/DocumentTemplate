@@ -41,9 +41,10 @@ class Raise(object):
     name = 'raise'
     expr = ''
 
-    def __init__(self, blocks):
+    def __init__(self, blocks, encoding=None):
 
         tname, args, section = blocks[0]
+        self.encoding = encoding
         self.section = section.blocks
         args = parse_params(args, type='', expr='')
         self.__name__, self.expr = name_param(args, 'raise', 1, attr='type')
@@ -63,7 +64,7 @@ class Raise(object):
                     t = InvalidErrorTypeExpression
 
         try:
-            v = render_blocks(self.section, md)
+            v = render_blocks(self.section, md, self.encoding)
         except Exception:
             v = 'Invalid Error Value'
 

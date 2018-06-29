@@ -357,8 +357,8 @@ class InFactory(object):
     blockContinuations = ('else', )
     name = 'in'
 
-    def __call__(self, blocks):
-        i = InClass(blocks)
+    def __call__(self, blocks, encoding=None):
+        i = InClass(blocks, encoding)
         if i.batch:
             return i.renderwb
         else:
@@ -375,7 +375,7 @@ class InClass(object):
     reverse = None
     sort_expr = reverse_expr = None
 
-    def __init__(self, blocks):
+    def __init__(self, blocks, encoding=None):
         tname, args, section = blocks[0]
         args = parse_params(args, name='', start='1', end='-1', size='10',
                             orphan='0', overlap='1', mapping=1,
@@ -385,6 +385,7 @@ class InClass(object):
                             reverse=1, sort_expr='', reverse_expr='',
                             prefix='')
         self.args = args
+        self.encoding = encoding
 
         if 'sort' in args:
             self.sort = sort = args['sort']
@@ -461,7 +462,7 @@ class InClass(object):
 
         if not sequence:
             if self.elses:
-                return render_blocks(self.elses, md)
+                return render_blocks(self.elses, md, self.encoding)
             return ''
 
         if isinstance(sequence, str):
@@ -647,7 +648,7 @@ class InClass(object):
                     if index == first:
                         pkw['sequence-start'] = 0
 
-                result = join_unicode(result)
+                result = join_unicode(result, self.encoding)
 
         finally:
             if cache:
@@ -669,7 +670,7 @@ class InClass(object):
 
         if not sequence:
             if self.elses:
-                return render_blocks(self.elses, md)
+                return render_blocks(self.elses, md, self.encoding)
             return ''
 
         if isinstance(sequence, str):
@@ -759,7 +760,7 @@ class InClass(object):
                 if index == 0:
                     pkw['sequence-start'] = 0
 
-            result = join_unicode(result)
+            result = join_unicode(result, self.encoding)
 
         finally:
             if cache:

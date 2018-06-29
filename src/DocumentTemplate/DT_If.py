@@ -89,12 +89,13 @@ class If(object):
     elses = None
     expr = ''
 
-    def __init__(self, blocks):
+    def __init__(self, blocks, encoding=None):
 
         tname, args, section = blocks[0]
         args = parse_params(args, name='', expr='')
         name, expr = name_param(args, 'if', 1)
         self.__name__ = name
+        self.encoding = encoding
         if expr is None:
             cond = name
         else:
