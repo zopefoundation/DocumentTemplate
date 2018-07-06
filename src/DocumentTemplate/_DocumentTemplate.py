@@ -109,6 +109,7 @@ import types
 
 from Acquisition import aq_base
 from ExtensionClass import Base
+import Acquisition
 
 from DocumentTemplate.html_quote import html_quote
 from DocumentTemplate.ustr import ustr
@@ -305,7 +306,7 @@ class InstanceDict(Base):
             get = getattr
 
         try:
-            result = get(self.inst, key)
+            result = get(Acquisition.aq_inner(self.inst), key)
         except AttributeError:
             raise KeyError(key)
 
