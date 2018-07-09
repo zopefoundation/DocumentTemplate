@@ -4,7 +4,12 @@ Changelog
 3.0b4 (unreleased)
 ------------------
 
+- Fix a regression in the Python implementation differing from the C
+  implementation in ``DocumentTemplate.DT_Util.InstanceDict``.
+  `#24 <https://github.com/zopefoundation/DocumentTemplate/pull/24>`_
+
 - Improve compatibility with flake8.
+
 - Update deprecated assert method calls.
 
 
