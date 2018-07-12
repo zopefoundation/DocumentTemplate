@@ -5,13 +5,12 @@ class InstanceDictTests(unittest.TestCase):
     """Testing .._DocumentTemplate.InstanceDict."""
 
     def test_getitem(self):
-        """The acquisition chain of the object a got method is bound to ...
+        # The acquisition chain of the object a got method is bound to
+        # does not contain the InstanceDict instance itself.
 
-        does not contain the InstanceDict instance itself.
+        # This is a test for the fix of the regression described in
+        # https://github.com/zopefoundation/Zope/issues/292
 
-        This is a test for the fix of the regression described in
-        https://github.com/zopefoundation/Zope/issues/292
-        """
         from DocumentTemplate.DT_Util import InstanceDict
         import Acquisition
 
