@@ -4,6 +4,8 @@ Changelog
 3.0b4 (unreleased)
 ------------------
 
+- Drop Python 3.4 support.
+
 - Fix a regression in the Python implementation differing from the C
   implementation in ``DocumentTemplate.DT_Util.InstanceDict``.
   `#24 <https://github.com/zopefoundation/DocumentTemplate/pull/24>`_
