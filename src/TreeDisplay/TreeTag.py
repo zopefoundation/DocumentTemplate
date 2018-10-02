@@ -268,7 +268,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
     ptreeData['tree-item-url'] = url
     ptreeData['tree-level'] = level
     ptreeData['tree-item-expanded'] = 0
-    
+
     output = data.append
 
     items = None
@@ -712,7 +712,7 @@ def tpValuesIds(self, get_items, args,
             try:
                 if get_items(item):
                     id = extract_id(item, args['id'])
-                    
+
                     e = tpValuesIds(item, get_items, args)
                     if e:
                         id = [id, e]
@@ -724,6 +724,7 @@ def tpValuesIds(self, get_items, args,
     except Exception:
         pass
     return r
+
 
 def extract_id(item, idattr):
     if hasattr(item, idattr):
