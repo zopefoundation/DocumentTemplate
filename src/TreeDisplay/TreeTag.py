@@ -159,13 +159,7 @@ def tpRender(self, md, section, args,
 
     data = []
 
-    idattr = args['id']
-    if hasattr(self, idattr):
-        id = try_call_attr(self, idattr)
-    elif hasattr(self, '_p_oid'):
-        id = oid(self)
-    else:
-        id = pyid(self)
+    id = extract_id(self, args['id'])
 
     try:
         # see if we are being run as a sub-document
@@ -274,8 +268,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
     ptreeData['tree-item-url'] = url
     ptreeData['tree-level'] = level
     ptreeData['tree-item-expanded'] = 0
-    idattr = args['id']
-
+    
     output = data.append
 
     items = None
@@ -500,12 +493,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
             __traceback_info__ = sub, args, state, substate
             ids = {}
             for item in items:
-                if hasattr(item, idattr):
-                    id = try_call_attr(item, idattr)
-                elif hasattr(item, '_p_oid'):
-                    id = oid(item)
-                else:
-                    id = pyid(item)
+                id = extract_id(item, args['id'])
                 if len(sub) == 1:
                     sub.append([])
                 substate = sub[1]
@@ -715,7 +703,6 @@ def tpValuesIds(self, get_items, args,
     # expandable (non-empty). Leaves should never be
     # in the state - it will screw the colspan counting.
     r = []
-    idattr = args['id']
     try:
         try:
             items = get_items(self)
@@ -724,14 +711,8 @@ def tpValuesIds(self, get_items, args,
         for item in items:
             try:
                 if get_items(item):
-
-                    if hasattr(item, idattr):
-                        id = try_call_attr(item, idattr)
-                    elif hasattr(item, '_p_oid'):
-                        id = oid(item)
-                    else:
-                        id = pyid(item)
-
+                    id = extract_id(item, args['id'])
+                    
                     e = tpValuesIds(item, get_items, args)
                     if e:
                         id = [id, e]
@@ -744,9 +725,13 @@ def tpValuesIds(self, get_items, args,
         pass
     return r
 
-
-def oid(self):
-    value = b2a_base64(self._p_oid)[:-1]
-    if six.PY3:
-        value = value.decode('ascii')
-    return value
+def extract_id(item, idattr):
+    if hasattr(item, idattr):
+        return try_call_attr(item, idattr)
+    elif getattr(item, '_p_oid', None):
+        value = b2a_base64(item._p_oid)[:-1]
+        if six.PY3:
+            value = value.decode('ascii')
+        return value
+    else:
+        return pyid(item)
