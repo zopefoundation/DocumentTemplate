@@ -175,7 +175,7 @@ class String(object):
             try:
                 tag, args, command, coname = self._parseTag(mo)
             except ParseError as m:
-                self.parse_error(m[0], m[1], text, l_)
+                self.parse_error(m.args[0], m.args[1], text, l_)
 
             s = text[start:l_]
             if s:
@@ -195,7 +195,7 @@ class String(object):
                         r = r.simple_form
                     result.append(r)
                 except ParseError as m:
-                    self.parse_error(m[0], tag, text, l_)
+                    self.parse_error(m.args[0], tag, text, l_)
 
             mo = tagre.search(text, start)
 
@@ -234,7 +234,7 @@ class String(object):
             try:
                 tag, args, command, coname = self._parseTag(mo, scommand, sa)
             except ParseError as m:
-                self.parse_error(m[0], m[1], text, l_)
+                self.parse_error(m.args[0], m.args[1], text, l_)
 
             if command:
                 start = l_ + len(tag)
@@ -264,7 +264,7 @@ class String(object):
                             r = r.simple_form
                         result.append(r)
                     except ParseError as m:
-                        self.parse_error(m[0], stag, text, l_)
+                        self.parse_error(m.args[0], stag, text, l_)
 
                     return start
 
@@ -279,7 +279,7 @@ class String(object):
             try:
                 tag, args, command, coname = self._parseTag(mo, scommand, sa)
             except ParseError as m:
-                self.parse_error(m[0], m[1], text, l_)
+                self.parse_error(m.args[0], m.args[1], text, l_)
 
             start = l_ + len(tag)
             if command:
