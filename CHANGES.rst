@@ -5,6 +5,7 @@ Changelog
 ------------------
 
 - Fix regression with exception handling in ``<dtml-except>`` with Python 2.
+
 - Stabilized TreeTag rendering for objects without ``_p_oid`` values.
 
 - Added support for Python 3.7.
@@ -12,7 +13,7 @@ Changelog
 - Remove support for string exceptions in ``<dtml-except>``.
 
 - Fix handling of parsing ``ParseError``s in Python 3.
--
+
 
 3.0b4 (2018-07-12)
 ------------------
