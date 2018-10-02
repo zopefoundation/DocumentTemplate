@@ -4,7 +4,7 @@ Changelog
 3.0b5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Stabilized TreeTag rendering for objects without ``_p_oid`` values.
 
 
 3.0b4 (2018-07-12)
