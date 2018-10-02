@@ -154,10 +154,7 @@ class Try(object):
         except Exception:
             # but an error occurs.. save the info.
             t, v = sys.exc_info()[:2]
-            if isinstance(t, str):
-                errname = t
-            else:
-                errname = t.__name__
+            errname = t.__name__
 
             handler = self.find_handler(t)
 
@@ -196,12 +193,6 @@ class Try(object):
 
     def find_handler(self, exception):
         "recursively search for a handler for a given exception"
-        if isinstance(exception, str):
-            for e, h in self.handlers:
-                if exception == e or e == '':
-                    return h
-            else:
-                return None
         for e, h in self.handlers:
             if (e == exception.__name__ or
                     e == '' or self.match_base(exception, e)):

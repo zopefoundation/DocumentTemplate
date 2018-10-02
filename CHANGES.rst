@@ -9,6 +9,9 @@ Changelog
 
 - Added support for Python 3.7.
 
+- Remove support for string exceptions in ``<dtml-except>``.
+
+
 3.0b4 (2018-07-12)
 ------------------
 
