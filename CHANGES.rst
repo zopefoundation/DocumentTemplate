@@ -4,6 +4,7 @@ Changelog
 3.0b5 (unreleased)
 ------------------
 
+- Fix regression with exception handling in ``<dtml-except>`` with Python 2.
 - Stabilized TreeTag rendering for objects without ``_p_oid`` values.
 
 - Added support for Python 3.7.
