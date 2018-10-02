@@ -385,11 +385,13 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
 
             if exp:
                 ptreeData['tree-item-expanded'] = 1
-                icon = '<i title="Collapse..." class="fas fa-caret-down text-muted"></i>'
+                icon = ('<i title="Collapse..."'
+                        ' class="fas fa-caret-down text-muted"></i>')
                 output('<a name="%s" href="%s?%stree-c=%s#%s">%s</a>' %
                        (id, root_url, param, s, id, icon))
             else:
-                icon = '<i title="Expand..." class="fas fa-caret-right text-muted"></i>'
+                icon = ('<i title="Expand..."'
+                        ' class="fas fa-caret-right text-muted"></i>')
                 output('<a name="%s" href="%s?%stree-e=%s#%s">%s</a>' %
                        (id, root_url, param, s, id, icon))
             output('</td>\n')
