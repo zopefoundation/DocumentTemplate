@@ -11,6 +11,8 @@ Changelog
 
 - Remove support for string exceptions in ``<dtml-except>``.
 
+- Fix handling of parsing ``ParseError``s in Python 3.
+-
 
 3.0b4 (2018-07-12)
 ------------------
