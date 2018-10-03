@@ -24,7 +24,8 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-else>'
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
-        self.assertRaisesRegexp(ParseError, '^No more than one else ', html)
+        with self.assertRaisesRegexp(ParseError, '^No more than one else '):
+                html()
 
     def test_DT_Try__Try____init__2(self):
         """It allows the else block only in last position."""
@@ -35,11 +36,12 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-var expr="str(100)">'
             '<dtml-except>'
             '</dtml-try>')
-        self.assertRaisesRegexp(
-            ParseError, '^The else block should be the last ', html)
+        with self.assertRaisesRegexp(
+                ParseError, '^The else block should be the last '):
+            html()
 
     def test_DT_Try__Try____init__3(self):
-        """It allows the else block only in last position."""
+        """It allows no except block with a finally block."""
         html = self.doc_class(
             '<dtml-try>'
             'Variable "name": '
@@ -47,8 +49,9 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-finally>'
             '<dtml-var expr="str(100)">'
             '</dtml-try>')
-        self.assertRaisesRegexp(
-            ParseError, '^A try..finally combination cannot ', html)
+        with self.assertRaisesRegexp(
+                ParseError, '^A try..finally combination cannot '):
+            html()
 
     def test_DT_Try__Try____init__4(self):
         """It allows only one default exception handler."""
@@ -60,8 +63,9 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-except>'
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
-        self.assertRaisesRegexp(
-            ParseError, '^Only one default exception handler ', html)
+        with self.assertRaisesRegexp(
+                ParseError, '^Only one default exception handler '):
+            html()
 
     def test_DT_Try__Try__01(self):
         """It renders a try block if no exception occurs."""
@@ -71,7 +75,7 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-var expr="str(100)">'
             '</dtml-try>')
         res = html()
-        expected = ('Variable "name": 100')
+        expected = 'Variable "name": 100'
         self.assertEqual(res, expected)
 
     def test_DT_Try__Try__02(self):
@@ -85,7 +89,7 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-var expr="str(100)">'
             '</dtml-try>')
         res = html()
-        expected = ('Exception variable: 100')
+        expected = 'Exception variable: 100'
         self.assertEqual(res, expected)
 
     def test_DT_Try__Try__03(self):
@@ -140,7 +144,8 @@ class DT_Try_Tests(unittest.TestCase):
             '</dtml-try>')
         dummy_list = [100]
 
-        self.assertRaises(NameError, html, dummy_list=dummy_list)
+        with self.assertRaises(NameError):
+            html(dummy_list=dummy_list)
         # 100 got removed in the finally block.
         self.assertEqual(dummy_list, [110])
 
@@ -158,7 +163,7 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
         res = html()
-        expected = ('Exception variable: 110')
+        expected = 'Exception variable: 110'
         self.assertEqual(res, expected)
 
     def test_DT_Try__Try__07(self):
@@ -175,11 +180,11 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
         res = html()
-        expected = ('Exception variable: 110')
+        expected = 'Exception variable: 110'
         self.assertEqual(res, expected)
 
     def test_DT_Try__Try__08(self):
-        """It raises if no exception handler matches."""
+        """It raises the occurred exception if no exception handler matches."""
         html = self.doc_class(
             '<dtml-try>'
             'Variable "name": '
@@ -191,7 +196,8 @@ class DT_Try_Tests(unittest.TestCase):
             'Exception variable: '
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
-        self.assertRaises(NameError, html)
+        with self.assertRaises(NameError):
+                html()
 
     def test_DT_Try__Try__09(self):
         """It returns a dtml-return immediately."""
@@ -205,11 +211,13 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
         res = html(ret='Return variable: 101')
-        expected = ('Return variable: 101')
+        expected = 'Return variable: 101'
         self.assertEqual(res, expected)
 
     def test_DT_Try__Try__10(self):
-        """It does not break with strings as exceptions."""
+        """It does not break with strings as exceptions but raises a well
+
+        defined exception in that case."""
         html = self.doc_class(
             '<dtml-try>'
             'Variable "name": '
@@ -218,4 +226,5 @@ class DT_Try_Tests(unittest.TestCase):
             'Exception variable: '
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
-        self.assertRaises(InvalidErrorTypeExpression, html)
+        with self.assertRaises(InvalidErrorTypeExpression):
+                html()
