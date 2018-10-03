@@ -6,6 +6,7 @@ Changelog
 
 - Stabilized TreeTag rendering for objects without ``_p_oid`` values.
 
+- Added support for Python 3.7.
 
 3.0b4 (2018-07-12)
 ------------------
