@@ -5,14 +5,18 @@ Changelog
 ------------------
 
 - Fix regression with exception handling in ``<dtml-except>`` with Python 2.
+  (`#25 <https://github.com/zopefoundation/DocumentTemplate/issues/25>`_)
 
 - Stabilized TreeTag rendering for objects without ``_p_oid`` values.
+  (`#26 <https://github.com/zopefoundation/DocumentTemplate/issues/26>`_)
 
 - Added support for Python 3.7.
 
 - Remove support for string exceptions in ``<dtml-except>``.
+  (`#29 <https://github.com/zopefoundation/DocumentTemplate/pull/29>`_)
 
 - Fix handling of parsing ``ParseError``s in Python 3.
+  (`#29 <https://github.com/zopefoundation/DocumentTemplate/pull/29>`_)
 
 
 3.0b4 (2018-07-12)
