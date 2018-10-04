@@ -1,5 +1,7 @@
 import unittest
 
+from DocumentTemplate.DT_Util import ParseError
+
 
 class DummySection(object):
     blocks = ['dummy']
@@ -32,3 +34,24 @@ class TestIn(unittest.TestCase):
             {'key': 'b', 'data': '2'},
             {'key': 'c', 'data': '3'},
         ], result)
+
+
+class DT_In_Tests(unittest.TestCase):
+    """Functional testing ..DT_In.InClass."""
+
+    def _get_doc_class(self):
+        from DocumentTemplate.DT_HTML import HTML
+        return HTML
+
+    doc_class = property(_get_doc_class,)
+
+    def test_DT_In__InClass____init__1(self):
+        """It only allows alphanumeric + `_` characters in prefix."""
+        sequence = ['a', 'b', 'c']
+        html = self.doc_class(
+            '<dtml-in seq prefix="te/_st">'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        with self.assertRaisesRegexp(ParseError, '^prefix is not a simple '):
+                html(seq=sequence)

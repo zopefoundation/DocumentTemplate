@@ -18,6 +18,10 @@ Changelog
 - Fix handling of parsing ``ParseError``s in Python 3.
   (`#29 <https://github.com/zopefoundation/DocumentTemplate/pull/29>`_)
 
+- Fix bugs with ``<dtml-in>``:
+
+    - Raise proper error if prefix is not simple.
+
 
 3.0b4 (2018-07-12)
 ------------------
