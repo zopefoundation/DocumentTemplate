@@ -234,7 +234,7 @@ class Eval(RestrictionCapableEval):
         return self.eval(md)
 
 
-simple_name = re.compile('[a-z][a-z0-9_]*', re.I).match
+simple_name = re.compile('^[a-z][a-z0-9_]*$', re.I).match
 
 
 class Add_with_prefix(object):
