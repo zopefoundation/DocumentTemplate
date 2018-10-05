@@ -333,6 +333,7 @@
 from operator import itemgetter
 import sys
 import re
+import functools
 
 from DocumentTemplate.DT_Util import ParseError, parse_params, name_param
 from DocumentTemplate.DT_Util import str, join_unicode
@@ -836,7 +837,7 @@ class InClass(object):
 
         if need_sortfunc:
             by = SortBy(multsort, sf_list)
-            s.sort(by)
+            s.sort(key=functools.cmp_to_key(by))
         else:
             # In python 3 a key is required when tuples in the list have
             # the same sort key to prevent attempting to compare the second
