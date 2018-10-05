@@ -5,17 +5,20 @@ develop
 dist
 flake8
 htmlcov
+include
 lib
 parts
 
 *.egg-info/
 *.pyc
 *.pyo
+.Python
 .coverage
 .coverage.*
 .installed.cfg
 .mr.developer.cfg
 .tox
+coverage.xml
 develop-eggs/
 eggs/
-coverage.xml
+pip-selfcheck.json
