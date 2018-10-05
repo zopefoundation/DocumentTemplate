@@ -21,6 +21,7 @@ Changelog
 - Fix bugs with ``<dtml-in>``:
 
     - Raise proper error if prefix is not simple.
+    - Fix complex multisort in Python 3.
 
 
 3.0b4 (2018-07-12)
