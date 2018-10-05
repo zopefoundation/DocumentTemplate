@@ -407,6 +407,48 @@ class DT_In_Tests(unittest.TestCase):
             'Item 3: alberta')
         self.assertEqual(res, expected)
 
+    def test_DT_In__InClass__renderwb__06(self):
+        """It can access previous and next batch of a sequence."""
+        seq = [Dummy('alberta'), Dummy('berta'), Dummy('barnie')]
+        html = self.doc_class(
+            '<dtml-in seq sort=name start=2 previous size=1>'
+            'Prev index: <dtml-var previous-sequence-start-number> '
+            '</dtml-in>'
+            '<dtml-in seq sort=name start=2 next size=1>'
+            'Next index: <dtml-var next-sequence-start-number>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = ('Prev index: 1 '
+                    'Next index: 3')
+        self.assertEqual(res, expected)
+        # Also with else clauses for edges of the sequence
+        html = self.doc_class(
+            '<dtml-in seq sort=name start=1 previous size=1>'
+            'Prev index: <dtml-var previous-sequence-start-number> '
+            '<dtml-else>'
+            'No prev '
+            '</dtml-in>'
+            '<dtml-in seq sort=name start=3 next size=1>'
+            'Next index: <dtml-var next-sequence-start-number>'
+            '<dtml-else>'
+            'No next'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = ('No prev '
+                    'No next')
+        self.assertEqual(res, expected)
+        # or it renders nothing if no else is given
+        html = self.doc_class(
+            '<dtml-in seq sort=name start=1 previous size=1>'
+            'Prev index: <dtml-var previous-sequence-start-number> '
+            '</dtml-in>'
+            '<dtml-in seq sort=name start=3 next size=1>'
+            'Next index: <dtml-var next-sequence-start-number>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = ''
+        self.assertEqual(res, expected)
+
     def test_DT_In__make_sortfunction__1(self):
         """It allows two slashes at maximum in sort expression."""
         seq = [Dummy('alberta'), Dummy('berta'), Dummy('barnie')]
