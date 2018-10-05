@@ -399,3 +399,45 @@ class DT_In_Tests(unittest.TestCase):
             'Item 2: barnie'
             'Item 3: alberta')
         self.assertEqual(res, expected)
+
+    def test_DT_In__make_sortfunction__1(self):
+        """It allows two slashes at maximum in sort expression."""
+        seq = [Dummy('alberta'), Dummy('berta'), Dummy('barnie')]
+        html = self.doc_class(
+            '<dtml-in seq sort=name/cmp/asc/wrong>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        error_msg = 'sort option must contain no more than 2 slashes'
+        with self.assertRaisesRegexp(SyntaxError, error_msg):
+                html(seq=seq)
+
+    def test_DT_In__make_sortfunction__2(self):
+        """It allows only asc and desc as sort order in sort expression."""
+        seq = [Dummy('alberta'), Dummy('berta'), Dummy('barnie')]
+        html = self.doc_class(
+            '<dtml-in seq sort=name/cmp/wrong>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        error_msg = 'sort oder must be either ASC or DESC'
+        with self.assertRaisesRegexp(SyntaxError, error_msg):
+                html(seq=seq)
+
+    def test_DT_In__make_sortfunction__3(self):
+        """It can use a local function for comparison."""
+        def local_cmp(a, b):
+            return (a > b) - (a < b)
+
+        seq = [Dummy('alberta'), Dummy('berta'), Dummy('barnie')]
+        html = self.doc_class(
+            '<dtml-in seq sort=name/local_cmp/desc>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq, local_cmp=local_cmp)
+        expected = (
+            'Item 1: berta'
+            'Item 2: barnie'
+            'Item 3: alberta')
+        self.assertEqual(res, expected)
