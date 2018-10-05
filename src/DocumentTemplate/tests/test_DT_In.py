@@ -47,11 +47,18 @@ class TestIn(unittest.TestCase):
 class DT_In_Tests(unittest.TestCase):
     """Functional testing ..DT_In.InClass."""
 
-    def _get_doc_class(self):
+    def assertRaisesRegex(self, *args, **kw):
+        try:
+            # available from Python 3.2
+            return unittest.TestCase.assertRaisesRegex(self, *args, **kw)
+        except AttributeError:
+            # only available till Python 3.7
+            return unittest.TestCase.assertRaisesRegexp(self, *args, **kw)
+
+    @property
+    def doc_class(self):
         from DocumentTemplate.DT_HTML import HTML
         return HTML
-
-    doc_class = property(_get_doc_class,)
 
     def test_DT_In__InClass____init__1(self):
         """It only allows alphanumeric + `_` characters in prefix."""
@@ -61,7 +68,7 @@ class DT_In_Tests(unittest.TestCase):
             'Item <dtml-var sequence-number>: '
             '<dtml-var sequence-item>'
             '</dtml-in>')
-        with self.assertRaisesRegexp(ParseError, '^prefix is not a simple '):
+        with self.assertRaisesRegex(ParseError, '^prefix is not a simple '):
                 html(seq=sequence)
 
     def test_DT_In__InClass____init__2(self):
@@ -86,7 +93,7 @@ class DT_In_Tests(unittest.TestCase):
             '<dtml-else>'
             'Still no items available'
             '</dtml-in>')
-        with self.assertRaisesRegexp(ParseError, '^too many else blocks'):
+        with self.assertRaisesRegex(ParseError, '^too many else blocks'):
                 html(seq=[])
 
     def test_DT_In__InClass____init__3(self):
@@ -101,7 +108,7 @@ class DT_In_Tests(unittest.TestCase):
         for arg in batch_args:
             html = self.doc_class(template.format(arg=arg))
             error_msg = 'The {arg} attribute was used'.format(arg=arg)
-            with self.assertRaisesRegexp(ParseError, error_msg):
+            with self.assertRaisesRegex(ParseError, error_msg):
                     html(seq=['a', 'b'])
 
     def test_DT_In__InClass____init__4(self):
@@ -111,7 +118,7 @@ class DT_In_Tests(unittest.TestCase):
             'Item <dtml-var sequence-number>: '
             '<dtml-var sequence-item>'
             '</dtml-in>')
-        with self.assertRaisesRegexp(ValueError, 'Strings are not allowed as'):
+        with self.assertRaisesRegex(ValueError, 'Strings are not allowed as'):
                 html(seq="Foo")
 
     def test_DT_In__InClass____init__5(self):
@@ -135,7 +142,7 @@ class DT_In_Tests(unittest.TestCase):
             'Item <dtml-var sequence-number>: '
             '<dtml-var sequence-item>'
             '</dtml-in>')
-        with self.assertRaisesRegexp(ValueError, 'Strings are not allowed as'):
+        with self.assertRaisesRegex(ValueError, 'Strings are not allowed as'):
                 html(seq="Foo")
 
     def test_DT_In__InClass__renderwob__02(self):
@@ -306,7 +313,7 @@ class DT_In_Tests(unittest.TestCase):
             'Item <dtml-var sequence-number>: '
             '<dtml-var sequence-item>'
             '</dtml-in>')
-        with self.assertRaisesRegexp(ValueError, 'Strings are not allowed as'):
+        with self.assertRaisesRegex(ValueError, 'Strings are not allowed as'):
                 html(seq="Foo")
 
     def test_DT_In__InClass__renderwb__02(self):
@@ -409,7 +416,7 @@ class DT_In_Tests(unittest.TestCase):
             '<dtml-var sequence-item>'
             '</dtml-in>')
         error_msg = 'sort option must contain no more than 2 slashes'
-        with self.assertRaisesRegexp(SyntaxError, error_msg):
+        with self.assertRaisesRegex(SyntaxError, error_msg):
                 html(seq=seq)
 
     def test_DT_In__make_sortfunction__2(self):
@@ -421,7 +428,7 @@ class DT_In_Tests(unittest.TestCase):
             '<dtml-var sequence-item>'
             '</dtml-in>')
         error_msg = 'sort oder must be either ASC or DESC'
-        with self.assertRaisesRegexp(SyntaxError, error_msg):
+        with self.assertRaisesRegex(SyntaxError, error_msg):
                 html(seq=seq)
 
     def test_DT_In__make_sortfunction__3(self):
