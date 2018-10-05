@@ -33,6 +33,7 @@ Bugfixes
 
     - Raise proper error if prefix is not simple.
     - Fix complex multisort in Python 3.
+    - Fix iteration over list of tuples in Python 3.
 
 
 3.0b4 (2018-07-12)

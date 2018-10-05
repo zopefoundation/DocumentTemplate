@@ -10,9 +10,14 @@ class DummySection(object):
 class Dummy(object):
     """Dummy with attribute"""
 
-    def __init__(self, name, number=0):
+    def __init__(self, name, number=0, _callable=0):
         self.name = name
         self.number = number
+        self._callable = _callable
+
+    @property
+    def maybe_callable(self):
+        return self._callable
 
 
 class TestIn(unittest.TestCase):
@@ -304,6 +309,53 @@ class DT_In_Tests(unittest.TestCase):
             'Item 2: alberta , 1'
             'Item 3: barnie , 1'
             'Item 4: alberta , 2')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwob__08(self):
+        """It can iterate over list of tuples."""
+        seq = [('alberta', 3), ('ylberta', 1), ('barnie', 2)]
+        html = self.doc_class(
+            '<dtml-in seq>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: 3'
+            'Item 2: 1'
+            'Item 3: 2')
+        self.assertEqual(res, expected)
+        # also sorted
+        html = self.doc_class(
+            '<dtml-in seq sort>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: 3'
+            'Item 2: 2'
+            'Item 3: 1')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwob__09(self):
+        """It can also contain callables as values."""
+        # It catches errors and treats those as smallest
+        seq = [
+            Dummy('alberta', _callable=lambda: 3),
+            Dummy('ylberta', _callable=lambda: 0),
+            Dummy('barnie', _callable=lambda: [][2]),
+        ]
+        html = self.doc_class(
+            '<dtml-in seq sort=maybe_callable/cmp>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: barnie'
+            'Item 2: ylberta'
+            'Item 3: alberta')
         self.assertEqual(res, expected)
 
     def test_DT_In__InClass__renderwb__01(self):
