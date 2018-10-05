@@ -7,11 +7,18 @@ from DocumentTemplate.DT_Raise import InvalidErrorTypeExpression
 class DT_Try_Tests(unittest.TestCase):
     """Testing ..DT_Try.Try."""
 
-    def _get_doc_class(self):
+    def assertRaisesRegex(self, *args, **kw):
+        try:
+            # available from Python 3.2
+            return unittest.TestCase.assertRaisesRegex(self, *args, **kw)
+        except AttributeError:
+            # only available till Python 3.7
+            return unittest.TestCase.assertRaisesRegexp(self, *args, **kw)
+
+    @property
+    def doc_class(self):
         from DocumentTemplate.DT_HTML import HTML
         return HTML
-
-    doc_class = property(_get_doc_class,)
 
     def test_DT_Try__Try____init__1(self):
         """It allows only one else block."""
@@ -24,7 +31,7 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-else>'
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
-        with self.assertRaisesRegexp(ParseError, '^No more than one else '):
+        with self.assertRaisesRegex(ParseError, '^No more than one else '):
                 html()
 
     def test_DT_Try__Try____init__2(self):
@@ -36,7 +43,7 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-var expr="str(100)">'
             '<dtml-except>'
             '</dtml-try>')
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ParseError, '^The else block should be the last '):
             html()
 
@@ -49,7 +56,7 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-finally>'
             '<dtml-var expr="str(100)">'
             '</dtml-try>')
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ParseError, '^A try..finally combination cannot '):
             html()
 
@@ -63,7 +70,7 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-except>'
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ParseError, '^Only one default exception handler '):
             html()
 
