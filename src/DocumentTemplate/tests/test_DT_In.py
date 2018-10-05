@@ -14,8 +14,9 @@ class Dummy(object):
         self.name = name
         self.number = number
 
+
 class TestIn(unittest.TestCase):
-    """Testing ..DT_in.InClass."""
+    """Testing ..DT_In.InClass."""
 
     def _getTargetClass(self):
         from DocumentTemplate.DT_In import InClass
@@ -62,6 +63,173 @@ class DT_In_Tests(unittest.TestCase):
             '</dtml-in>')
         with self.assertRaisesRegexp(ParseError, '^prefix is not a simple '):
                 html(seq=sequence)
+
+    def test_DT_In__InClass____init__2(self):
+        """It only allows one else block."""
+        html = self.doc_class(
+            '<dtml-in seq>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '<dtml-else>'
+            'No items available'
+            '</dtml-in>')
+        res = html(seq=[])
+        expected = 'No items available'
+        self.assertEqual(res, expected)
+
+        html = self.doc_class(
+            '<dtml-in seq>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '<dtml-else>'
+            'No items available'
+            '<dtml-else>'
+            'Still no items available'
+            '</dtml-in>')
+        with self.assertRaisesRegexp(ParseError, '^too many else blocks'):
+                html(seq=[])
+
+    def test_DT_In__InClass____init__3(self):
+        """It restricts certain args to batch processing."""
+        batch_args = ('orphan', 'overlap', 'previous', 'next')
+        template = (
+            '<dtml-in seq {arg}>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+
+        for arg in batch_args:
+            html = self.doc_class(template.format(arg=arg))
+            error_msg = 'The {arg} attribute was used'.format(arg=arg)
+            with self.assertRaisesRegexp(ParseError, error_msg):
+                    html(seq=['a', 'b'])
+
+    def test_DT_In__InClass____init__4(self):
+        """It does not allow strings as sequence.."""
+        html = self.doc_class(
+            '<dtml-in seq>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        with self.assertRaisesRegexp(ValueError, 'Strings are not allowed as'):
+                html(seq="Foo")
+
+    def test_DT_In__InClass____init__5(self):
+        """It allows `sequence-item` as sort key resulting in default sort."""
+        html = self.doc_class(
+            '<dtml-in seq sort=sequence-item>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        res = html(seq=['c', 'a', 'b'])
+        expected = (
+            'Item 1: a'
+            'Item 2: b'
+            'Item 3: c')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwob__01(self):
+        """It does not allow strings as sequence."""
+        html = self.doc_class(
+            '<dtml-in seq>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        with self.assertRaisesRegexp(ValueError, 'Strings are not allowed as'):
+                html(seq="Foo")
+
+    def test_DT_In__InClass__renderwob__02(self):
+        """It can handle an empty sequence including else."""
+        html = self.doc_class(
+            'This is in:'
+            '<dtml-in seq>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>'
+            'This is else:'
+            '<dtml-in seq>'
+            'Part <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '<dtml-else>'
+            'no items'
+            '</dtml-in>')
+        res = html(seq=[])
+        expected = (
+            'This is in:'
+            'This is else:'
+            'no items')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwob__03(self):
+        """It allows expressions as sequence."""
+        html = self.doc_class(
+            '<dtml-in expr="range(2)">'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        res = html()
+        expected = (
+            'Item 1: 0'
+            'Item 2: 1')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwob__04(self):
+        """It allows to simply sort a sequence."""
+        seq = [Dummy('alberta'), Dummy('berta'), Dummy('barnie')]
+        html = self.doc_class(
+            '<dtml-in seq sort=name>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: alberta'
+            'Item 2: barnie'
+            'Item 3: berta')
+        self.assertEqual(res, expected)
+        # Also with sort expression
+
+        def s_expr():
+            return "name"
+
+        html = self.doc_class(
+            '<dtml-in seq sort_expr="s_expr()">'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq, s_expr=s_expr)
+        expected = (
+            'Item 1: alberta'
+            'Item 2: barnie'
+            'Item 3: berta')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwob__05(self):
+        """It allows to reverse sort a sequence."""
+        seq = [Dummy('alberta'), Dummy('berta'), Dummy('barnie')]
+        html = self.doc_class(
+            '<dtml-in seq sort=name reverse>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: berta'
+            'Item 2: barnie'
+            'Item 3: alberta')
+        self.assertEqual(res, expected)
+        # Also with reverse expression
+        html = self.doc_class(
+            '<dtml-in seq sort=name/cmp reverse_expr="1==1">'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: berta'
+            'Item 2: barnie'
+            'Item 3: alberta')
+        self.assertEqual(res, expected)
 
     def test_DT_In__InClass__renderwob__06(self):
         """It allows multisort."""
@@ -130,3 +298,131 @@ class DT_In_Tests(unittest.TestCase):
             'Item 3: barnie , 1'
             'Item 4: alberta , 2')
         self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwb__01(self):
+        """It does not allow strings as sequence in batch mode."""
+        html = self.doc_class(
+            '<dtml-in seq size=1>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        with self.assertRaisesRegexp(ValueError, 'Strings are not allowed as'):
+                html(seq="Foo")
+
+    def test_DT_In__InClass__renderwb__02(self):
+        """It can handle an empty sequence including else."""
+        html = self.doc_class(
+            'This is in:'
+            '<dtml-in seq size=1>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>'
+            'This is else:'
+            '<dtml-in seq size=1>'
+            'Part <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '<dtml-else>'
+            'no items'
+            '</dtml-in>')
+        res = html(seq=[])
+        expected = (
+            'This is in:'
+            'This is else:'
+            'no items')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwb__03(self):
+        """It allows expressions as sequence."""
+        html = self.doc_class(
+            '<dtml-in expr="range(2)" size=1>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        res = html()
+        expected = ('Item 1: 0')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwb__04(self):
+        """It allows to simply sort a sequence."""
+        seq = [Dummy('alberta'), Dummy('berta'), Dummy('barnie')]
+        html = self.doc_class(
+            '<dtml-in seq sort=name start=1>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: alberta'
+            'Item 2: barnie'
+            'Item 3: berta')
+        self.assertEqual(res, expected)
+        # Also with sort expression
+
+        def s_expr():
+            return "name"
+
+        html = self.doc_class(
+            '<dtml-in seq sort_expr="s_expr()" start=1>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq, s_expr=s_expr)
+        expected = (
+            'Item 1: alberta'
+            'Item 2: barnie'
+            'Item 3: berta')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwb__05(self):
+        """It allows to reverse sort a sequence."""
+        seq = [Dummy('alberta'), Dummy('berta'), Dummy('barnie')]
+        html = self.doc_class(
+            '<dtml-in seq sort=name reverse start=1>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: berta'
+            'Item 2: barnie'
+            'Item 3: alberta')
+        self.assertEqual(res, expected)
+        # Also with reverse expression
+        html = self.doc_class(
+            '<dtml-in seq sort=name reverse_expr="1==1" start=1>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: berta'
+            'Item 2: barnie'
+            'Item 3: alberta')
+        self.assertEqual(res, expected)
+
+    # def test_DT_In__int_param__01(self):
+    #     """It can support different weird conversions."""
+    #     seq = range(5)
+    #     html = self.doc_class(
+    #         '<dtml-in seq start="sd" orphan="" >'
+    #         'Item <dtml-var sequence-number>: '
+    #         '<dtml-var sequence-var-name>'
+    #         '</dtml-in>')
+    #     res = html(seq=seq)
+    #     expected = (
+    #         'Item 1: berta'
+    #         'Item 2: barnie'
+    #         'Item 3: alberta')
+    #     self.assertEqual(res, expected)
+    #     # Also with reverse expression
+    #     html = self.doc_class(
+    #         '<dtml-in seq sort=name reverse_expr="1==1" start=1>'
+    #         'Item <dtml-var sequence-number>: '
+    #         '<dtml-var sequence-var-name>'
+    #         '</dtml-in>')
+    #     res = html(seq=seq)
+    #     expected = (
+    #         'Item 1: berta'
+    #         'Item 2: barnie'
+    #         'Item 3: alberta')
+    #     self.assertEqual(res, expected)
