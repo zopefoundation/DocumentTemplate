@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0b5 (unreleased)
+3.0b5 (2018-10-05)
 ------------------
 
 Breaking changes
@@ -28,7 +28,7 @@ Bugfixes
 - Remove support for string exceptions in ``<dtml-except>``.
   (`#29 <https://github.com/zopefoundation/DocumentTemplate/pull/29>`_)
 
-- Fix handling of parsing ``ParseError``s in Python 3.
+- Fix handling of parsing a ``ParseError`` in Python 3.
   (`#29 <https://github.com/zopefoundation/DocumentTemplate/pull/29>`_)
 
 - Fix bugs with ``<dtml-in>``:
