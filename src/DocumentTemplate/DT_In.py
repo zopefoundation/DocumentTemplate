@@ -341,6 +341,7 @@ from DocumentTemplate.DT_Util import render_blocks, InstanceDict
 from DocumentTemplate.DT_Util import ValidationError, Eval
 from DocumentTemplate.DT_Util import simple_name, add_with_prefix
 from DocumentTemplate.DT_InSV import sequence_variables, opt
+from zope.sequencesort.ssort import _Smallest
 
 if sys.version_info > (3, 0):
     unicode = str
@@ -831,7 +832,7 @@ class InClass(object):
                         try:
                             k = k()
                         except Exception:
-                            pass
+                            k = _Smallest
 
             s.append((k, client))
 

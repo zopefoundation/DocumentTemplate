@@ -7,12 +7,14 @@ Changelog
 Breaking changes
 ++++++++++++++++
 
-- Removed ``VSEval`` module. Please use DT_Util.EVal now.
+- Remove ``VSEval`` module. Please use DT_Util.EVal now.
+
+- Remove ``DTtestExpr`` module. It contained nothing useful.
 
 Features
 ++++++++
 
-- Added support for Python 3.7.
+- Add support for Python 3.7.
 
 Bugfixes
 ++++++++
@@ -33,6 +35,7 @@ Bugfixes
 
     - Raise proper error if prefix is not simple.
     - Fix complex multisort in Python 3.
+    - Fix iteration over list of tuples in Python 3.
 
 
 3.0b4 (2018-07-12)

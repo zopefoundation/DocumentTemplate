@@ -10,9 +10,14 @@ class DummySection(object):
 class Dummy(object):
     """Dummy with attribute"""
 
-    def __init__(self, name, number=0):
+    def __init__(self, name, number=0, _callable=0):
         self.name = name
         self.number = number
+        self._callable = _callable
+
+    @property
+    def maybe_callable(self):
+        return self._callable
 
 
 class TestIn(unittest.TestCase):
@@ -306,6 +311,53 @@ class DT_In_Tests(unittest.TestCase):
             'Item 4: alberta , 2')
         self.assertEqual(res, expected)
 
+    def test_DT_In__InClass__renderwob__08(self):
+        """It can iterate over list of tuples."""
+        seq = [('alberta', 3), ('ylberta', 1), ('barnie', 2)]
+        html = self.doc_class(
+            '<dtml-in seq>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: 3'
+            'Item 2: 1'
+            'Item 3: 2')
+        self.assertEqual(res, expected)
+        # also sorted
+        html = self.doc_class(
+            '<dtml-in seq sort>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-item>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: 3'
+            'Item 2: 2'
+            'Item 3: 1')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwob__09(self):
+        """It can also contain callables as values."""
+        # It catches errors and treats those as smallest
+        seq = [
+            Dummy('alberta', _callable=lambda: 3),
+            Dummy('ylberta', _callable=lambda: 0),
+            Dummy('barnie', _callable=lambda: [][2]),
+        ]
+        html = self.doc_class(
+            '<dtml-in seq sort=maybe_callable/cmp>'
+            'Item <dtml-var sequence-number>: '
+            '<dtml-var sequence-var-name>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = (
+            'Item 1: barnie'
+            'Item 2: ylberta'
+            'Item 3: alberta')
+        self.assertEqual(res, expected)
+
     def test_DT_In__InClass__renderwb__01(self):
         """It does not allow strings as sequence in batch mode."""
         html = self.doc_class(
@@ -405,6 +457,48 @@ class DT_In_Tests(unittest.TestCase):
             'Item 1: berta'
             'Item 2: barnie'
             'Item 3: alberta')
+        self.assertEqual(res, expected)
+
+    def test_DT_In__InClass__renderwb__06(self):
+        """It can access previous and next batch of a sequence."""
+        seq = [Dummy('alberta'), Dummy('berta'), Dummy('barnie')]
+        html = self.doc_class(
+            '<dtml-in seq sort=name start=2 previous size=1>'
+            'Prev index: <dtml-var previous-sequence-start-number> '
+            '</dtml-in>'
+            '<dtml-in seq sort=name start=2 next size=1>'
+            'Next index: <dtml-var next-sequence-start-number>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = ('Prev index: 1 '
+                    'Next index: 3')
+        self.assertEqual(res, expected)
+        # Also with else clauses for edges of the sequence
+        html = self.doc_class(
+            '<dtml-in seq sort=name start=1 previous size=1>'
+            'Prev index: <dtml-var previous-sequence-start-number> '
+            '<dtml-else>'
+            'No prev '
+            '</dtml-in>'
+            '<dtml-in seq sort=name start=3 next size=1>'
+            'Next index: <dtml-var next-sequence-start-number>'
+            '<dtml-else>'
+            'No next'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = ('No prev '
+                    'No next')
+        self.assertEqual(res, expected)
+        # or it renders nothing if no else is given
+        html = self.doc_class(
+            '<dtml-in seq sort=name start=1 previous size=1>'
+            'Prev index: <dtml-var previous-sequence-start-number> '
+            '</dtml-in>'
+            '<dtml-in seq sort=name start=3 next size=1>'
+            'Next index: <dtml-var next-sequence-start-number>'
+            '</dtml-in>')
+        res = html(seq=seq)
+        expected = ''
         self.assertEqual(res, expected)
 
     def test_DT_In__make_sortfunction__1(self):
