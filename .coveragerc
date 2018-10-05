@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = DocumentTemplate
+source = src
 
 [report]
 precision = 2
