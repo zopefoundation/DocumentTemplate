@@ -7,12 +7,14 @@ Changelog
 Breaking changes
 ++++++++++++++++
 
-- Removed ``VSEval`` module. Please use DT_Util.EVal now.
+- Remove ``VSEval`` module. Please use DT_Util.EVal now.
+
+- Remove ``DTtestExpr`` module. It contained nothing useful.
 
 Features
 ++++++++
 
-- Added support for Python 3.7.
+- Add support for Python 3.7.
 
 Bugfixes
 ++++++++

@@ -13,7 +13,7 @@
 """This module is no longer actively used.
 """
 
-from DocumentTemplate._DocumentTemplate import (  # NOQA
+from DocumentTemplate._DocumentTemplate import (  # noqa: F401 pragma: nocover
     DictInstance,
     InstanceDict,
     join_unicode,
@@ -25,4 +25,4 @@ from DocumentTemplate._DocumentTemplate import (  # NOQA
 import warnings
 warnings.warn('pDocumentTemplate is not longer in active use. '
               'It remains only as an implementation reference.',
-              DeprecationWarning)
+              DeprecationWarning)  # pragma: nocover

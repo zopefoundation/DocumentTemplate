@@ -833,7 +833,6 @@ class InClass(object):
                             k = k()
                         except Exception:
                             k = _Smallest
-                            pass
 
             s.append((k, client))
 
