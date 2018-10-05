@@ -399,30 +399,3 @@ class DT_In_Tests(unittest.TestCase):
             'Item 2: barnie'
             'Item 3: alberta')
         self.assertEqual(res, expected)
-
-    # def test_DT_In__int_param__01(self):
-    #     """It can support different weird conversions."""
-    #     seq = range(5)
-    #     html = self.doc_class(
-    #         '<dtml-in seq start="sd" orphan="" >'
-    #         'Item <dtml-var sequence-number>: '
-    #         '<dtml-var sequence-var-name>'
-    #         '</dtml-in>')
-    #     res = html(seq=seq)
-    #     expected = (
-    #         'Item 1: berta'
-    #         'Item 2: barnie'
-    #         'Item 3: alberta')
-    #     self.assertEqual(res, expected)
-    #     # Also with reverse expression
-    #     html = self.doc_class(
-    #         '<dtml-in seq sort=name reverse_expr="1==1" start=1>'
-    #         'Item <dtml-var sequence-number>: '
-    #         '<dtml-var sequence-var-name>'
-    #         '</dtml-in>')
-    #     res = html(seq=seq)
-    #     expected = (
-    #         'Item 1: berta'
-    #         'Item 2: barnie'
-    #         'Item 3: alberta')
-    #     self.assertEqual(res, expected)
