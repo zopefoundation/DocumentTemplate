@@ -274,6 +274,7 @@ class InstanceDict(Base):
 
     def __init__(self, inst, namespace, guarded_getattr=None):
         self.inst = inst
+        self.self = inst
         self.namespace = namespace
         self.cache = {}
         if guarded_getattr is None:
@@ -306,7 +307,7 @@ class InstanceDict(Base):
             get = getattr
 
         try:
-            result = get(aq_inner(self.inst), key)
+            result = get(self.inst, key)
         except AttributeError:
             raise KeyError(key)
 
