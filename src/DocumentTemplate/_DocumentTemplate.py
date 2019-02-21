@@ -273,7 +273,6 @@ class InstanceDict(Base):
     guarded_getattr = None
 
     def __init__(self, inst, namespace, guarded_getattr=None):
-        self.inst = inst
         self.self = inst
         self.namespace = namespace
         self.cache = {}
@@ -283,7 +282,7 @@ class InstanceDict(Base):
             self.guarded_getattr = guarded_getattr
 
     def __repr__(self):
-        return 'InstanceDict(%r)' % self.inst
+        return 'InstanceDict(%r)' % self.self
 
     def __len__(self):
         return 1
@@ -300,14 +299,14 @@ class InstanceDict(Base):
             if key != '__str__':
                 raise KeyError(key)  # Don't divulge private data
             else:
-                return str(self.inst)
+                return str(self.self)
 
         get = self.guarded_getattr
         if get is None:
             get = getattr
 
         try:
-            result = get(self.inst, key)
+            result = get(self.self, key)
         except AttributeError:
             raise KeyError(key)
 
