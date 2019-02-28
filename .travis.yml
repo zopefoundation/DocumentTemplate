@@ -1,5 +1,4 @@
 language: python
-sudo: false
 python:
     - 2.7
     - 3.5
@@ -8,18 +7,20 @@ matrix:
     include:
         - python: "3.7"
           dist: xenial
-          sudo: true
+        - python: 2.7
+          name: "Flake8"
+          install:  pip install -U flake8
+          script: flake8 src setup.py
+          after_success:
 install:
     - pip install coveralls coverage
     - pip install zc.buildout
     - pip install -U six==1.10.0
-    - pip install flake8
     - buildout bootstrap
     - buildout
 
 script:
     - coverage run bin/test -v1
-    - flake8 --doctests src tests setup.py
 after_success:
     - coverage combine
     - coveralls
