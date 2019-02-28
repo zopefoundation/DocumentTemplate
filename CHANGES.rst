@@ -4,7 +4,9 @@ Changelog
 3.0b6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix regression in ``.DT_Util.InstanceDict`` which broke the acquisition
+  chain of the item it wraps.
+  (`#38 <https://github.com/zopefoundation/DocumentTemplate/issues/38>`_)
 
 
 3.0b5 (2018-10-05)
