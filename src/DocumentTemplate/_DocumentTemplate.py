@@ -108,7 +108,6 @@ import sys
 import types
 
 from Acquisition import aq_base
-from Acquisition import aq_inner
 from ExtensionClass import Base
 
 from DocumentTemplate.html_quote import html_quote
@@ -267,7 +266,7 @@ def safe_callable(ob):
     return callable(ob)
 
 
-class InstanceDict(Base):
+class InstanceDict(object):
     """"""
 
     guarded_getattr = None
@@ -306,7 +305,7 @@ class InstanceDict(Base):
             get = getattr
 
         try:
-            result = get(aq_inner(self.inst), key)
+            result = get(self.inst, key)
         except AttributeError:
             raise KeyError(key)
 
