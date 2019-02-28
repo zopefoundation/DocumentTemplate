@@ -32,7 +32,7 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
         with self.assertRaisesRegex(ParseError, '^No more than one else '):
-                html()
+            html()
 
     def test_DT_Try__Try____init__2(self):
         """It allows the else block only in last position."""
@@ -204,7 +204,7 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
         with self.assertRaises(NameError):
-                html()
+            html()
 
     def test_DT_Try__Try__09(self):
         """It returns a dtml-return immediately."""
@@ -234,4 +234,4 @@ class DT_Try_Tests(unittest.TestCase):
             '<dtml-var expr="str(110)">'
             '</dtml-try>')
         with self.assertRaises(InvalidErrorTypeExpression):
-                html()
+            html()

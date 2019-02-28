@@ -74,7 +74,7 @@ class DT_In_Tests(unittest.TestCase):
             '<dtml-var sequence-item>'
             '</dtml-in>')
         with self.assertRaisesRegex(ParseError, '^prefix is not a simple '):
-                html(seq=sequence)
+            html(seq=sequence)
 
     def test_DT_In__InClass____init__2(self):
         """It only allows one else block."""
@@ -99,7 +99,7 @@ class DT_In_Tests(unittest.TestCase):
             'Still no items available'
             '</dtml-in>')
         with self.assertRaisesRegex(ParseError, '^too many else blocks'):
-                html(seq=[])
+            html(seq=[])
 
     def test_DT_In__InClass____init__3(self):
         """It restricts certain args to batch processing."""
@@ -114,7 +114,7 @@ class DT_In_Tests(unittest.TestCase):
             html = self.doc_class(template.format(arg=arg))
             error_msg = 'The {arg} attribute was used'.format(arg=arg)
             with self.assertRaisesRegex(ParseError, error_msg):
-                    html(seq=['a', 'b'])
+                html(seq=['a', 'b'])
 
     def test_DT_In__InClass____init__4(self):
         """It does not allow strings as sequence.."""
@@ -124,7 +124,7 @@ class DT_In_Tests(unittest.TestCase):
             '<dtml-var sequence-item>'
             '</dtml-in>')
         with self.assertRaisesRegex(ValueError, 'Strings are not allowed as'):
-                html(seq="Foo")
+            html(seq="Foo")
 
     def test_DT_In__InClass____init__5(self):
         """It allows `sequence-item` as sort key resulting in default sort."""
@@ -148,7 +148,7 @@ class DT_In_Tests(unittest.TestCase):
             '<dtml-var sequence-item>'
             '</dtml-in>')
         with self.assertRaisesRegex(ValueError, 'Strings are not allowed as'):
-                html(seq="Foo")
+            html(seq="Foo")
 
     def test_DT_In__InClass__renderwob__02(self):
         """It can handle an empty sequence including else."""
@@ -366,7 +366,7 @@ class DT_In_Tests(unittest.TestCase):
             '<dtml-var sequence-item>'
             '</dtml-in>')
         with self.assertRaisesRegex(ValueError, 'Strings are not allowed as'):
-                html(seq="Foo")
+            html(seq="Foo")
 
     def test_DT_In__InClass__renderwb__02(self):
         """It can handle an empty sequence including else."""
@@ -511,7 +511,7 @@ class DT_In_Tests(unittest.TestCase):
             '</dtml-in>')
         error_msg = 'sort option must contain no more than 2 slashes'
         with self.assertRaisesRegex(SyntaxError, error_msg):
-                html(seq=seq)
+            html(seq=seq)
 
     def test_DT_In__make_sortfunction__2(self):
         """It allows only asc and desc as sort order in sort expression."""
@@ -523,7 +523,7 @@ class DT_In_Tests(unittest.TestCase):
             '</dtml-in>')
         error_msg = 'sort oder must be either ASC or DESC'
         with self.assertRaisesRegex(SyntaxError, error_msg):
-                html(seq=seq)
+            html(seq=seq)
 
     def test_DT_In__make_sortfunction__3(self):
         """It can use a local function for comparison."""
