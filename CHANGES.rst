@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0b6 (unreleased)
+3.0b6 (2019-03-01)
 ------------------
 
 - Fix regression in ``.DT_Util.InstanceDict`` which broke the acquisition
