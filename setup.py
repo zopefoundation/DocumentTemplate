@@ -26,6 +26,13 @@ version = '3.0b7.dev0'
 setup(name='DocumentTemplate',
       version=version,
       url='https://github.com/zopefoundation/DocumentTemplate',
+      project_urls={
+          'Documentation': ('https://zope.readthedocs.io/en/latest/'
+                            'zopebook/index.html'),
+          'Issue Tracker': ('https://github.com/zopefoundation/'
+                            'DocumentTemplate/issues'),
+          'Sources': 'https://github.com/zopefoundation/DocumentTemplate',
+      },
       license='ZPL 2.1',
       description="Document Templating Markup Language (DTML)",
       author='Zope Foundation and Contributors',
@@ -36,6 +43,7 @@ setup(name='DocumentTemplate',
       classifiers=[
           "Development Status :: 6 - Mature",
           "Environment :: Web Environment",
+          "Framework :: Zope",
           "Framework :: Zope :: 4",
           "License :: OSI Approved :: Zope Public License",
           "Operating System :: OS Independent",
@@ -47,6 +55,7 @@ setup(name='DocumentTemplate',
           "Programming Language :: Python :: 3.6",
           "Programming Language :: Python :: 3.7",
           "Programming Language :: Python :: Implementation :: CPython",
+          "Topic :: Text Processing :: Markup",
       ],
       keywords='DTML template zope HTML SQL web markup',
       install_requires=[
