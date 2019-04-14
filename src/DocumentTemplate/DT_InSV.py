@@ -16,6 +16,8 @@
 from math import sqrt
 import re
 
+import roman
+
 try:
     import Missing
     mv = Missing.Value
@@ -81,47 +83,7 @@ class sequence_variables(object):
         # Force number to be an integer value
         num = int(num) + 1
 
-        # Initialize roman as an empty string
-        roman = ''
-
-        while num >= 1000:
-            num = num - 1000
-            roman = '%sM' % roman
-
-        while num >= 500:
-            num = num - 500
-            roman = '%sD' % roman
-
-        while num >= 100:
-            num = num - 100
-            roman = '%sC' % roman
-
-        while num >= 50:
-            num = num - 50
-            roman = '%sL' % roman
-
-        while num >= 10:
-            num = num - 10
-            roman = '%sX' % roman
-
-        while num >= 5:
-            num = num - 5
-            roman = '%sV' % roman
-
-        while num < 5 and num >= 1:
-            num = num - 1
-            roman = '%sI' % roman
-
-        # Replaces special cases in Roman Numerals
-
-        roman = roman.replace('DCCCC', 'CM')
-        roman = roman.replace('CCCC', 'CD')
-        roman = roman.replace('LXXXX', 'XC')
-        roman = roman.replace('XXXX', 'XL')
-        roman = roman.replace('VIIII', 'IX')
-        roman = roman.replace('IIII', 'IV')
-
-        return roman
+        return roman.toRoman(num)
 
     def value(self, index, name):
         data = self.data
