@@ -232,10 +232,13 @@ class DTMLTests(unittest.TestCase):
         methods = "html_quote",
         a = '\0he>llo'
         for method in methods:
-            html = self.doc_class('<dtml-var a %s>' % method)
             expected = html_quote(a)
-            res = html(a=a)
-            self.assertEqual(res, expected)
+
+            html = self.doc_class('<dtml-var a %s>' % method)
+            self.assertEqual(html(a=a), expected)
+
+            html = self.doc_class('&dtml.%s-a;' % method)
+            self.assertEqual(html(a=a), expected)
 
     def testUrlUnquote(self):
         html1 = self.doc_class(

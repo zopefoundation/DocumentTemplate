@@ -4,7 +4,8 @@ Changelog
 3.0b7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add unit tests for ``dtml-if``, ``dtml-unless`` and ``dtml-in`` variables
+  (`#7 <https://github.com/zopefoundation/DocumentTemplate/issues/7>`_)
 
 
 3.0b6 (2019-03-01)
