@@ -1,6 +1,6 @@
+include *.cfg
 include *.rst
 include *.txt
-include .coveragerc
 include tox.ini
 
 recursive-include src *.dtml
