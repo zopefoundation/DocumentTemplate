@@ -137,7 +137,8 @@ class Unless(object):
     name = 'unless'
     blockContinuations = ()
 
-    def __init__(self, blocks):
+    def __init__(self, blocks, encoding=None):
+        self.encoding = encoding
         tname, args, section = blocks[0]
         args = parse_params(args, name='', expr='')
         name, expr = name_param(args, 'unless', 1)

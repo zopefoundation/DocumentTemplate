@@ -42,7 +42,9 @@ class DTMLUnicodeTests(unittest.TestCase):
     doc_class = property(_get_doc_class,)
 
     def _recode(self, string):
-        return string.decode("utf-8").encode(self.recode_to)
+        if isinstance(string, six.binary_type):
+            string = string.decode('UTF-8')
+        return string.encode(self.recode_to)
 
     def testAA(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')

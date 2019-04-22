@@ -90,11 +90,12 @@ class Try(object):
     finallyBlock = None
     elseBlock = None
 
-    def __init__(self, blocks):
+    def __init__(self, blocks, encoding=None):
         tname, args, section = blocks[0]
 
         self.args = parse_params(args)
         self.section = section.blocks
+        self.encoding = encoding
 
         # Find out if this is a try..finally type
         if len(blocks) == 2 and blocks[1][0] == 'finally':
