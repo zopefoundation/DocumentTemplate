@@ -129,13 +129,15 @@ def join_unicode(rendered, encoding=None):
     """join a list of plain strings into a single plain string,
     a list of unicode strings into a single unicode strings,
     or a list containing a mix into a single unicode string with
-    the plain strings converted from UTF-8
+    the plain strings converted from the given ``encoding``, or
+    Latin-1 as default fallback.
     """
     try:
         return ''.join(rendered)
     except UnicodeError:
         # A mix of unicode string and non-ascii plain strings.
-        # Fix up the list, treating normal strings as UTF-8
+        # Fix up the list, treating normal strings as encoded in the
+        # passed-in ``encoding``, or Latin-1 as fallback.
         if encoding is None:
             encoding = _dt.DEFAULT_ENCODING
         rendered = list(rendered)
