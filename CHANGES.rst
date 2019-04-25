@@ -4,6 +4,8 @@ Changelog
 3.0b7 (unreleased)
 ------------------
 
+- Add support for Python 3.8
+
 - Make the rendering encoding configurable to fix rendering on Zope 4
   (`#43 <https://github.com/zopefoundation/DocumentTemplate/issues/43>`_)
 
