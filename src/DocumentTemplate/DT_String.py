@@ -517,7 +517,8 @@ class String(object):
             value = self.ZDocumentTemplate_beforeRender(md, _marker)
             if value is _marker:
                 try:
-                    result = render_blocks(self._v_blocks, md, self.encoding)
+                    result = render_blocks(self._v_blocks, md,
+                                           encoding=self.encoding)
                 except DTReturn as v:
                     result = v.v
                 self.ZDocumentTemplate_afterRender(md, result)

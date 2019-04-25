@@ -149,7 +149,7 @@ class Try(object):
 
         # first we try to render the first block
         try:
-            result = render_blocks(self.section, md, self.encoding)
+            result = render_blocks(self.section, md, encoding=self.encoding)
         except DTReturn:
             raise
         except Exception:
@@ -171,7 +171,7 @@ class Try(object):
                 ns = namespace(md, error_type=errname, error_value=v,
                                error_tb=error_tb)[0]
                 md._push(InstanceDict(ns, md))
-                return render_blocks(handler, md, self.encoding)
+                return render_blocks(handler, md, encoding=self.encoding)
             finally:
                 md._pop(1)
 
@@ -181,17 +181,17 @@ class Try(object):
                 return result
             else:
                 return result + render_blocks(self.elseBlock, md,
-                                              self.encoding)
+                                              encoding=self.encoding)
 
     def render_try_finally(self, md):
         result = ''
         # first try to render the first block
         try:
-            result = render_blocks(self.section, md, self.encoding)
+            result = render_blocks(self.section, md, encoding=self.encoding)
         # Then handle finally block
         finally:
             result = result + render_blocks(self.finallyBlock, md,
-                                            self.encoding)
+                                            encoding=self.encoding)
         return result
 
     def find_handler(self, exception):

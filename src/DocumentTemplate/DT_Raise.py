@@ -64,7 +64,7 @@ class Raise(object):
                     t = InvalidErrorTypeExpression
 
         try:
-            v = render_blocks(self.section, md, self.encoding)
+            v = render_blocks(self.section, md, encoding=self.encoding)
         except Exception:
             v = 'Invalid Error Value'
 

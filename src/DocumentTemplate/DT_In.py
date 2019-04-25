@@ -464,7 +464,7 @@ class InClass(object):
 
         if not sequence:
             if self.elses:
-                return render_blocks(self.elses, md, self.encoding)
+                return render_blocks(self.elses, md, encoding=self.encoding)
             return ''
 
         if isinstance(sequence, str):
@@ -650,7 +650,7 @@ class InClass(object):
                     if index == first:
                         pkw['sequence-start'] = 0
 
-                result = join_unicode(result, self.encoding)
+                result = join_unicode(result, encoding=self.encoding)
 
         finally:
             if cache:
@@ -672,7 +672,7 @@ class InClass(object):
 
         if not sequence:
             if self.elses:
-                return render_blocks(self.elses, md, self.encoding)
+                return render_blocks(self.elses, md, encoding=self.encoding)
             return ''
 
         if isinstance(sequence, str):
@@ -762,7 +762,7 @@ class InClass(object):
                 if index == 0:
                     pkw['sequence-start'] = 0
 
-            result = join_unicode(result, self.encoding)
+            result = join_unicode(result, encoding=self.encoding)
 
         finally:
             if cache:

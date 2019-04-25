@@ -82,7 +82,7 @@ class With(object):
 
         md._push(v)
         try:
-            return render_blocks(self.section, md, self.encoding)
+            return render_blocks(self.section, md, encoding=self.encoding)
         finally:
             md._pop(1)
 
