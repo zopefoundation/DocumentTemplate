@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0b7 (unreleased)
+3.0b7 (2019-04-25)
 ------------------
 
 - Add support for Python 3.8
