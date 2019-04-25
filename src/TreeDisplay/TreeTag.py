@@ -47,6 +47,7 @@ class Tree(object):
     expand = None
 
     def __init__(self, blocks, encoding=None):
+        self.encoding = encoding
         tname, args, section = blocks[0]
         args = parse_params(args,
                             name=None,
@@ -136,7 +137,7 @@ def try_call_attr(ob, attrname, simple_types=simple_types):
 
 
 def tpRender(self, md, section, args,
-             try_call_attr=try_call_attr):
+             try_call_attr=try_call_attr, encoding=None):
     """Render data organized as a tree.
 
     We keep track of open nodes using a cookie.  The cookie stored the
@@ -238,7 +239,7 @@ def tpRender(self, md, section, args,
     try:
         tpRenderTABLE(
             self, id, root, url, state, substate, diff, data, colspan,
-            section, md, treeData, level, args)
+            section, md, treeData, level, args, encoding=encoding)
     finally:
         md._pop(2)
 
@@ -252,7 +253,7 @@ def tpRender(self, md, section, args,
 
 def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                   colspan, section, md, treeData, level=0, args=None,
-                  try_call_attr=try_call_attr,
+                  try_call_attr=try_call_attr, encoding=None,
                   ):
     "Render a tree as a table"
     exp = 0
@@ -411,7 +412,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                 ('nowrap' in args and
                  args['nowrap'] and ' style="white-space: nowrap"' or ''))
                )
-        output(render_blocks(section, md))
+        output(render_blocks(section, md, encoding=encoding))
         output('</td>\n</tr>\n')
 
     if exp:
