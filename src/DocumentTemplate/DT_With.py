@@ -44,7 +44,7 @@ class With(object):
     mapping = None
     only = 0
 
-    def __init__(self, blocks):
+    def __init__(self, blocks, encoding=None):
         tname, args, section = blocks[0]
         args = parse_params(args, name='', expr='', mapping=1, only=1)
         name, expr = name_param(args, 'with', 1)
@@ -53,6 +53,7 @@ class With(object):
         else:
             expr = expr.eval
         self.__name__, self.expr = name, expr
+        self.encoding = encoding
         self.section = section.blocks
         if 'mapping' in args and args['mapping']:
             self.mapping = 1
@@ -81,7 +82,7 @@ class With(object):
 
         md._push(v)
         try:
-            return render_blocks(self.section, md)
+            return render_blocks(self.section, md, encoding=self.encoding)
         finally:
             md._pop(1)
 

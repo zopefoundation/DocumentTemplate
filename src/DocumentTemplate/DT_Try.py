@@ -90,11 +90,12 @@ class Try(object):
     finallyBlock = None
     elseBlock = None
 
-    def __init__(self, blocks):
+    def __init__(self, blocks, encoding=None):
         tname, args, section = blocks[0]
 
         self.args = parse_params(args)
         self.section = section.blocks
+        self.encoding = encoding
 
         # Find out if this is a try..finally type
         if len(blocks) == 2 and blocks[1][0] == 'finally':
@@ -148,7 +149,7 @@ class Try(object):
 
         # first we try to render the first block
         try:
-            result = render_blocks(self.section, md)
+            result = render_blocks(self.section, md, encoding=self.encoding)
         except DTReturn:
             raise
         except Exception:
@@ -170,7 +171,7 @@ class Try(object):
                 ns = namespace(md, error_type=errname, error_value=v,
                                error_tb=error_tb)[0]
                 md._push(InstanceDict(ns, md))
-                return render_blocks(handler, md)
+                return render_blocks(handler, md, encoding=self.encoding)
             finally:
                 md._pop(1)
 
@@ -179,16 +180,18 @@ class Try(object):
             if (self.elseBlock is None):
                 return result
             else:
-                return result + render_blocks(self.elseBlock, md)
+                return result + render_blocks(self.elseBlock, md,
+                                              encoding=self.encoding)
 
     def render_try_finally(self, md):
         result = ''
         # first try to render the first block
         try:
-            result = render_blocks(self.section, md)
+            result = render_blocks(self.section, md, encoding=self.encoding)
         # Then handle finally block
         finally:
-            result = result + render_blocks(self.finallyBlock, md)
+            result = result + render_blocks(self.finallyBlock, md,
+                                            encoding=self.encoding)
         return result
 
     def find_handler(self, exception):

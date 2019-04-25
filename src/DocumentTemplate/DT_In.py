@@ -335,6 +335,8 @@ import sys
 import re
 import functools
 
+import six
+
 from DocumentTemplate.DT_Util import ParseError, parse_params, name_param
 from DocumentTemplate.DT_Util import str, join_unicode
 from DocumentTemplate.DT_Util import render_blocks, InstanceDict
@@ -350,15 +352,15 @@ if sys.version_info > (3, 0):
         return (a > b) - (a < b)
 
 TupleType = tuple
-StringTypes = (str, unicode)
+StringTypes = six.string_types + (six.binary_type,)
 
 
 class InFactory(object):
     blockContinuations = ('else', )
     name = 'in'
 
-    def __call__(self, blocks):
-        i = InClass(blocks)
+    def __call__(self, blocks, encoding=None):
+        i = InClass(blocks, encoding)
         if i.batch:
             return i.renderwb
         else:
@@ -375,7 +377,7 @@ class InClass(object):
     reverse = None
     sort_expr = reverse_expr = None
 
-    def __init__(self, blocks):
+    def __init__(self, blocks, encoding=None):
         tname, args, section = blocks[0]
         args = parse_params(args, name='', start='1', end='-1', size='10',
                             orphan='0', overlap='1', mapping=1,
@@ -385,6 +387,7 @@ class InClass(object):
                             reverse=1, sort_expr='', reverse_expr='',
                             prefix='')
         self.args = args
+        self.encoding = encoding
 
         if 'sort' in args:
             self.sort = sort = args['sort']
@@ -461,7 +464,7 @@ class InClass(object):
 
         if not sequence:
             if self.elses:
-                return render_blocks(self.elses, md)
+                return render_blocks(self.elses, md, encoding=self.encoding)
             return ''
 
         if isinstance(sequence, str):
@@ -545,10 +548,10 @@ class InClass(object):
                     pkw['previous-sequence-start-index'] = pstart - 1
                     pkw['previous-sequence-end-index'] = pend - 1
                     pkw['previous-sequence-size'] = pend + 1 - pstart
-                    result = render(section, md)
+                    result = render(section, md, encoding=self.encoding)
 
                 elif self.elses:
-                    result = render(self.elses, md)
+                    result = render(self.elses, md, encoding=self.encoding)
                 else:
                     result = ''
             elif next:
@@ -559,7 +562,7 @@ class InClass(object):
                     sequence[end]
                 except IndexError:
                     if self.elses:
-                        result = render(self.elses, md)
+                        result = render(self.elses, md, encoding=self.encoding)
                     else:
                         result = ''
                 else:
@@ -569,7 +572,7 @@ class InClass(object):
                     pkw['next-sequence-start-index'] = pstart - 1
                     pkw['next-sequence-end-index'] = pend - 1
                     pkw['next-sequence-size'] = pend + 1 - pstart
-                    result = render(section, md)
+                    result = render(section, md, encoding=self.encoding)
             else:
                 result = []
                 append = result.append
@@ -639,7 +642,7 @@ class InClass(object):
                         push(InstanceDict(client, md))
 
                     try:
-                        append(render(section, md))
+                        append(render(section, md, encoding=self.encoding))
                     finally:
                         if pushed:
                             pop()
@@ -647,7 +650,7 @@ class InClass(object):
                     if index == first:
                         pkw['sequence-start'] = 0
 
-                result = join_unicode(result)
+                result = join_unicode(result, encoding=self.encoding)
 
         finally:
             if cache:
@@ -669,7 +672,7 @@ class InClass(object):
 
         if not sequence:
             if self.elses:
-                return render_blocks(self.elses, md)
+                return render_blocks(self.elses, md, encoding=self.encoding)
             return ''
 
         if isinstance(sequence, str):
@@ -752,14 +755,14 @@ class InClass(object):
                     push(InstanceDict(client, md))
 
                 try:
-                    append(render(section, md))
+                    append(render(section, md, encoding=self.encoding))
                 finally:
                     if pushed:
                         pop()
                 if index == 0:
                     pkw['sequence-start'] = 0
 
-            result = join_unicode(result)
+            result = join_unicode(result, encoding=self.encoding)
 
         finally:
             if cache:

@@ -30,3 +30,6 @@ import TreeDisplay  # NOQA
 
 from DocumentTemplate import security  # Side effects!
 del security
+
+# This encoding is used for backwards compatibility
+DEFAULT_ENCODING = "latin-1"

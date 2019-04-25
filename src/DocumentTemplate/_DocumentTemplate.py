@@ -103,9 +103,7 @@ Document Templates may be created 4 ways:
         from a named file.
 
 '''
-
-import sys
-import types
+import six
 
 from Acquisition import aq_base
 from ExtensionClass import Base
@@ -113,65 +111,64 @@ from ExtensionClass import Base
 from DocumentTemplate.html_quote import html_quote
 from DocumentTemplate.ustr import ustr
 
-if sys.version_info > (3, 0):
-    basestring = str
-    unicode = str
-    classtype = type
-else:
-    classtype = types.ClassType
+import DocumentTemplate as _dt
 
 _marker = object()
 
 
-def join_unicode(rendered):
+def join_unicode(rendered, encoding=None):
     """join a list of plain strings into a single plain string,
     a list of unicode strings into a single unicode strings,
     or a list containing a mix into a single unicode string with
-    the plain strings converted from latin-1
+    the plain strings converted from the given ``encoding``, or
+    Latin-1 as default fallback.
     """
     try:
         return ''.join(rendered)
-    except UnicodeError:
+    except (UnicodeError, TypeError):
         # A mix of unicode string and non-ascii plain strings.
-        # Fix up the list, treating normal strings as latin-1
+        # Fix up the list, treating normal strings as encoded in the
+        # passed-in ``encoding``, or Latin-1 as fallback.
+        if encoding is None:
+            encoding = _dt.DEFAULT_ENCODING
         rendered = list(rendered)
         for i in range(len(rendered)):
-            if isinstance(rendered[i], str):
-                rendered[i] = unicode(rendered[i], 'latin-1')
+            if isinstance(rendered[i], six.binary_type):
+                rendered[i] = rendered[i].decode(encoding)
         return u''.join(rendered)
 
 
-def render_blocks(blocks, md):
+def render_blocks(blocks, md, encoding=None):
     rendered = []
 
-    render_blocks_(blocks, rendered, md)
+    render_blocks_(blocks, rendered, md, encoding)
 
     l_ = len(rendered)
     if l_ == 0:
         return ''
     elif l_ == 1:
         return rendered[0]
-    return join_unicode(rendered)
+    return join_unicode(rendered, encoding=encoding)
 
 
-def render_blocks_(blocks, rendered, md):
+def render_blocks_(blocks, rendered, md, encoding):
     for block in blocks:
         append = True
 
         if (isinstance(block, tuple) and
                 len(block) > 1 and
-                isinstance(block[0], basestring)):
+                isinstance(block[0], six.string_types)):
 
             first_char = block[0][0]
             if first_char == 'v':  # var
                 t = block[1]
-                if isinstance(t, str):
+                if isinstance(t, six.string_types):
                     t = md[t]
                 else:
                     t = t(md)
 
                 skip_html_quote = 0
-                if not isinstance(t, basestring):
+                if not isinstance(t, (six.string_types, six.binary_type)):
                     # This might be a TaintedString object
                     untaintmethod = getattr(t, '__untaint__', None)
                     if untaintmethod is not None:
@@ -179,7 +176,7 @@ def render_blocks_(blocks, rendered, md):
                         t = untaintmethod()
                         skip_html_quote = 1
 
-                if not isinstance(t, basestring):
+                if not isinstance(t, (six.string_types, six.binary_type)):
                     t = ustr(t)
 
                 if (skip_html_quote == 0 and len(block) == 3):
@@ -196,7 +193,7 @@ def render_blocks_(blocks, rendered, md):
                         skip_html_quote = 0
 
                     if not skip_html_quote:
-                        t = html_quote(t)
+                        t = html_quote(t, encoding=encoding)
 
                 block = t
 
@@ -227,7 +224,7 @@ def render_blocks_(blocks, rendered, md):
                         if cond:
                             block = block[icond + 2]
                             if block:
-                                render_blocks_(block, rendered, md)
+                                render_blocks_(block, rendered, md, encoding)
                             m = -1
                             break
 
@@ -236,7 +233,7 @@ def render_blocks_(blocks, rendered, md):
                     if icond == m:
                         block = block[icond + 1]
                         if block:
-                            render_blocks_(block, rendered, md)
+                            render_blocks_(block, rendered, md, encoding)
                 finally:
                     md._pop()
 
@@ -244,7 +241,7 @@ def render_blocks_(blocks, rendered, md):
                 raise ValueError(
                     'Invalid DTML command code, %s', block[0])
 
-        elif not isinstance(block, basestring):
+        elif not isinstance(block, (six.string_types, six.binary_type)):
             block = block(md)
 
         if append and block:
@@ -259,7 +256,7 @@ def safe_callable(ob):
         if hasattr(ob, '__call__'):
             return True
         else:
-            if type(ob) in (classtype, Base):
+            if type(ob) in (six.class_types, Base):
                 return True
             else:
                 return False

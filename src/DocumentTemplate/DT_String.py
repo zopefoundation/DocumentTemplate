@@ -259,7 +259,7 @@ class String(object):
                     sstart = start
                 else:
                     try:
-                        r = scommand(blocks)
+                        r = scommand(blocks, encoding=self.encoding)
                         if hasattr(r, 'simple_form'):
                             r = r.simple_form
                         result.append(r)
@@ -294,7 +294,7 @@ class String(object):
     shared_globals = {}
 
     def __init__(self, source_string='', mapping=None, __name__='<string>',
-                 **vars):
+                 encoding=None, **vars):
         """\
         Create a document template from a string.
 
@@ -302,6 +302,7 @@ class String(object):
         mapping object containing defaults for values to be inserted.
         """
         self.raw = source_string
+        self.encoding = encoding
         self.initvars(mapping, vars)
         self.setName(__name__)
 
@@ -516,7 +517,8 @@ class String(object):
             value = self.ZDocumentTemplate_beforeRender(md, _marker)
             if value is _marker:
                 try:
-                    result = render_blocks(self._v_blocks, md)
+                    result = render_blocks(self._v_blocks, md,
+                                           encoding=self.encoding)
                 except DTReturn as v:
                     result = v.v
                 self.ZDocumentTemplate_afterRender(md, result)
