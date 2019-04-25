@@ -180,7 +180,8 @@ class Try(object):
             if (self.elseBlock is None):
                 return result
             else:
-                return result + render_blocks(self.elseBlock, md, self.encoding)
+                return result + render_blocks(self.elseBlock, md,
+                                              self.encoding)
 
     def render_try_finally(self, md):
         result = ''
@@ -189,7 +190,8 @@ class Try(object):
             result = render_blocks(self.section, md, self.encoding)
         # Then handle finally block
         finally:
-            result = result + render_blocks(self.finallyBlock, md, self.encoding)
+            result = result + render_blocks(self.finallyBlock, md,
+                                            self.encoding)
         return result
 
     def find_handler(self, exception):

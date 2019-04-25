@@ -103,10 +103,6 @@ Document Templates may be created 4 ways:
         from a named file.
 
 '''
-
-import sys
-import types
-
 import six
 
 from Acquisition import aq_base

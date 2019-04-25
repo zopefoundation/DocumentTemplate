@@ -33,8 +33,10 @@ class DTMLUnicodeTests(unittest.TestCase):
 
     def _get_doc_class(self):
         from DocumentTemplate.DT_HTML import HTML
+
         def make(*args):
             return HTML(*args, encoding=self.encoding_arg)
+
         return make
     doc_class = property(_get_doc_class,)
 
