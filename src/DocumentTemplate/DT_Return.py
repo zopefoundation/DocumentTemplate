@@ -19,11 +19,12 @@ class ReturnTag(object):
     name = 'return'
     expr = None
 
-    def __init__(self, args):
+    def __init__(self, args, encoding=None):
         args = parse_params(args, name='', expr='')
         name, expr = name_param(args, 'var', 1)
         self.__name__ = name
         self.expr = expr
+        self.encoding = encoding
 
     def render(self, md):
         if self.expr is None:

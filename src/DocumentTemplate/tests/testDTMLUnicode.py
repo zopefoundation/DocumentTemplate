@@ -16,9 +16,6 @@ import unittest
 
 import six
 
-if six.PY3:
-    unichr = chr
-
 
 class force_str(object):
     # A class whose string representation is not always a plain string:
@@ -66,41 +63,43 @@ class DTMLUnicodeTests(unittest.TestCase):
 
     def testAB(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
-        expected = self._recode('hello\xc3\x88')
-        res = html(a='hello', b=self._recode('\xc3\x88'))
+        if six.PY2:
+            expected = self._recode('hello\xc3\x88')
+        else:
+            expected = u'hello\xc8'
+        res = html(a='hello', b=self._recode(b'\xc3\x88'))
         self.assertEqual(res, expected)
 
     def testUB(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'hello\xc8'
-        res = html(a=u'hello', b=self._recode('\xc3\x88'))
+        res = html(a=u'hello', b=self._recode(b'\xc3\x88'))
         self.assertEqual(res, expected)
 
     def testUB2(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'\u07d0\xc8'
-        res = html(a=unichr(2000), b=self._recode('\xc3\x88'))
+        res = html(a=six.unichr(2000), b=self._recode(b'\xc3\x88'))
         self.assertEqual(res, expected)
 
     def testUnicodeStr(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
         expected = u'\u07d0\xc8'
-        res = html(a=force_str(unichr(2000)), b=self._recode('\xc3\x88'))
+        res = html(a=force_str(six.unichr(2000)), b=self._recode(b'\xc3\x88'))
         self.assertEqual(res, expected)
 
     def testUqB(self):
         html = self.doc_class('<dtml-var a html_quote><dtml-var b>')
         expected = u'he&gt;llo\xc8'
-        res = html(a=u'he>llo', b=self._recode('\xc3\x88'))
+        res = html(a=u'he>llo', b=self._recode(b'\xc3\x88'))
         self.assertEqual(res, expected)
 
     def testSize(self):
         if six.PY3:
             html = self.doc_class('<dtml-var "_.chr(200)*4" size=2>')
-            expected = '\xc3\x88' * 2 + '...'
         else:
             html = self.doc_class('<dtml-var "_.unichr(200)*4" size=2>')
-            expected = unichr(200) * 2 + '...'
+        expected = six.unichr(200) * 2 + '...'
         res = html()
         self.assertEqual(res, expected)
 

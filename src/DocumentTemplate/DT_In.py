@@ -335,6 +335,8 @@ import sys
 import re
 import functools
 
+import six
+
 from DocumentTemplate.DT_Util import ParseError, parse_params, name_param
 from DocumentTemplate.DT_Util import str, join_unicode
 from DocumentTemplate.DT_Util import render_blocks, InstanceDict
@@ -350,7 +352,7 @@ if sys.version_info > (3, 0):
         return (a > b) - (a < b)
 
 TupleType = tuple
-StringTypes = (str, unicode)
+StringTypes = six.string_types + (six.binary_type,)
 
 
 class InFactory(object):
@@ -546,10 +548,10 @@ class InClass(object):
                     pkw['previous-sequence-start-index'] = pstart - 1
                     pkw['previous-sequence-end-index'] = pend - 1
                     pkw['previous-sequence-size'] = pend + 1 - pstart
-                    result = render(section, md)
+                    result = render(section, md, encoding=self.encoding)
 
                 elif self.elses:
-                    result = render(self.elses, md)
+                    result = render(self.elses, md, encoding=self.encoding)
                 else:
                     result = ''
             elif next:
@@ -560,7 +562,7 @@ class InClass(object):
                     sequence[end]
                 except IndexError:
                     if self.elses:
-                        result = render(self.elses, md)
+                        result = render(self.elses, md, encoding=self.encoding)
                     else:
                         result = ''
                 else:
@@ -570,7 +572,7 @@ class InClass(object):
                     pkw['next-sequence-start-index'] = pstart - 1
                     pkw['next-sequence-end-index'] = pend - 1
                     pkw['next-sequence-size'] = pend + 1 - pstart
-                    result = render(section, md)
+                    result = render(section, md, encoding=self.encoding)
             else:
                 result = []
                 append = result.append
@@ -640,7 +642,7 @@ class InClass(object):
                         push(InstanceDict(client, md))
 
                     try:
-                        append(render(section, md))
+                        append(render(section, md, encoding=self.encoding))
                     finally:
                         if pushed:
                             pop()
@@ -753,7 +755,7 @@ class InClass(object):
                     push(InstanceDict(client, md))
 
                 try:
-                    append(render(section, md))
+                    append(render(section, md, encoding=self.encoding))
                 finally:
                     if pushed:
                         pop()

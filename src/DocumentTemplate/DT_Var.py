@@ -175,7 +175,7 @@ class Var(object):
     name = 'var'
     expr = None
 
-    def __init__(self, args, fmt='s'):
+    def __init__(self, args, fmt='s', encoding=None):
         if args[:4] == 'var ':
             args = args[4:]
         args = parse_params(args, name='', lower=1, upper=1, expr='',
@@ -186,6 +186,7 @@ class Var(object):
                             url_unquote_plus=1, missing='',
                             newline_to_br=1, url=1)
         self.args = args
+        self.encoding = encoding
 
         self.modifiers = tuple(
             map(lambda t: t[1],
@@ -350,7 +351,7 @@ class Call(object):
     name = 'call'
     expr = None
 
-    def __init__(self, args):
+    def __init__(self, args, encoding=None):
         args = parse_params(args, name='', expr='')
         name, expr = name_param(args, 'call', 1)
         if expr is None:
@@ -358,6 +359,7 @@ class Call(object):
         else:
             expr = expr.eval
         self.simple_form = ('i', expr, None)
+        self.encoding = encoding
 
 
 def url_quote(v, name='(Unknown name)', md={}):
@@ -586,7 +588,7 @@ class Comment(object):
     name = 'comment'
     blockContinuations = ()
 
-    def __init__(self, args, fmt=''):
+    def __init__(self, args, fmt='', encoding=None):
         pass
 
     def render(self, md):

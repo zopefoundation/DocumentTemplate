@@ -46,7 +46,7 @@ class Tree(object):
     blockContinuations = ()
     expand = None
 
-    def __init__(self, blocks):
+    def __init__(self, blocks, encoding=None):
         tname, args, section = blocks[0]
         args = parse_params(args,
                             name=None,

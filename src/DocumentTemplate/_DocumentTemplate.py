@@ -107,6 +107,8 @@ Document Templates may be created 4 ways:
 import sys
 import types
 
+import six
+
 from Acquisition import aq_base
 from ExtensionClass import Base
 
@@ -114,13 +116,6 @@ from DocumentTemplate.html_quote import html_quote
 from DocumentTemplate.ustr import ustr
 
 import DocumentTemplate as _dt
-
-if sys.version_info > (3, 0):
-    basestring = str
-    unicode = str
-    classtype = type
-else:
-    classtype = types.ClassType
 
 _marker = object()
 
@@ -134,7 +129,7 @@ def join_unicode(rendered, encoding=None):
     """
     try:
         return ''.join(rendered)
-    except UnicodeError:
+    except (UnicodeError, TypeError):
         # A mix of unicode string and non-ascii plain strings.
         # Fix up the list, treating normal strings as encoded in the
         # passed-in ``encoding``, or Latin-1 as fallback.
@@ -142,8 +137,8 @@ def join_unicode(rendered, encoding=None):
             encoding = _dt.DEFAULT_ENCODING
         rendered = list(rendered)
         for i in range(len(rendered)):
-            if isinstance(rendered[i], str):
-                rendered[i] = unicode(rendered[i], encoding)
+            if isinstance(rendered[i], six.binary_type):
+                rendered[i] = rendered[i].decode(encoding)
         return u''.join(rendered)
 
 
@@ -157,7 +152,7 @@ def render_blocks(blocks, md, encoding=None):
         return ''
     elif l_ == 1:
         return rendered[0]
-    return join_unicode(rendered, encoding)
+    return join_unicode(rendered, encoding=encoding)
 
 
 def render_blocks_(blocks, rendered, md, encoding):
@@ -166,18 +161,18 @@ def render_blocks_(blocks, rendered, md, encoding):
 
         if (isinstance(block, tuple) and
                 len(block) > 1 and
-                isinstance(block[0], basestring)):
+                isinstance(block[0], six.string_types)):
 
             first_char = block[0][0]
             if first_char == 'v':  # var
                 t = block[1]
-                if isinstance(t, str):
+                if isinstance(t, six.string_types):
                     t = md[t]
                 else:
                     t = t(md)
 
                 skip_html_quote = 0
-                if not isinstance(t, basestring):
+                if not isinstance(t, (six.string_types, six.binary_type)):
                     # This might be a TaintedString object
                     untaintmethod = getattr(t, '__untaint__', None)
                     if untaintmethod is not None:
@@ -185,7 +180,7 @@ def render_blocks_(blocks, rendered, md, encoding):
                         t = untaintmethod()
                         skip_html_quote = 1
 
-                if not isinstance(t, basestring):
+                if not isinstance(t, (six.string_types, six.binary_type)):
                     t = ustr(t)
 
                 if (skip_html_quote == 0 and len(block) == 3):
@@ -202,7 +197,7 @@ def render_blocks_(blocks, rendered, md, encoding):
                         skip_html_quote = 0
 
                     if not skip_html_quote:
-                        t = html_quote(t)
+                        t = html_quote(t, encoding=encoding)
 
                 block = t
 
@@ -250,7 +245,7 @@ def render_blocks_(blocks, rendered, md, encoding):
                 raise ValueError(
                     'Invalid DTML command code, %s', block[0])
 
-        elif not isinstance(block, basestring):
+        elif not isinstance(block, (six.string_types, six.binary_type)):
             block = block(md)
 
         if append and block:
@@ -265,7 +260,7 @@ def safe_callable(ob):
         if hasattr(ob, '__call__'):
             return True
         else:
-            if type(ob) in (classtype, Base):
+            if type(ob) in (six.class_types, Base):
                 return True
             else:
                 return False
