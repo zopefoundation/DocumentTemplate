@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0b8 (unreleased)
+3.0b8 (2019-04-26)
 ------------------
 
 - make sure all JSON-serialized data is text data and not bytes
