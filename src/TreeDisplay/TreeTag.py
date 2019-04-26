@@ -256,6 +256,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                   try_call_attr=try_call_attr, encoding=None,
                   ):
     "Render a tree as a table"
+    encoding = encoding or 'latin-1'
     exp = 0
 
     if level >= 0:
@@ -340,7 +341,10 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
             items = list(items)  # Copy the list
             items.reverse()
 
-    diff.append(id)
+    if isinstance(id, six.binary_type):
+        diff.append(id.decode(encoding))
+    else:
+        diff.append(id)
 
     _td_colspan = '<td colspan="%s" style="white-space: nowrap"></td>'
     _td_single = '<td width="16" style="white-space: nowrap"></td>'

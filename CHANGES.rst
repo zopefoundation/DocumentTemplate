@@ -4,6 +4,9 @@ Changelog
 3.0b8 (unreleased)
 ------------------
 
+- make sure all JSON-serialized data is text data and not bytes
+  (`#45 <https://github.com/zopefoundation/DocumentTemplate/issues/45>`_)
+
 
 3.0b7 (2019-04-25)
 ------------------
