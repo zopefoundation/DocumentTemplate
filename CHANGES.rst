@@ -4,6 +4,9 @@ Changelog
 3.0b9 (unreleased)
 ------------------
 
+- Only decode input in ``html_quote`` when needed under Python 3
+  (`Products.PythonScripts#28 <https://github.com/zopefoundation/Products.PythonScripts/issues/28`_>)
+
 
 3.0b8 (2019-04-26)
 ------------------

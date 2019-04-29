@@ -10,9 +10,8 @@ except ImportError:  # PY2
 
 
 def html_quote(v, name='(Unknown name)', md={}, encoding=None):
-    if encoding is None:
-        encoding = 'Latin-1'  # the old default
     v = ustr(v)
-    if isinstance(v, six.binary_type):
-        v = v.decode(encoding)
+    if six.PY3 and isinstance(v, six.binary_type):
+        # decode using the old default if no encoding is passed
+        v = v.decode(encoding or 'Latin-1')
     return escape(v, 1)
