@@ -130,7 +130,7 @@ def join_unicode(rendered, encoding=None):
         # Fix up the list, treating normal strings as encoded in the
         # passed-in ``encoding``, or Latin-1 as fallback.
         if encoding is None:
-            encoding = _dt.DEFAULT_ENCODING
+            encoding = _dt.OLD_DEFAULT_ENCODING
         rendered = list(rendered)
         for i in range(len(rendered)):
             if isinstance(rendered[i], six.binary_type):

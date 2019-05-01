@@ -4,6 +4,8 @@ Changelog
 3.0b9 (unreleased)
 ------------------
 
+- Be much more careful when setting encoding if it is not passed in
+
 - Only decode input in ``html_quote`` when needed under Python 3
   (`Products.PythonScripts#28 <https://github.com/zopefoundation/Products.PythonScripts/issues/28`_>)
 

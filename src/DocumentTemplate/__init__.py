@@ -32,4 +32,7 @@ from DocumentTemplate import security  # Side effects!
 del security
 
 # This encoding is used for backwards compatibility
-DEFAULT_ENCODING = "latin-1"
+OLD_DEFAULT_ENCODING = 'Latin-1'
+
+# This is the new ZPublisher default and will be used on new objects
+NEW_DEFAULT_ENCODING = 'UTF-8'

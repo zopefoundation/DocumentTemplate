@@ -17,6 +17,7 @@ from threading import Lock
 
 import six
 
+import DocumentTemplate as _dt
 from DocumentTemplate.DT_Util import ParseError, InstanceDict
 from DocumentTemplate.DT_Util import TemplateDict, render_blocks
 from DocumentTemplate.DT_Var import Var, Call, Comment
@@ -219,6 +220,9 @@ class String(object):
 
         start = self.skip_eol(text, start)
 
+        # If this is an older object without encoding set we use the old
+        # pre-Zope 4 default.
+        encoding = getattr(self, 'encoding', _dt.OLD_DEFAULT_ENCODING)
         blocks = []
         tname = scommand.name
         sname = stag
@@ -259,7 +263,7 @@ class String(object):
                     sstart = start
                 else:
                     try:
-                        r = scommand(blocks, encoding=self.encoding)
+                        r = scommand(blocks, encoding=encoding)
                         if hasattr(r, 'simple_form'):
                             r = r.simple_form
                         result.append(r)
@@ -302,7 +306,9 @@ class String(object):
         mapping object containing defaults for values to be inserted.
         """
         self.raw = source_string
-        self.encoding = encoding
+        # For newly created objects, if no encoding is passed in we use the
+        # ZPublisher default
+        self.encoding = encoding or _dt.NEW_DEFAULT_ENCODING
         self.initvars(mapping, vars)
         self.setName(__name__)
 
@@ -437,6 +443,7 @@ class String(object):
         # print(client)
         # print(mapping)
         # print('============================================================')
+        encoding = getattr(self, 'encoding', None)
 
         if mapping is None:
             mapping = {}
@@ -518,7 +525,7 @@ class String(object):
             if value is _marker:
                 try:
                     result = render_blocks(self._v_blocks, md,
-                                           encoding=self.encoding)
+                                           encoding=encoding)
                 except DTReturn as v:
                     result = v.v
                 self.ZDocumentTemplate_afterRender(md, result)

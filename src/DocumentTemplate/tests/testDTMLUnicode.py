@@ -35,7 +35,12 @@ class DTMLUnicodeTests(unittest.TestCase):
         from DocumentTemplate.DT_HTML import HTML
 
         def make(*args):
-            return HTML(*args, encoding=self.encoding_arg)
+            doc = HTML(*args, encoding=self.encoding_arg)
+            # Need to cheat here because the mewning of passing
+            # None as encoding has changed, it will be UTF-8 then
+            if self.encoding_arg != doc.encoding:
+                doc.encoding = self.encoding_arg
+            return doc
 
         return make
     doc_class = property(_get_doc_class,)
@@ -117,9 +122,9 @@ class DTMLUnicodeTestsModuleGlobal(DTMLUnicodeTests):
 
     def setUp(self):
         import DocumentTemplate as dt
-        self._default_encoding = dt.DEFAULT_ENCODING
-        dt.DEFAULT_ENCODING = self.encoding
+        self._default_encoding = dt.OLD_DEFAULT_ENCODING
+        dt.OLD_DEFAULT_ENCODING = self.encoding
 
     def tearDown(self):
         import DocumentTemplate as dt
-        dt.DEFAULT_ENCODING = self._default_encoding
+        dt.OLD_DEFAULT_ENCODING = self._default_encoding
