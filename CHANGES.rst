@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0b9 (unreleased)
+3.0b9 (2019-05-01)
 ------------------
 
 - Be much more careful when setting encoding if it is not passed in
