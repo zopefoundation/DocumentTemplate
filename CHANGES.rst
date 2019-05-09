@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0 (unreleased)
+3.0 (2019-05-09)
 ----------------
 
 Changes since 2.13.2:
