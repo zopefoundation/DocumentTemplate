@@ -20,6 +20,7 @@ parts
 .mr.developer.cfg
 .tox
 coverage.xml
+default.profraw
 develop-eggs/
 eggs/
 pip-selfcheck.json
