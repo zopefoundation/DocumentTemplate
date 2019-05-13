@@ -141,6 +141,19 @@ class TestTemplateDict(unittest.TestCase):
         td._push({'one': DummyNamespace('one')})
         self.assertEqual(td['one'], ('namespace', 'one', (td, )))
 
+    def test_callable_httpexception(self):
+        # Subclasses of zException.HTTPException are callable but should
+        # not be called during lookup in the template dict.
+        from zExceptions import NotFound
+        from zExceptions import Unauthorized
+
+        notfound = NotFound('ouch')
+        unauth = Unauthorized('argh')
+        td = TemplateDict()
+        td._push({'one': unauth, 'two': notfound})
+        self.assertEqual(td['one'], unauth)
+        self.assertEqual(td['two'], notfound)
+
 
 class TestRestrictedTemplateDict(unittest.TestCase):
     # Based on tests for Products.PageTemplates.ZRPythonExpr.

@@ -107,6 +107,7 @@ import six
 
 from Acquisition import aq_base
 from ExtensionClass import Base
+from zExceptions import HTTPException
 
 from DocumentTemplate.html_quote import html_quote
 from DocumentTemplate.ustr import ustr
@@ -393,7 +394,7 @@ class TemplateDict(Base):
                     return e.__render_with_namespace__(self)
 
                 base = aq_base(e)
-                if safe_callable(base):
+                if safe_callable(base) and not isinstance(base, HTTPException):
                     if getattr(base, 'isDocTemp', False):
                         return e(None, self)
                     return e()

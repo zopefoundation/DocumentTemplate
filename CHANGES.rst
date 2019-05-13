@@ -4,7 +4,10 @@ Changelog
 3.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+Bug fixes
++++++++++
+
+- Don't call HTTPExceptions that are looked up in TemplateDicts
 
 
 3.0 (2019-05-09)
