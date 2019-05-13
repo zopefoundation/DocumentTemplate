@@ -12,6 +12,7 @@ parts
 *.egg-info/
 *.pyc
 *.pyo
+*.swp
 .Python
 .coverage
 .coverage.*
