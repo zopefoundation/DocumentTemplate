@@ -1,8 +1,8 @@
 Changelog
 =========
 
-3.1 (unreleased)
-----------------
+3.1b2 (2019-05-16)
+------------------
 
 Bug fixes
 +++++++++
@@ -75,6 +75,7 @@ Bug fixes
 
 - Restrict the available functions in `DocumentTemplate.sequence` to public
   API's of `zope.sequencesort`.
+
 
 2.13.1 (2010-07-15)
 -------------------
