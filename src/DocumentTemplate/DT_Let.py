@@ -70,7 +70,7 @@ class Let(object):
                     m, (huh, l, c, src) = v
                     raise ParseError(
                         '<strong>Expression (Python) Syntax error</strong>:'
-                        '\n<pre>\n%s\n</pre>\n' % v[0],
+                        '\n<pre>\n%s\n</pre>\n' % v.args[0],
                         'let')
 
     def render(self, md):

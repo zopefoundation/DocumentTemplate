@@ -4,6 +4,11 @@ Changelog
 3.1 (unreleased)
 ----------------
 
+Bug fixes
++++++++++
+
+- Fix broken handling of SyntaxError under Python 3
+
 
 3.1b1 (2019-05-13)
 ------------------

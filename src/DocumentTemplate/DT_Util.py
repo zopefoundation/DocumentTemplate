@@ -278,7 +278,7 @@ def name_param(params, tag='', expr=0, attr='name', default_unnamed=1):
                 except SyntaxError as v:
                     raise ParseError(
                         '<strong>Expression (Python) Syntax error</strong>:'
-                        '\n<pre>\n%s\n</pre>\n' % v[0],
+                        '\n<pre>\n%s\n</pre>\n' % v.args[0],
                         tag)
                 return (v, expr)
             else:

@@ -195,6 +195,12 @@ class DTMLTests(unittest.TestCase):
         expected = 'Chris'
         self.assertEqual(res, expected)
 
+    def testSyntaxErrorHandling(self):
+        from ..DT_Util import ParseError
+        html = self.doc_class('<dtml-var "&%$#">')
+
+        self.assertRaises(ParseError, html)
+
     def testStringDateFormatting(self):
         import DateTime
         from DocumentTemplate.DT_HTML import String
