@@ -512,15 +512,49 @@ def structured_text(v, name='(Unknown name)', md={}):
     return HTML()(doc, level, header=False)
 
 
+# Searching and replacing a byte in text, or text in bytes,
+# may give various errors on Python 2 or 3.  So we make separate functions
+UNTRUSTED_BYTES = (b"'", b'"', b"\\")
+UNTRUSTED_TEXT = (u"'", u'"', u"\\")
+BAD_BYTES = (b"\x00",)
+BAD_TEXT = (u"\x00",)
+
+
+def bytes_sql_quote(v):
+    # Helper function for sql_quote, handling only bytes.
+    # Remove bad characters.
+    for char in BAD_BYTES:
+        if char in v:
+            v = v.replace(char, b"")
+    # Double untrusted characters to make them harmless.
+    for char in UNTRUSTED_BYTES:
+        if char in v:
+            v = v.replace(char, char * 2)
+    return v
+
+
+def text_sql_quote(v):
+    # Helper function for sql_quote, handling only text.
+    # Remove bad characters.
+    for char in BAD_TEXT:
+        if char in v:
+            v = v.replace(char, u"")
+    # Double untrusted characters to make them harmless.
+    for char in UNTRUSTED_TEXT:
+        if char in v:
+            v = v.replace(char, char * 2)
+    return v
+
+
 def sql_quote(v, name='(Unknown name)', md={}):
     """Quote single quotes in a string by doubling them.
 
     This is needed to securely insert values into sql
     string literals in templates that generate sql.
     """
-    if v.find("'") >= 0:
-        return v.replace("'", "''")
-    return v
+    if isinstance(v, bytes):
+        return bytes_sql_quote(v)
+    return text_sql_quote(v)
 
 
 special_formats = {

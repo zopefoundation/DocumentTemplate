@@ -4,6 +4,11 @@ Changelog
 3.1 (unreleased)
 ----------------
 
+Bug fixes
++++++++++
+
+- Escape more characters in ``sql_quote``.  Taken over from PloneHotfix20200121.
+
 
 3.1b2 (2019-05-16)
 ------------------
