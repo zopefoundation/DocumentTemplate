@@ -38,7 +38,7 @@ class TestNewlineToBr(doctest.DocTestCase):
         <br />
         line three<br />
         <BLANKLINE>
-        
+
         >>> dos = text.replace('\n', '\r\n')
         >>> DT_Var.newline_to_br(text) == DT_Var.newline_to_br(dos)
         True
@@ -74,7 +74,7 @@ class TestUrlQuoting(unittest.TestCase):
 
         self.assertEquals(url_quote(unicode_value), quoted_unicode_value)
         self.assertEquals(url_quote(utf8_value), quoted_utf8_value)
-        
+
         self.assertEquals(url_unquote(quoted_unicode_value), unicode_value)
         self.assertEquals(url_unquote(quoted_utf8_value), utf8_value)
 
@@ -89,15 +89,108 @@ class TestUrlQuoting(unittest.TestCase):
 
         self.assertEquals(url_quote_plus(unicode_value), quoted_unicode_value)
         self.assertEquals(url_quote_plus(utf8_value), quoted_utf8_value)
-        
+
         self.assertEquals(url_unquote_plus(quoted_unicode_value), unicode_value)
         self.assertEquals(url_unquote_plus(quoted_utf8_value), utf8_value)
+
+
+class SqlQuoting(unittest.TestCase):
+
+    def test_bytes_sql_quote(self):
+        from DocumentTemplate.DT_Var import bytes_sql_quote
+        self.assertEqual(bytes_sql_quote(b""), b"")
+        self.assertEqual(bytes_sql_quote(b"a"), b"a")
+
+        self.assertEqual(bytes_sql_quote(b"Can't"), b"Can''t")
+        self.assertEqual(bytes_sql_quote(b"Can\'t"), b"Can''t")
+        self.assertEqual(bytes_sql_quote(br"Can\'t"), b"Can\\\\''t")
+
+        self.assertEqual(bytes_sql_quote(b"Can\\ I?"), b"Can\\\\ I?")
+        self.assertEqual(bytes_sql_quote(br"Can\ I?"), b"Can\\\\ I?")
+
+        self.assertEqual(
+            bytes_sql_quote(b'Just say "Hello"'), b'Just say \\"Hello\\"')
+
+        self.assertEqual(
+            bytes_sql_quote(b'Hello\x00World'), b'HelloWorld')
+        self.assertEqual(
+            bytes_sql_quote(b'\x00Hello\x00\x00World\x00'), b'HelloWorld')
+
+        self.assertEqual(
+            bytes_sql_quote(b"carriage\rreturn"), b"carriagereturn")
+        self.assertEqual(bytes_sql_quote(b"line\nbreak"), b"line\nbreak")
+        self.assertEqual(bytes_sql_quote(b"tab\t"), b"tab\t")
+
+    def test_text_sql_quote(self):
+        from DocumentTemplate.DT_Var import text_sql_quote
+        self.assertEqual(text_sql_quote(u""), u"")
+        self.assertEqual(text_sql_quote(u"a"), u"a")
+
+        self.assertEqual(text_sql_quote(u"Can't"), u"Can''t")
+        self.assertEqual(text_sql_quote(u"Can\'t"), u"Can''t")
+        # SyntaxError on Python 3.
+        # self.assertEqual(text_sql_quote(ur"Can\'t"), u"Can\\\\''t")
+
+        self.assertEqual(text_sql_quote(u"Can\\ I?"), u"Can\\\\ I?")
+        # SyntaxError on Python 3.
+        # self.assertEqual(text_sql_quote(ur"Can\ I?"), u"Can\\\\ I?")
+
+        self.assertEqual(
+            text_sql_quote(u'Just say "Hello"'), u'Just say \\"Hello\\"')
+
+        self.assertEqual(
+            text_sql_quote(u'Hello\x00World'), u'HelloWorld')
+        self.assertEqual(
+            text_sql_quote(u'\x00Hello\x00\x00World\x00'), u'HelloWorld')
+
+        self.assertEqual(
+            text_sql_quote(u"carriage\rreturn"), u"carriagereturn")
+        self.assertEqual(text_sql_quote(u"line\nbreak"), u"line\nbreak")
+        self.assertEqual(text_sql_quote(u"tab\t"), u"tab\t")
+
+    def test_sql_quote(self):
+        from DocumentTemplate.DT_Var import sql_quote
+        self.assertEqual(sql_quote(u""), u"")
+        self.assertEqual(sql_quote(u"a"), u"a")
+        self.assertEqual(sql_quote(b"a"), b"a")
+
+        self.assertEqual(sql_quote(u"Can't"), u"Can''t")
+        self.assertEqual(sql_quote(u"Can\'t"), u"Can''t")
+        # SyntaxError on Python 3.
+        # self.assertEqual(sql_quote(ur"Can\'t"), u"Can\\\\''t")
+
+        self.assertEqual(sql_quote(u"Can\\ I?"), u"Can\\\\ I?")
+        # SyntaxError on Python 3.
+        # self.assertEqual(sql_quote(ur"Can\ I?"), u"Can\\\\ I?")
+
+        self.assertEqual(
+            sql_quote(u'Just say "Hello"'), u'Just say \\"Hello\\"')
+
+        self.assertEqual(
+            sql_quote(u'Hello\x00World'), u'HelloWorld')
+        self.assertEqual(
+            sql_quote(u'\x00Hello\x00\x00World\x00'), u'HelloWorld')
+
+        self.assertEqual(
+            sql_quote(u'\x00Hello\x00\x00World\x00'), u'HelloWorld')
+
+        self.assertEqual(u"\xea".encode("utf-8"), b"\xc3\xaa")
+        self.assertEqual(sql_quote(u"\xea'"), u"\xea''")
+        self.assertEqual(sql_quote(b"\xc3\xaa'"), b"\xc3\xaa''")
+
+        self.assertEqual(
+            sql_quote(b"carriage\rreturn"), b"carriagereturn")
+        self.assertEqual(
+            sql_quote(u"carriage\rreturn"), u"carriagereturn")
+        self.assertEqual(sql_quote(u"line\nbreak"), u"line\nbreak")
+        self.assertEqual(sql_quote(u"tab\t"), u"tab\t")
 
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite())
     suite.addTest(unittest.makeSuite(TestUrlQuoting))
+    suite.addTest(unittest.makeSuite(SqlQuoting))
     return suite
 
 if __name__ == '__main__':
