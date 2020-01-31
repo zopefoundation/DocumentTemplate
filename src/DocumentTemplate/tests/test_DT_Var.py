@@ -108,7 +108,7 @@ class TestUrlQuoting(unittest.TestCase):
         self.assertEqual(bytes_sql_quote(br"Can\ I?"), b"Can\\\\ I?")
 
         self.assertEqual(
-            bytes_sql_quote(b'Just say "Hello"'), b'Just say ""Hello""')
+            bytes_sql_quote(b'Just say "Hello"'), b'Just say \\"Hello\\"')
 
         self.assertEqual(
             bytes_sql_quote(b'Hello\x00World'), b'HelloWorld')
@@ -130,7 +130,7 @@ class TestUrlQuoting(unittest.TestCase):
         # self.assertEqual(text_sql_quote(ur"Can\ I?"), u"Can\\\\ I?")
 
         self.assertEqual(
-            text_sql_quote(u'Just say "Hello"'), u'Just say ""Hello""')
+            text_sql_quote(u'Just say "Hello"'), u'Just say \\"Hello\\"')
 
         self.assertEqual(
             text_sql_quote(u'Hello\x00World'), u'HelloWorld')
@@ -153,7 +153,7 @@ class TestUrlQuoting(unittest.TestCase):
         # self.assertEqual(sql_quote(ur"Can\ I?"), u"Can\\\\ I?")
 
         self.assertEqual(
-            sql_quote(u'Just say "Hello"'), u'Just say ""Hello""')
+            sql_quote(u'Just say "Hello"'), u'Just say \\"Hello\\"')
 
         self.assertEqual(
             sql_quote(u'Hello\x00World'), u'HelloWorld')
