@@ -24,3 +24,4 @@ default.profraw
 develop-eggs/
 eggs/
 pip-selfcheck.json
+pyvenv.cfg
