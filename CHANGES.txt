@@ -4,6 +4,7 @@ Changelog
 2.13.5 (unreleased)
 -------------------
 
+- Escape more characters in ``sql_quote``.  Taken over from PloneHotfix20200121.
 
 2.13.4 (2017-02-15)
 -------------------
