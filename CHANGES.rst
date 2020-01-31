@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.1 (unreleased)
+3.1 (2020-01-31)
 ----------------
 
 Bug fixes
