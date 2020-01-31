@@ -514,8 +514,8 @@ def structured_text(v, name='(Unknown name)', md={}):
 
 # Searching and replacing a byte in text, or text in bytes,
 # may give various errors on Python 2 or 3.  So we make separate functions
-REMOVE_BYTES = (b'\x00', b'\x1a', b'\n', b'\r')
-REMOVE_TEXT = (u'\x00', u'\x1a', u'\n', u'\r')
+REMOVE_BYTES = (b'\x00', b'\x1a', b'\r')
+REMOVE_TEXT = (u'\x00', u'\x1a', u'\r')
 DOUBLE_BYTES = (b"'", b'\\')
 DOUBLE_TEXT = (u"'", u'\\')
 ESCAPE_BYTES = (b'"',)

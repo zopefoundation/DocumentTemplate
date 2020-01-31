@@ -115,6 +115,11 @@ class TestUrlQuoting(unittest.TestCase):
         self.assertEqual(
             bytes_sql_quote(b'\x00Hello\x00\x00World\x00'), b'HelloWorld')
 
+        self.assertEqual(
+            bytes_sql_quote(b"carriage\rreturn"), b"carriagereturn")
+        self.assertEqual(bytes_sql_quote(b"line\nbreak"), b"line\nbreak")
+        self.assertEqual(bytes_sql_quote(b"tab\t"), b"tab\t")
+
     def test_text_sql_quote(self):
         from DocumentTemplate.DT_Var import text_sql_quote
         self.assertEqual(text_sql_quote(u""), u"")
@@ -136,6 +141,11 @@ class TestUrlQuoting(unittest.TestCase):
             text_sql_quote(u'Hello\x00World'), u'HelloWorld')
         self.assertEqual(
             text_sql_quote(u'\x00Hello\x00\x00World\x00'), u'HelloWorld')
+
+        self.assertEqual(
+            text_sql_quote(u"carriage\rreturn"), u"carriagereturn")
+        self.assertEqual(text_sql_quote(u"line\nbreak"), u"line\nbreak")
+        self.assertEqual(text_sql_quote(u"tab\t"), u"tab\t")
 
     def test_sql_quote(self):
         from DocumentTemplate.DT_Var import sql_quote
@@ -166,3 +176,10 @@ class TestUrlQuoting(unittest.TestCase):
         self.assertEqual(u"\xea".encode("utf-8"), b"\xc3\xaa")
         self.assertEqual(sql_quote(u"\xea'"), u"\xea''")
         self.assertEqual(sql_quote(b"\xc3\xaa'"), b"\xc3\xaa''")
+
+        self.assertEqual(
+            sql_quote(b"carriage\rreturn"), b"carriagereturn")
+        self.assertEqual(
+            sql_quote(u"carriage\rreturn"), u"carriagereturn")
+        self.assertEqual(sql_quote(u"line\nbreak"), u"line\nbreak")
+        self.assertEqual(sql_quote(u"tab\t"), u"tab\t")
