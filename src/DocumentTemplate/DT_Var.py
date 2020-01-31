@@ -546,7 +546,7 @@ def text_sql_quote(v):
         v = v.replace(char, char * 2)
     # Backslash-escape untrusted characters to make them harmless.
     for char in ESCAPE_TEXT:
-        v = v.replace(char, '\\%s' % char)
+        v = v.replace(char, u'\\%s' % char)
     return v
 
 
