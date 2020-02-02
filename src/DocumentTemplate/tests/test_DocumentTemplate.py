@@ -26,7 +26,7 @@ class InstanceDictTests(unittest.TestCase):
         # This is a test for the fix of the regression described in
         # https://github.com/zopefoundation/Zope/issues/292
 
-        from DocumentTemplate.DT_Util import InstanceDict
+        from DocumentTemplate._DocumentTemplate import InstanceDict
 
         inst = Item('a').__of__(Item('b'))
         i_dict = InstanceDict(inst, {}, getattr)
@@ -37,7 +37,7 @@ class InstanceDictTests(unittest.TestCase):
     def test_getitem_2(self):
         # It does not break the acquisition chain of stored objects.
 
-        from DocumentTemplate.DT_Util import InstanceDict
+        from DocumentTemplate._DocumentTemplate import InstanceDict
 
         main = Item('main')
         main.sub = Item('sub')

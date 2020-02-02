@@ -20,15 +20,15 @@ from binascii import b2a_base64
 
 import six
 
+from DocumentTemplate._DocumentTemplate import InstanceDict
+from DocumentTemplate._DocumentTemplate import render_blocks
 from DocumentTemplate.DT_String import String
 from DocumentTemplate.DT_Util import Eval
-from DocumentTemplate.DT_Util import InstanceDict
 from DocumentTemplate.DT_Util import ParseError
 from DocumentTemplate.DT_Util import ValidationError
 from DocumentTemplate.DT_Util import add_with_prefix
 from DocumentTemplate.DT_Util import name_param
 from DocumentTemplate.DT_Util import parse_params
-from DocumentTemplate.DT_Util import render_blocks
 from DocumentTemplate.DT_Util import simple_name
 
 

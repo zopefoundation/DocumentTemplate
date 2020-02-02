@@ -24,6 +24,7 @@ from AccessControl.ZopeGuards import guarded_getitem
 from AccessControl.ZopeGuards import safe_builtins
 from DocumentTemplate import DT_Util
 
+
 RestrictedDTML = None
 
 

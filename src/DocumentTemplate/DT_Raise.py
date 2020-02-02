@@ -27,9 +27,9 @@
 from zExceptions import convertExceptionType
 from zExceptions import upgradeException
 
+from ._DocumentTemplate import render_blocks
 from .DT_Util import name_param
 from .DT_Util import parse_params
-from .DT_Util import render_blocks
 
 
 class InvalidErrorTypeExpression(Exception):

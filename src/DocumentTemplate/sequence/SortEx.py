@@ -13,14 +13,26 @@
 
 import sys
 
-from zope.sequencesort.ssort import SortBy  # NOQA: F401
-from zope.sequencesort.ssort import SortEx  # NOQA: F401
-from zope.sequencesort.ssort import make_sortfunctions  # NOQA: F401
-from zope.sequencesort.ssort import nocase  # NOQA: F401
-from zope.sequencesort.ssort import sort  # NOQA: F401
+from zope.deferredimport import deprecated
 
+
+# BBB DocumentTemplate 4.0
+deprecated(
+    'Please import from zope.sequencesort.ssort. '
+    'This module will go away in DocumentTemplate 4.0.',
+    SortBy='zope.sequencesort.ssort:SortBy',
+    SortEx='zope.sequencesort.ssort:SortEx',
+    make_sortfunctions='zope.sequencesort.ssort:make_sortfunctions',
+    nocase='zope.sequencesort.ssort:nocase',
+    sort='zope.sequencesort.ssort:sort',
+)
 
 # only if locale is already imported
-if "locale" in sys.modules:
-    from zope.sequencesort.ssort import strcoll_nocase  # NOQA: F401
+if 'locale' in sys.modules:
+    # BBB DocumentTemplate 4.0
+    deprecated(
+        'Please import from zope.sequencesort.ssort. '
+        'This module will go away in DocumentTemplate 4.0.',
+        strcoll_nocase='zope.sequencesort.ssort:strcoll_nocase',
+    )
 del sys

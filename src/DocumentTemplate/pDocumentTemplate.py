@@ -13,16 +13,17 @@
 """This module is no longer actively used.
 """
 
-import warnings
-
-from ._DocumentTemplate import DictInstance
-from ._DocumentTemplate import InstanceDict
-from ._DocumentTemplate import TemplateDict
-from ._DocumentTemplate import join_unicode
-from ._DocumentTemplate import render_blocks
-from ._DocumentTemplate import safe_callable
+from zope.deferredimport import deprecated
 
 
-warnings.warn('pDocumentTemplate is not longer in active use. '
-              'It remains only as an implementation reference.',
-              DeprecationWarning)  # pragma: nocover
+# BBB DocumentTemplate 4.0
+deprecated(
+    'Please import from DocumentTemplate._DocumentTemplate. '
+    'This module will go away in DocumentTemplate 4.0.',
+    DictInstance='DocumentTemplate._DocumentTemplate:DictInstance',
+    InstanceDict='DocumentTemplate._DocumentTemplate:InstanceDict',
+    TemplateDict='DocumentTemplate._DocumentTemplate:TemplateDict',
+    join_unicode='DocumentTemplate._DocumentTemplate:join_unicode',
+    render_blocks='DocumentTemplate._DocumentTemplate:render_blocks',
+    safe_callable='DocumentTemplate._DocumentTemplate:safe_callable',
+)

@@ -339,17 +339,17 @@ import six
 
 from zope.sequencesort.ssort import _Smallest
 
+from ._DocumentTemplate import InstanceDict
+from ._DocumentTemplate import join_unicode
+from ._DocumentTemplate import render_blocks
 from .DT_InSV import opt
 from .DT_InSV import sequence_variables
 from .DT_Util import Eval
-from .DT_Util import InstanceDict
 from .DT_Util import ParseError
 from .DT_Util import ValidationError
 from .DT_Util import add_with_prefix
-from .DT_Util import join_unicode
 from .DT_Util import name_param
 from .DT_Util import parse_params
-from .DT_Util import render_blocks
 from .DT_Util import simple_name
 from .DT_Util import str
 

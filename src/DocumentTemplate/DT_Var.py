@@ -168,8 +168,8 @@ from zope.structuredtext.document import DocumentWithImages
 from .DT_Util import name_param
 from .DT_Util import parse_params
 from .DT_Util import str
-from .DT_Util import ustr
 from .html_quote import html_quote
+from .ustr import ustr
 
 
 logger = logging.getLogger('DocumentTemplate')

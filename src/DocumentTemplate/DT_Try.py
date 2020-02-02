@@ -16,12 +16,12 @@ import traceback
 
 from six import StringIO
 
+from ._DocumentTemplate import InstanceDict
+from ._DocumentTemplate import render_blocks
 from .DT_Return import DTReturn
-from .DT_Util import InstanceDict
 from .DT_Util import ParseError
 from .DT_Util import namespace
 from .DT_Util import parse_params
-from .DT_Util import render_blocks
 
 
 class Try(object):

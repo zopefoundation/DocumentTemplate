@@ -21,12 +21,12 @@ import DocumentTemplate as _dt
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 
+from ._DocumentTemplate import InstanceDict
+from ._DocumentTemplate import TemplateDict
+from ._DocumentTemplate import render_blocks
 from .DT_Return import DTReturn
 from .DT_Return import ReturnTag
-from .DT_Util import InstanceDict
 from .DT_Util import ParseError
-from .DT_Util import TemplateDict
-from .DT_Util import render_blocks
 from .DT_Var import Call
 from .DT_Var import Comment
 from .DT_Var import Var

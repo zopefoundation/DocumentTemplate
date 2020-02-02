@@ -24,20 +24,31 @@ from RestrictedPython.Eval import RestrictionCapableEval
 from RestrictedPython.Guards import safe_builtins
 from RestrictedPython.Utilities import utility_builtins
 from zExceptions import Unauthorized as ValidationError
+from zope.deferredimport import deprecated
 
 from . import sequence
-from ._DocumentTemplate import InstanceDict  # NOQA:F401 BBB
 from ._DocumentTemplate import TemplateDict
-from ._DocumentTemplate import join_unicode  # NOQA: F401 BBB
-from ._DocumentTemplate import render_blocks  # NOQA: F401 BBB
 from ._DocumentTemplate import safe_callable
-from .html_quote import html_quote  # NOQA: F401 BBB
-from .html_quote import ustr  # NOQA: F401 BBB
 
 
-if 'test' not in utility_builtins:
-    from RestrictedPython.Utilities import test
-    utility_builtins['test'] = test
+# BBB DocumentTemplate 4.0
+deprecated(
+    'Please import from DocumentTemplate._DocumentTemplate. '
+    'These shims will go away in DocumentTemplate 4.0.',
+    InstanceDict='DocumentTemplate._DocumentTemplate:InstanceDict',
+    join_unicode='DocumentTemplate._DocumentTemplate:join_unicode',
+    render_blocks='DocumentTemplate._DocumentTemplate:render_blocks',
+)
+deprecated(
+    'Please import from DocumentTemplate.html_quote. '
+    'These shims will go away in DocumentTemplate 4.0.',
+    html_quote='DocumentTemplate.html_quote:html_quote',
+)
+deprecated(
+    'Please import from DocumentTemplate.ustr. '
+    'These shims will go away in DocumentTemplate 4.0.',
+    ustr='DocumentTemplate.html_quote:ustr',
+)
 
 test = utility_builtins['test']  # backwards compatibility
 utility_builtins['sequence'] = sequence

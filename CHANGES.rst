@@ -4,12 +4,15 @@ Changelog
 3.2 (unreleased)
 ----------------
 
+- Added `DeprecationWarnings` for all deprecated files and names
+
+- Import sorting done like Zope itself
+
+- Applied extended linting configuration similar to Zope's own
+
 
 3.1 (2020-01-31)
 ----------------
-
-Bug fixes
-+++++++++
 
 - Escape more characters in ``sql_quote``.  Taken over from PloneHotfix20200121.
 
@@ -17,17 +20,11 @@ Bug fixes
 3.1b2 (2019-05-16)
 ------------------
 
-Bug fixes
-+++++++++
-
 - Fix broken handling of SyntaxError under Python 3
 
 
 3.1b1 (2019-05-13)
 ------------------
-
-Bug fixes
-+++++++++
 
 - Don't call HTTPExceptions that are looked up in TemplateDicts
 

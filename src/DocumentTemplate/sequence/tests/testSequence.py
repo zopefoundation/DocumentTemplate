@@ -14,7 +14,8 @@
 import sys
 import unittest
 
-from ..SortEx import SortEx
+from zope.sequencesort.ssort import SortEx
+
 from .results import res1
 from .results import res2
 from .results import res3
