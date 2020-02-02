@@ -11,16 +11,18 @@
 #
 ##############################################################################
 
-# BBB imports for former C implementation.
-from DocumentTemplate._DocumentTemplate import (  # NOQA
-    DictInstance,
-    InstanceDict,
-    join_unicode,
-    render_blocks,
-    safe_callable,
-    TemplateDict,
-)
-
 import warnings
-warnings.warn('cDocumentTemplate is deprecated, use '
-              '_DocumentTemplate instead.', DeprecationWarning)
+
+# BBB imports for former C implementation.
+# BBB DocumentTemplate 4.0
+from DocumentTemplate._DocumentTemplate import DictInstance
+from DocumentTemplate._DocumentTemplate import InstanceDict
+from DocumentTemplate._DocumentTemplate import join_unicode
+from DocumentTemplate._DocumentTemplate import render_blocks
+from DocumentTemplate._DocumentTemplate import safe_callable
+from DocumentTemplate._DocumentTemplate import TemplateDict
+
+
+warnings.warn('The cDocumentTemplate module is deprecated and will be '
+              'removed in DocumentTemplate 4. Use _DocumentTemplate instead.',
+              DeprecationWarning)

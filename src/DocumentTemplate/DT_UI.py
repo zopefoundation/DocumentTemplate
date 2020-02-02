@@ -13,7 +13,16 @@
 '''Machinery to support through-the-web editing
 '''
 
+import warnings
+
 from DocumentTemplate.DT_HTML import HTML
+
+
+# BBB DocumentTemplate 4.0
+warnings.warn('The DT_UI module is deprecated and will be removed '
+              'in DocumentTemplate 4.0',
+              DeprecationWarning)
+
 
 FactoryDefaultString = "Factory Default"
 
