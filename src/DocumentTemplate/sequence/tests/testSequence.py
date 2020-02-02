@@ -14,17 +14,15 @@
 import sys
 import unittest
 
-from DocumentTemplate.sequence.SortEx import SortEx
-from DocumentTemplate.sequence.tests.ztestlib import wordlist
-from DocumentTemplate.sequence.tests.results import (
-    res1,
-    res2,
-    res3,
-    res4,
-    res5,
-    res6,
-    res7,
-)
+from ..SortEx import SortEx
+from .results import res1
+from .results import res2
+from .results import res3
+from .results import res4
+from .results import res5
+from .results import res6
+from .results import res7
+from .ztestlib import wordlist
 
 
 class TestCase(unittest.TestCase):

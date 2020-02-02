@@ -330,20 +330,29 @@
 
 '''
 
-from operator import itemgetter
-import sys
-import re
 import functools
+import re
+import sys
+from operator import itemgetter
 
 import six
 
-from DocumentTemplate.DT_Util import ParseError, parse_params, name_param
-from DocumentTemplate.DT_Util import str, join_unicode
-from DocumentTemplate.DT_Util import render_blocks, InstanceDict
-from DocumentTemplate.DT_Util import ValidationError, Eval
-from DocumentTemplate.DT_Util import simple_name, add_with_prefix
-from DocumentTemplate.DT_InSV import sequence_variables, opt
 from zope.sequencesort.ssort import _Smallest
+
+from .DT_InSV import opt
+from .DT_InSV import sequence_variables
+from .DT_Util import Eval
+from .DT_Util import InstanceDict
+from .DT_Util import ParseError
+from .DT_Util import ValidationError
+from .DT_Util import add_with_prefix
+from .DT_Util import join_unicode
+from .DT_Util import name_param
+from .DT_Util import parse_params
+from .DT_Util import render_blocks
+from .DT_Util import simple_name
+from .DT_Util import str
+
 
 if sys.version_info > (3, 0):
     unicode = str
@@ -432,8 +441,8 @@ class InClass(object):
                     int(v)
                 except Exception:
                     self.start_name_re = re.compile(
-                        '&+' +
-                        ''.join(["[%s]" % c for c in v]) +
+                        '&+' +  # NOQA: W504
+                        ''.join(["[%s]" % c for c in v]) +  # NOQA: W504
                         '=[0-9]+&+')
 
         name, expr = name_param(args, 'in', 1)
@@ -615,8 +624,8 @@ class InClass(object):
                         try:
                             client = guarded_getitem(sequence, index)
                         except ValidationError as vv:
-                            if ('skip_unauthorized' in params and
-                                    params['skip_unauthorized']):
+                            if 'skip_unauthorized' in params and \
+                               params['skip_unauthorized']:
                                 if index == first:
                                     pkw['sequence-start'] = 0
                                 continue
@@ -728,8 +737,8 @@ class InClass(object):
                     try:
                         client = guarded_getitem(sequence, index)
                     except ValidationError as vv:
-                        if ('skip_unauthorized' in self.args and
-                                self.args['skip_unauthorized']):
+                        if 'skip_unauthorized' in self.args and \
+                           self.args['skip_unauthorized']:
                             if index == 1:
                                 pkw['sequence-start'] = 0
                             continue

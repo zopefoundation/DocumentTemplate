@@ -15,9 +15,13 @@ import sys
 import traceback
 
 from six import StringIO
-from DocumentTemplate.DT_Util import ParseError, parse_params, render_blocks
-from DocumentTemplate.DT_Util import namespace, InstanceDict
-from DocumentTemplate.DT_Return import DTReturn
+
+from .DT_Return import DTReturn
+from .DT_Util import InstanceDict
+from .DT_Util import ParseError
+from .DT_Util import namespace
+from .DT_Util import parse_params
+from .DT_Util import render_blocks
 
 
 class Try(object):
@@ -197,8 +201,9 @@ class Try(object):
     def find_handler(self, exception):
         "recursively search for a handler for a given exception"
         for e, h in self.handlers:
-            if (e == exception.__name__ or
-                    e == '' or self.match_base(exception, e)):
+            if e == exception.__name__ or \
+               e == '' or \
+               self.match_base(exception, e):
                 return h
         return None
 

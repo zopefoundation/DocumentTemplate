@@ -18,10 +18,19 @@ from threading import Lock
 import six
 
 import DocumentTemplate as _dt
-from DocumentTemplate.DT_Util import ParseError, InstanceDict
-from DocumentTemplate.DT_Util import TemplateDict, render_blocks
-from DocumentTemplate.DT_Var import Var, Call, Comment
-from DocumentTemplate.DT_Return import ReturnTag, DTReturn
+from AccessControl.class_init import InitializeClass
+from AccessControl.SecurityInfo import ClassSecurityInfo
+
+from .DT_Return import DTReturn
+from .DT_Return import ReturnTag
+from .DT_Util import InstanceDict
+from .DT_Util import ParseError
+from .DT_Util import TemplateDict
+from .DT_Util import render_blocks
+from .DT_Var import Call
+from .DT_Var import Comment
+from .DT_Var import Var
+
 
 _marker = []  # Create a new marker object.
 COOKLOCK = Lock()
@@ -47,30 +56,33 @@ class String(object):
 
     isDocTemp = 1
 
+    security = ClassSecurityInfo()
+
     # Document Templates masquerade as functions:
     class func_code:
         pass
 
+    security.declarePrivate('__code__')  # NOQA: D001
     __code__ = func_code = func_code()
     __code__.co_varnames = 'self', 'REQUEST'
     __code__.co_argcount = 2
-    __code__.__roles__ = ()
 
+    security.declarePrivate('__defaults__')  # NOQA: D001
+    security.declarePrivate('func_defaults')  # NOQA: D001
     __defaults__ = func_defaults = ()
-    __defaults____roles__ = func_defaults__roles__ = ()
 
-    errQuote__roles__ = ()
+    @security.private
     def errQuote(self, s):
         return s
 
-    parse_error__roles__ = ()
+    @security.private
     def parse_error(self, mess, tag, text, start):
         raise ParseError(
             "%s, for tag %s, on line %s of %s" % (
                 mess, self.errQuote(tag), len(text[:start].split('\n')),
                 self.errQuote(self.__name__)))
 
-    commands__roles__ = ()
+    security.declarePrivate('commands')  # NOQA: D001
     commands = {
         'var': Var,
         'call': Call,
@@ -86,11 +98,11 @@ class String(object):
         'return': ReturnTag,
     }
 
-    SubTemplate__roles__ = ()
+    @security.private
     def SubTemplate(self, name):
         return String('', __name__=name)
 
-    tagre__roles__ = ()
+    @security.private
     def tagre(self):
         return re.compile(
             '%\\('                                  # beginning
@@ -102,7 +114,7 @@ class String(object):
             '\\)(?P<fmt>[0-9]*[.]?[0-9]*[a-z]|[]![])',  # end
             re.I)
 
-    _parseTag__roles__ = ()
+    @security.private
     def _parseTag(self, match_ob, command=None, sargs='', tt=type(())):
         tag, args, command, coname = self.parseTag(match_ob, command, sargs)
         if type(command) is tt:
@@ -117,7 +129,7 @@ class String(object):
             self.commands[cname] = command
         return tag, args, command, coname
 
-    parseTag__roles__ = ()
+    @security.private
     def parseTag(self, match_ob, command=None, sargs=''):
         """Parse a tag using an already matched re
 
@@ -143,8 +155,8 @@ class String(object):
                     # Waaaaaah! Have to special case else because of
                     # old else start tag usage. Waaaaaaah!
                     l_ = len(args)
-                    if not (args == sargs or
-                            args == sargs[:l_] and
+                    if not (args == sargs or  # NOQA: W504
+                            args == sargs[:l_] and  # NOQA: W504
                             sargs[l_:l_ + 1] in ' \t\n'):
                         return tag, args, self.commands[name], None
 
@@ -159,11 +171,11 @@ class String(object):
             args = args and ("%s %s" % (name, args)) or name
             return tag, args, Var, None
 
-    varExtra__roles__ = ()
+    @security.private
     def varExtra(self, match_ob):
         return match_ob.group('fmt')
 
-    parse__roles__ = ()
+    @security.private
     def parse(self, text, start=0, result=None, tagre=None):
         if result is None:
             result = []
@@ -205,7 +217,7 @@ class String(object):
             result.append(text)
         return result
 
-    skip_eol__roles__ = ()
+    @security.private
     def skip_eol(self, text, start, eol=re.compile('[ \t]*\n')):
         # if block open is followed by newline, then skip past newline
         mo = eol.match(text, start)
@@ -214,7 +226,7 @@ class String(object):
 
         return start
 
-    parse_block__roles__ = ()
+    @security.private
     def parse_block(self, text, start, result, tagre,
                     stag, sloc, sargs, scommand):
 
@@ -272,7 +284,7 @@ class String(object):
 
                     return start
 
-    parse_close__roles__ = ()
+    @security.private
     def parse_close(self, text, start, tagre, stag, sloc, scommand, sa):
         while 1:
             mo = tagre.search(text, start)
@@ -294,7 +306,7 @@ class String(object):
             elif not coname:
                 return start
 
-    shared_globals__roles__ = ()
+    security.declarePrivate('shared_globals')  # NOQA: D001
     shared_globals = {}
 
     def __init__(self, source_string='', mapping=None, __name__='<string>',
@@ -317,11 +329,11 @@ class String(object):
 
     id = name
 
-    setName__roles__ = ()
+    @security.private
     def setName(self, v):
         self.__dict__['__name__'] = v
 
-    default__roles__ = ()
+    @security.private
     def default(self, name=None, **kw):
         """\
         Change or query default values in a document template.
@@ -337,7 +349,7 @@ class String(object):
             self.globals[key] = kw[key]
         return name
 
-    var__roles__ = ()
+    @security.private
     def var(self, name=None, **kw):
         """\
         Change or query a variable in a document template.
@@ -353,7 +365,7 @@ class String(object):
             self._vars[key] = kw[key]
         return name
 
-    munge__roles__ = ()
+    @security.private
     def munge(self, source_string=None, mapping=None, **vars):
         """\
         Change the text or default values for a document template.
@@ -364,25 +376,25 @@ class String(object):
             self.raw = source_string
         self.cook()
 
-    manage_edit__roles__ = ()
+    @security.private
     def manage_edit(self, data, REQUEST=None):
         self.munge(data)
 
-    read_raw__roles__ = ()
+    @security.private
     def read_raw(self, raw=None):
         return self.raw
 
-    read__roles__ = ()
+    @security.private
     def read(self, raw=None):
         return self.read_raw()
 
-    cook__roles__ = ()
+    @security.private
     def cook(self):
         with COOKLOCK:
             self._v_blocks = self.parse(self.read())
             self._v_cooked = None
 
-    initvars__roles__ = ()
+    @security.private
     def initvars(self, globals, vars):
         if globals:
             for k in globals.keys():
@@ -391,11 +403,11 @@ class String(object):
         self.globals = vars
         self._vars = {}
 
-    ZDocumentTemplate_beforeRender__roles__ = ()
+    @security.private
     def ZDocumentTemplate_beforeRender(self, md, default):
         return default
 
-    ZDocumentTemplate_afterRender__roles__ = ()
+    @security.private
     def ZDocumentTemplate_afterRender(self, md, result):
         pass
 
@@ -462,8 +474,8 @@ class String(object):
         pushed = None
         try:
             # Support Python 1.5.2, but work better in 2.1
-            if (mapping.__class__ is TemplateDict or
-                    isinstance(mapping, TemplateDict)):
+            if mapping.__class__ is TemplateDict or \
+               isinstance(mapping, TemplateDict):
                 pushed = 0
         except Exception:
             pass
@@ -553,9 +565,14 @@ class String(object):
         return d
 
 
+InitializeClass(String)
+
+
 class FileMixin(object):
     # Mix-in class to abstract certain file-related attributes
     edited_source = ''
+
+    security = ClassSecurityInfo()
 
     def __init__(self, file_name='', mapping=None, __name__='', **vars):
         """\
@@ -568,7 +585,7 @@ class FileMixin(object):
         self.initvars(mapping, vars)
         self.setName(__name__ or file_name)
 
-    read_raw__roles__ = ()
+    @security.private
     def read_raw(self):
         if self.edited_source:
             return self.edited_source
@@ -582,6 +599,9 @@ class FileMixin(object):
         return ''
 
 
+InitializeClass(FileMixin)
+
+
 class File(FileMixin, String):
     """\
     Document templates read from files.
@@ -592,6 +612,11 @@ class File(FileMixin, String):
     Note that the file will not be read until the document
     template is used the first time.
     """
-    manage_edit__roles__ = ()
+    security = ClassSecurityInfo()
+
+    @security.private
     def manage_edit(self, data):
         raise TypeError('cannot edit files')
+
+
+InitializeClass(File)

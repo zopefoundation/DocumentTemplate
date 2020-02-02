@@ -13,12 +13,13 @@
 """Document Template Tests
 """
 
-from DocumentTemplate import HTML
-from DocumentTemplate.tests.testDTML import DTMLTests
-from DocumentTemplate.security import RestrictedDTML
 from AccessControl import Unauthorized
 from AccessControl.SecurityManagement import getSecurityManager
 from ExtensionClass import Base
+
+from ..DT_HTML import HTML
+from ..security import RestrictedDTML
+from .testDTML import DTMLTests
 
 
 class UnownedDTML(RestrictedDTML, HTML):

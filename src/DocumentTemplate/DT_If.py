@@ -76,11 +76,9 @@
 
 '''
 
-from DocumentTemplate.DT_Util import (
-    name_param,
-    ParseError,
-    parse_params,
-)
+from .DT_Util import ParseError
+from .DT_Util import name_param
+from .DT_Util import parse_params
 
 
 class If(object):

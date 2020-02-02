@@ -13,23 +13,24 @@
 """Rendering object hierarchies as Trees
 """
 
-from binascii import a2b_base64
-from binascii import b2a_base64
 import json
 import zlib
+from binascii import a2b_base64
+from binascii import b2a_base64
 
 import six
 
-from DocumentTemplate.DT_Util import add_with_prefix
+from DocumentTemplate.DT_String import String
 from DocumentTemplate.DT_Util import Eval
 from DocumentTemplate.DT_Util import InstanceDict
+from DocumentTemplate.DT_Util import ParseError
+from DocumentTemplate.DT_Util import ValidationError
+from DocumentTemplate.DT_Util import add_with_prefix
 from DocumentTemplate.DT_Util import name_param
 from DocumentTemplate.DT_Util import parse_params
-from DocumentTemplate.DT_Util import ParseError
 from DocumentTemplate.DT_Util import render_blocks
 from DocumentTemplate.DT_Util import simple_name
-from DocumentTemplate.DT_Util import ValidationError
-from DocumentTemplate.DT_String import String
+
 
 if six.PY3:
     unicode = str
@@ -274,8 +275,9 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
     output = data.append
 
     items = None
-    if ('assume_children' in args and args['assume_children'] and
-            substate is not state):
+    if 'assume_children' in args and \
+       args['assume_children'] and \
+       substate is not state:
         # We should not compute children unless we have to.
         # See if we've been asked to expand our children.
         for i in range(len(substate)):
@@ -411,11 +413,10 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
 
         # add item text
         dataspan = colspan - level
+        nowrap = (args['nowrap'] and ' style="white-space: nowrap"') or ''
         output('<td%s%s valign="top" align="left">' %
                ((dataspan > 1 and (' colspan="%s"' % dataspan) or ''),
-                ('nowrap' in args and
-                 args['nowrap'] and ' style="white-space: nowrap"' or ''))
-               )
+                nowrap))
         output(render_blocks(section, md, encoding=encoding))
         output('</td>\n</tr>\n')
 
@@ -436,15 +437,13 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
             else:
                 doc = None
             if doc is not None:
+                ds = (dataspan > 1 and (' colspan="%s"' % dataspan)) or ''
                 output(doc(
                     None, md,
                     standard_html_header=(
                         '<tr>%s'
                         '<td width="16" style="white-space: nowrap"></td>'
-                        '<td%s valign="top">'
-                        % (h,
-                           (dataspan > 1 and (' colspan="%s"' % dataspan) or
-                            ''))),
+                        '<td%s valign="top">' % (h, ds)),
                     standard_html_footer='</td></tr>',
                 ))
 
@@ -457,6 +456,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                 else:
                     doc = None
                 if doc is not None:
+                    ds = (dataspan > 1 and ' colspan="%s"' % dataspan) or ''
                     treeData['-tree-substate-'] = sub
                     ptreeData['tree-level'] = level
                     md._push(treeData)
@@ -467,9 +467,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                                 '<tr>%s<td '
                                 'width="16" style="white-space: nowrap"></td>'
                                 '<td%s valign="top">'
-                                % (h,
-                                   (dataspan > 1 and
-                                    (' colspan="%s"' % dataspan) or ''))),
+                                % (h, ds)),
                             standard_html_footer='</td></tr>',
                         ))
                     finally:
@@ -481,6 +479,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
             else:
                 doc = None
             if doc is not None:
+                ds = (dataspan > 1 and ' colspan="%s"' % dataspan) or ''
                 treeData['-tree-substate-'] = sub
                 ptreeData['tree-level'] = level
                 md._push(treeData)
@@ -491,9 +490,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                             '<tr>%s<td '
                             'width="16" style="white-space: nowrap"></td>'
                             '<td%s valign="top">'
-                            % (h,
-                               (dataspan > 1 and
-                                (' colspan="%s"' % dataspan) or ''))),
+                            % (h, ds)),
                         standard_html_footer='</td></tr>',
                     ))
                 finally:
@@ -529,15 +526,14 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
             else:
                 doc = None
             if doc is not None:
+                ds = (dataspan > 1 and ' colspan="%s"' % dataspan) or ''
                 output(doc(
                     None, md,
                     standard_html_header=(
                         '<tr>%s<td '
                         'width="16" style="white-space: nowrap"></td>'
                         '<td%s valign="top">'
-                        % (h,
-                           (dataspan > 1 and (' colspan="%s"' % dataspan) or
-                            ''))),
+                        % (h, ds)),
                     standard_html_footer='</td></tr>',
                 ))
 

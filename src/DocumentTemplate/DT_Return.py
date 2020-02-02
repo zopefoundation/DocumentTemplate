@@ -11,7 +11,8 @@
 #
 ##############################################################################
 
-from DocumentTemplate.DT_Util import parse_params, name_param
+from .DT_Util import name_param
+from .DT_Util import parse_params
 
 
 class ReturnTag(object):

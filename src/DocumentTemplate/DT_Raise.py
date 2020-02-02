@@ -24,11 +24,12 @@
 
 '''
 
-from zExceptions import upgradeException
 from zExceptions import convertExceptionType
-from DocumentTemplate.DT_Util import name_param
-from DocumentTemplate.DT_Util import parse_params
-from DocumentTemplate.DT_Util import render_blocks
+from zExceptions import upgradeException
+
+from .DT_Util import name_param
+from .DT_Util import parse_params
+from .DT_Util import render_blocks
 
 
 class InvalidErrorTypeExpression(Exception):

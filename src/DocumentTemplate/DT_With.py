@@ -33,9 +33,12 @@
 
 '''
 
-from DocumentTemplate.DT_Util import parse_params, name_param
-from DocumentTemplate.DT_Util import InstanceDict, render_blocks, str  # NOQA
-from DocumentTemplate.DT_Util import TemplateDict
+from .DT_Util import InstanceDict  # NOQA
+from .DT_Util import TemplateDict
+from .DT_Util import name_param
+from .DT_Util import parse_params
+from .DT_Util import render_blocks
+from .DT_Util import str
 
 
 class With(object):

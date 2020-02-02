@@ -13,10 +13,11 @@
 '''Sequence variables support
 '''
 
-from math import sqrt
 import re
+from math import sqrt
 
 import roman
+
 
 try:
     import Missing
@@ -129,7 +130,7 @@ class sequence_variables(object):
                 if mo is not None:
                     v = mo.group(0)
                     l_ = mo.start(0)
-                    query_string = (query_string[:l_] +
+                    query_string = (query_string[:l_] +  # NOQA: W504
                                     query_string[l_ + len(v) - 1:])
 
             else:
@@ -137,7 +138,7 @@ class sequence_variables(object):
                 if l_:
                     v = l_[1]
                     l_ = l_[0]
-                    query_string = (query_string[:l_] +
+                    query_string = (query_string[:l_] +  # NOQA: W504
                                     query_string[l_ + len(v) - 1:])
 
             query_string = '?' + query_string[1:]
@@ -245,8 +246,8 @@ class sequence_variables(object):
                 else:
                     half = count // 2
                     try:
-                        data['median-%s' % name] = (values[half] +
-                                                    values[half - 1]) // 2
+                        data['median-%s' % name] = (
+                            values[half] + values[half - 1]) // 2
                     except Exception:
                         try:
                             data['median-%s' % name] = (

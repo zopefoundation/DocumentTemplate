@@ -15,8 +15,14 @@
 
 import re
 
-from DocumentTemplate.DT_String import String, FileMixin
-from DocumentTemplate.DT_Util import ParseError, str
+from AccessControl.class_init import InitializeClass
+from AccessControl.SecurityInfo import ClassSecurityInfo
+
+from .DT_String import FileMixin
+from .DT_String import String
+from .DT_Util import ParseError
+from .DT_Util import str
+
 
 FactoryDefaultString = "Factory Default"
 
@@ -101,7 +107,8 @@ class dtml_re_class:
                                         d[1] = d['end'] = ''
                                         d[2] = d['name'] = 'var'
                                         d[0] = text[s:e + 1]
-                                        args = (args[nn + 1:] + ' ' +
+                                        args = (args[nn + 1:] +  # NOQA: W504
+                                                ' ' +  # NOQA: W504
                                                 args[:nn].replace('.', ' '))
                                         d[3] = d['args'] = args
                                         self._start = s
@@ -155,11 +162,13 @@ class HTML(String):
     are inserted into HTML editing forms.
     """
 
-    tagre__roles__ = ()
+    security = ClassSecurityInfo()
+
+    @security.private
     def tagre(self):
         return dtml_re_class()
 
-    parseTag__roles__ = ()
+    @security.private
     def parseTag(self, match_ob, command=None, sargs=''):
         """Parse a tag using an already matched re
 
@@ -185,8 +194,8 @@ class HTML(String):
                 # Waaaaaah! Have to special case else because of
                 # old else start tag usage. Waaaaaaah!
                 l_ = len(args)
-                if not (args == sargs or
-                        args == sargs[:l_] and
+                if not (args == sargs or  # NOQA: W504
+                        args == sargs[:l_] and  # NOQA: W504
                         sargs[l_:l_ + 1] in ' \t\n'):
                     return tag, args, self.commands[name], None
 
@@ -197,22 +206,22 @@ class HTML(String):
         except KeyError:
             raise ParseError('Unexpected tag', tag)
 
-    SubTemplate__roles__ = ()
+    @security.private
     def SubTemplate(self, name):
         return HTML('', __name__=name)
 
-    varExtra__roles__ = ()
+    @security.private
     def varExtra(self, match_ob):
         return 's'
 
-    manage_edit__roles__ = ()
+    @security.private
     def manage_edit(self, data, REQUEST=None):
         'edit a template'
         self.munge(data)
         if REQUEST:
             return self.editConfirmation(self, REQUEST)
 
-    quotedHTML__roles__ = ()
+    @security.private
     def quotedHTML(self,
                    text=None,
                    character_entities=(
@@ -227,20 +236,20 @@ class HTML(String):
                 text = name.join(text.split(reg))
         return text
 
-    errQuote__roles__ = ()
+    security.declarePrivate('errQuote')  # NOQA: D001
     errQuote = quotedHTML
 
     def __str__(self):
         return self.quotedHTML()
 
     # these should probably all be deprecated.
-    management_interface__roles__ = ()
+    @security.private
     def management_interface(self):
         '''Hook to allow public execution of management interface with
         everything else private.'''
         return self
 
-    manage_editForm__roles__ = ()
+    @security.private
     def manage_editForm(self, URL1, REQUEST):
         '''Display doc template editing form'''
 
@@ -251,9 +260,12 @@ class HTML(String):
             URL1=URL1
         )
 
-    manage_editDocument__roles__ = ()
-    manage__roles__ = ()
+    security.declarePrivate('manage_editDocument')  # NOQA: D001
+    security.declarePrivate('manage')  # NOQA: D001
     manage_editDocument = manage = manage_editForm
+
+
+InitializeClass(HTML)
 
 
 class HTMLDefault(HTML):
@@ -263,15 +275,20 @@ class HTMLDefault(HTML):
     This is to make a distinction from HTML objects that should edit
     themselves in place.
     '''
-    copy_class__roles__ = ()
+    security = ClassSecurityInfo()
+
+    security.declarePrivate('copy_class')  # NOQA: D001
     copy_class = HTML
 
-    manage_edit__roles__ = ()
+    @security.private
     def manage_edit(self, data, PARENTS, URL1, REQUEST):
         'edit a template'
         newHTML = self.copy_class(data, self.globals, self.__name__)
         setattr(PARENTS[1], URL1[URL1.rfind('/') + 1:], newHTML)
         return self.editConfirmation(self, REQUEST)
+
+
+InitializeClass(HTMLDefault)
 
 
 class HTMLFile(FileMixin, HTML):
@@ -284,7 +301,9 @@ class HTMLFile(FileMixin, HTML):
     Note that the file will not be read until the document
     template is used the first time.
     """
-    manage_default__roles__ = ()
+    security = ClassSecurityInfo()
+
+    @security.private
     def manage_default(self, REQUEST=None):
         'Revert to factory defaults'
         if self.edited_source:
@@ -293,7 +312,7 @@ class HTMLFile(FileMixin, HTML):
         if REQUEST:
             return self.editConfirmation(self, REQUEST)
 
-    manage_editForm__roles__ = ()
+    @security.private
     def manage_editForm(self, URL1, REQUEST):
         '''Display doc template editing form'''
 
@@ -308,11 +327,11 @@ class HTMLFile(FileMixin, HTML):
             FactoryDefaultString=FactoryDefaultString,
         )
 
-    manage_editDocument__roles__ = ()
-    manage__roles__ = ()
+    security.declarePrivate('manage_editDocument')  # NOQA: D001
+    security.declarePrivate('manage')  # NOQA: D001
     manage_editDocument = manage = manage_editForm
 
-    manage_edit__roles__ = ()
+    @security.private
     def manage_edit(self, data,
                     PARENTS=[], URL1='', URL2='', REQUEST='', SUBMIT=''):
         'edit a template'
@@ -333,3 +352,6 @@ class HTMLFile(FileMixin, HTML):
             setattr(PARENTS[1], URL1[URL1.rfind('/') + 1:], newHTML)
         if REQUEST:
             return self.editConfirmation(self, REQUEST)
+
+
+InitializeClass(HTMLFile)

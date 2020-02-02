@@ -42,9 +42,10 @@
 
 import re
 
-from DocumentTemplate.DT_Util import render_blocks, Eval, ParseError
-# Probably needed due to hysterical pickles.
-from DocumentTemplate.DT_Util import str  # NOQA
+from .DT_Util import Eval
+from .DT_Util import ParseError
+from .DT_Util import render_blocks
+from .DT_Util import str  # NOQA  Probably needed for historical pickles
 
 
 class Let(object):

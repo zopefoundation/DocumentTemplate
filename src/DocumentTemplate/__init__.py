@@ -15,21 +15,18 @@
 This wrapper allows the (now many) document template modules to be
 segregated in a separate package."""
 
-from DocumentTemplate.DT_HTML import (  # NOQA
-    HTML,
-    HTMLDefault,
-    HTMLFile,
-)
-from DocumentTemplate.DT_String import (  # NOQA
-    String,
-    File,
-)
+from .DT_HTML import HTML
+from .DT_HTML import HTMLDefault
+from .DT_HTML import HTMLFile
+from .DT_String import File
+from .DT_String import String
 
 # Register the dtml-tree tag
-import TreeDisplay  # NOQA
+import TreeDisplay
 
 from DocumentTemplate import security  # Side effects!
 del security
+
 
 # This encoding is used for backwards compatibility
 OLD_DEFAULT_ENCODING = 'Latin-1'

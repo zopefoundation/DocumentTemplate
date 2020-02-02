@@ -13,16 +13,16 @@
 """This module is no longer actively used.
 """
 
-from DocumentTemplate._DocumentTemplate import (  # noqa: F401 pragma: nocover
-    DictInstance,
-    InstanceDict,
-    join_unicode,
-    render_blocks,
-    safe_callable,
-    TemplateDict,
-)
-
 import warnings
+
+from ._DocumentTemplate import DictInstance
+from ._DocumentTemplate import InstanceDict
+from ._DocumentTemplate import TemplateDict
+from ._DocumentTemplate import join_unicode
+from ._DocumentTemplate import render_blocks
+from ._DocumentTemplate import safe_callable
+
+
 warnings.warn('pDocumentTemplate is not longer in active use. '
               'It remains only as an implementation reference.',
               DeprecationWarning)  # pragma: nocover

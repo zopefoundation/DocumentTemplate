@@ -15,8 +15,14 @@
 
 # Setup RestrictedDTML
 
+from types import FunctionType
+
+from AccessControl import SecurityManagement
 from AccessControl.ImplPython import guarded_getattr
+from AccessControl.SimpleObjectPolicies import ContainerAssertions
 from AccessControl.ZopeGuards import guarded_getitem
+from AccessControl.ZopeGuards import safe_builtins
+from DocumentTemplate import DT_Util
 
 RestrictedDTML = None
 
@@ -42,8 +48,6 @@ else:
         """C version of RestrictedDTML."""
 
 # Add security testing capabilities
-
-from AccessControl import SecurityManagement  # NOQA
 
 
 class DTMLSecurityAPI(object):
@@ -107,14 +111,9 @@ class DTMLSecurityAPI(object):
         return r
 
 
-from DocumentTemplate import DT_Util  # NOQA
-
 for name, v in DTMLSecurityAPI.__dict__.items():
     if name[0] != '_':
         setattr(DT_Util.TemplateDict, name, v)
-
-from types import FunctionType  # NOQA
-from AccessControl.ZopeGuards import safe_builtins  # NOQA
 
 for name, v in safe_builtins.items():
     if type(v) is FunctionType:
@@ -126,9 +125,6 @@ for name, v in safe_builtins.items():
 
 # Temporarily create a DictInstance so that we can mark its type as
 # being a key in the ContainerAssertions.
-
-from AccessControl.SimpleObjectPolicies import ContainerAssertions  # NOQA
-
 
 class _dummy_class(object):
     pass

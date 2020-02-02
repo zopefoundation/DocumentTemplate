@@ -15,7 +15,8 @@
 
 import unittest
 
-from DocumentTemplate.html_quote import html_quote
+from ..html_quote import html_quote
+
 
 try:
     from html import escape

@@ -105,14 +105,14 @@ Document Templates may be created 4 ways:
 '''
 import six
 
+import DocumentTemplate as _dt
 from Acquisition import aq_base
 from ExtensionClass import Base
 from zExceptions import HTTPException
 
-from DocumentTemplate.html_quote import html_quote
-from DocumentTemplate.ustr import ustr
+from .html_quote import html_quote
+from .ustr import ustr
 
-import DocumentTemplate as _dt
 
 _marker = object()
 
@@ -156,9 +156,9 @@ def render_blocks_(blocks, rendered, md, encoding):
     for block in blocks:
         append = True
 
-        if (isinstance(block, tuple) and
-                len(block) > 1 and
-                isinstance(block[0], six.string_types)):
+        if isinstance(block, tuple) and \
+           len(block) > 1 and \
+           isinstance(block[0], six.string_types):
 
             first_char = block[0][0]
             if first_char == 'v':  # var

@@ -155,15 +155,22 @@ import re
 import sys
 
 import six
-from six.moves.urllib.parse import quote, quote_plus, unquote, unquote_plus
+from six.moves.urllib.parse import quote
+from six.moves.urllib.parse import quote_plus
+from six.moves.urllib.parse import unquote
+from six.moves.urllib.parse import unquote_plus
 
-from Acquisition import aq_base
 from AccessControl.tainted import TaintedString
+from Acquisition import aq_base
 from zope.structuredtext.document import DocumentWithImages
 
 # for import by other modules, dont remove!
-from DocumentTemplate.html_quote import html_quote
-from DocumentTemplate.DT_Util import parse_params, name_param, str, ustr
+from .DT_Util import name_param
+from .DT_Util import parse_params
+from .DT_Util import str
+from .DT_Util import ustr
+from .html_quote import html_quote
+
 
 logger = logging.getLogger('DocumentTemplate')
 
@@ -282,8 +289,8 @@ class Var(object):
                 if hasattr(val, fmt):
                     val = _get(val, fmt)()
                 elif fmt in special_formats:
-                    if (fmt == 'html-quote' and
-                            isinstance(val, TaintedString)):
+                    if fmt == 'html-quote' and \
+                       isinstance(val, TaintedString):
                         # TaintedStrings will be quoted by default, don't
                         # double quote.
                         pass

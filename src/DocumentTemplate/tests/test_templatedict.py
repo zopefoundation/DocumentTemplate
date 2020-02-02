@@ -14,11 +14,10 @@
 import unittest
 
 from ExtensionClass import Base
-from DocumentTemplate._DocumentTemplate import (
-    InstanceDict,
-    TemplateDict,
-)
-from DocumentTemplate.security import RestrictedDTML
+
+from .._DocumentTemplate import InstanceDict
+from .._DocumentTemplate import TemplateDict
+from ..security import RestrictedDTML
 
 
 class DummyDocTemp(object):

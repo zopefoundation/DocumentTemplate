@@ -15,7 +15,7 @@
 
 import warnings
 
-from DocumentTemplate.DT_HTML import HTML
+from .DT_HTML import HTML
 
 
 # BBB DocumentTemplate 4.0

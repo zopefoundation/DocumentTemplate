@@ -20,22 +20,20 @@ from types import FunctionType
 
 from AccessControl.tainted import TaintedString
 from AccessControl.ZopeGuards import _safe_globals
+from RestrictedPython.Eval import RestrictionCapableEval
 from RestrictedPython.Guards import safe_builtins
 from RestrictedPython.Utilities import utility_builtins
-from RestrictedPython.Eval import RestrictionCapableEval
 from zExceptions import Unauthorized as ValidationError
 
-# backwards compatibility
-from DocumentTemplate.html_quote import html_quote, ustr  # NOQA
-from DocumentTemplate._DocumentTemplate import (  # NOQA
-    InstanceDict,
-    join_unicode,
-    render_blocks,
-)
+from . import sequence
+from ._DocumentTemplate import InstanceDict  # NOQA:F401 BBB
+from ._DocumentTemplate import TemplateDict
+from ._DocumentTemplate import join_unicode  # NOQA: F401 BBB
+from ._DocumentTemplate import render_blocks  # NOQA: F401 BBB
+from ._DocumentTemplate import safe_callable
+from .html_quote import html_quote  # NOQA: F401 BBB
+from .html_quote import ustr  # NOQA: F401 BBB
 
-from DocumentTemplate._DocumentTemplate import TemplateDict
-from DocumentTemplate._DocumentTemplate import safe_callable
-from DocumentTemplate import sequence
 
 if 'test' not in utility_builtins:
     from RestrictedPython.Utilities import test
@@ -97,8 +95,7 @@ class StringModuleWrapper(object):
 
     def __getattr__(self, key):
         attr = getattr(string, key)
-        if (isinstance(attr, FunctionType) or
-                isinstance(attr, BuiltinFunctionType)):
+        if isinstance(attr, (FunctionType, BuiltinFunctionType)):
             return StringFunctionWrapper(attr)
         else:
             return attr
@@ -169,7 +166,7 @@ TemplateDict.hasattr = careful_hasattr
 def namespace(self, **kw):
     """Create a tuple consisting of a single instance whose attributes are
     provided as keyword arguments."""
-    if not (getattr(self, '__class__', None) == TemplateDict or
+    if not (getattr(self, '__class__', None) == TemplateDict or  # NOQA: W504
             isinstance(self, TemplateDict)):
         raise TypeError('''A call was made to DT_Util.namespace() with an
         incorrect "self" argument.  It could be caused by a product which

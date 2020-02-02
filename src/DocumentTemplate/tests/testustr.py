@@ -16,6 +16,7 @@
 import sys
 import unittest
 
+
 if sys.version_info > (3, 0):
     unichr = chr
     unicode = str

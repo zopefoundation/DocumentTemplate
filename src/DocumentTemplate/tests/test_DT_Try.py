@@ -1,7 +1,7 @@
 import unittest
 
-from DocumentTemplate.DT_Util import ParseError
-from DocumentTemplate.DT_Raise import InvalidErrorTypeExpression
+from ..DT_Raise import InvalidErrorTypeExpression
+from ..DT_Util import ParseError
 
 
 class DT_Try_Tests(unittest.TestCase):

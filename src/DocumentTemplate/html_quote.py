@@ -1,7 +1,8 @@
 # split off into its own module for aliasing without circrefs
 import six
 
-from DocumentTemplate.ustr import ustr
+from .ustr import ustr
+
 
 try:
     from html import escape
