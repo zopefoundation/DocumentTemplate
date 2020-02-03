@@ -13,29 +13,17 @@
 
 import sys
 
-from zope.deferredimport import deprecated
+from zope.sequencesort.ssort import SortBy
+from zope.sequencesort.ssort import SortEx
+from zope.sequencesort.ssort import make_sortfunctions
+from zope.sequencesort.ssort import nocase
+from zope.sequencesort.ssort import sort
 
-
-__allow_access_to_unprotected_subobjects__ = 1
-
-
-# BBB DocumentTemplate 4.0
-deprecated(
-    'Please import from zope.sequencesort.ssort. '
-    'This module will go away in DocumentTemplate 4.0.',
-    SortBy='zope.sequencesort.ssort:SortBy',
-    SortEx='zope.sequencesort.ssort:SortEx',
-    make_sortfunctions='zope.sequencesort.ssort:make_sortfunctions',
-    nocase='zope.sequencesort.ssort:nocase',
-    sort='zope.sequencesort.ssort:sort',
-)
 
 # only if locale is already imported
 if 'locale' in sys.modules:
-    # BBB DocumentTemplate 4.0
-    deprecated(
-        'Please import from zope.sequencesort.ssort. '
-        'This module will go away in DocumentTemplate 4.0.',
-        strcoll_nocase='zope.sequencesort.ssort:strcoll_nocase',
-    )
+    from zope.sequencesort.ssort import strcoll_nocase
 del sys
+
+
+__allow_access_to_unprotected_subobjects__ = 1

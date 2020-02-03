@@ -1,8 +1,13 @@
 Changelog
 =========
 
-3.3 (unreleased)
-----------------
+3.2.1 (2020-03-02)
+------------------
+
+- prevent a really strange ``AccessControl`` test failure when running
+  Zope's ``alltests`` script by importing deprecated names from
+  ``zope.sequencesort.ssort`` instead of ``sequence/SortEx.py`` in
+  ``sequence/__init__.py``
 
 
 3.2 (2020-02-03)
