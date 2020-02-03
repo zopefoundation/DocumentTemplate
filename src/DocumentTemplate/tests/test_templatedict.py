@@ -57,9 +57,9 @@ class TestTemplateDict(unittest.TestCase):
         self.assertEqual(len(td), 0)
         self.assertEqual(td.level, 0)
         self.assertRaises(AttributeError, getattr, td, 'foo')
-        self.assertFalse(td.has_key('foo'))  # NOQA
+        self.assertFalse(td.has_key('foo'))  # NOQA: W601
         self.assertFalse('foo' in td)
-        self.assertFalse(td.has_key('level'))  # NOQA
+        self.assertFalse(td.has_key('level'))  # NOQA: W601
         self.assertFalse('level' in td)
         self.assertRaises(KeyError, td.getitem, 0)
         self.assertFalse(0 in td)
@@ -92,7 +92,7 @@ class TestTemplateDict(unittest.TestCase):
         td.baz = None
         self.assertEqual(len(td), 0)
         self.assertRaises(KeyError, td.getitem, 0)
-        self.assertFalse(td.has_key('foo'))  # NOQA
+        self.assertFalse(td.has_key('foo'))  # NOQA: W601
         self.assertFalse('foo' in td)
         self.assertEqual(td.foo, 1)
         self.assertEqual(td.bar, 2)
