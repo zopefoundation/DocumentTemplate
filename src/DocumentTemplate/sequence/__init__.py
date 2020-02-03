@@ -13,16 +13,16 @@
 
 import sys
 
-from zope.sequencesort.ssort import SortBy
-from zope.sequencesort.ssort import SortEx
-from zope.sequencesort.ssort import make_sortfunctions
-from zope.sequencesort.ssort import nocase
-from zope.sequencesort.ssort import sort
+from zope.sequencesort.ssort import SortBy  # NOQA: F401
+from zope.sequencesort.ssort import SortEx  # NOQA: F401
+from zope.sequencesort.ssort import make_sortfunctions  # NOQA: F401
+from zope.sequencesort.ssort import nocase  # NOQA: F401
+from zope.sequencesort.ssort import sort  # NOQA: F401
 
 
 # only if locale is already imported
 if 'locale' in sys.modules:
-    from zope.sequencesort.ssort import strcoll_nocase
+    from zope.sequencesort.ssort import strcoll_nocase  # NOQA: F401
 del sys
 
 
