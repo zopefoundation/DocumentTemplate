@@ -616,7 +616,7 @@ modifiers = list(map(lambda f: (f.__name__, f), modifiers))
 
 
 class Comment(object):
-    '''Comments
+    """Comments
 
     The 'comment' tag can be used to simply include comments
     in DTML source.
@@ -628,7 +628,7 @@ class Comment(object):
         This text is not rendered.
 
       <!--#/comment-->
-    '''
+    """
     name = 'comment'
     blockContinuations = ()
 

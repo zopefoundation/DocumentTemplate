@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-'''Nested namespace access
+"""Nested namespace access
 
    The 'with' tag is used to introduce nested namespaces.
 
@@ -30,8 +30,7 @@
    A 'mapping' attribute may be used to indicate that the given data
    should be treated as mapping object, rather than as an object with
    named attributes.
-
-'''
+"""
 
 from ._DocumentTemplate import InstanceDict
 from ._DocumentTemplate import TemplateDict

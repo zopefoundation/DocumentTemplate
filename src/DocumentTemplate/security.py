@@ -10,8 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""Add security system support to Document Templates
-"""
+"""Add security system support to Document Templates"""
 
 # Setup RestrictedDTML
 
@@ -52,8 +51,7 @@ else:
 
 
 class DTMLSecurityAPI(object):
-    """API for performing security checks in DTML using '_' methods.
-    """
+    """API for performing security checks in DTML using '_' methods."""
 
     def SecurityValidate(md, inst, parent, name, value):
         """Validate access.

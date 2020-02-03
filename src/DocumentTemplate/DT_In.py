@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-'''Sequence insertion
+"""Sequence insertion
 
        A sequence may be inserted using an 'in' command.  The 'in'
        command specifies the name of a sequence object and text to
@@ -327,8 +327,7 @@
 
         - The 'next' attribute was used and their are no
           next batches, or
-
-'''
+"""
 
 import functools
 import re
@@ -906,7 +905,8 @@ if 'locale' in sys.modules:  # only if locale is already imported
 
 
 def make_sortfunctions(sortfields, md):
-    """
+    """Create a sort function
+
     Accepts a list of sort fields; splits every field, finds comparison
     function. Returns a list of 3-tuples (field, cmp_function, asc_multplier).
     """

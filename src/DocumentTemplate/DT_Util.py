@@ -189,7 +189,7 @@ TemplateDict.namespace = namespace
 
 
 def render(self, v):
-    "Render an object in the way done by the 'name' attribute"
+    """Render an object in the way done by the 'name' attribute"""
     if hasattr(v, '__render_with_namespace__'):
         v = v.__render_with_namespace__(self)
     else:
@@ -318,10 +318,7 @@ def name_param(params, tag='', expr=0, attr='name', default_unnamed=1):
     raise ParseError('No %s given' % attr, tag)
 
 
-Expr_doc = """
-
-
-Python expression support
+Expr_doc = """Python expression support
 
   Several document template tags, including 'var', 'in', 'if', 'else',
   and 'elif' provide support for using Python expressions via an

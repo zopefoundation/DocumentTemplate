@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-'''Conditional insertion
+"""Conditional insertion
 
        Conditional insertion is performed using 'if' and 'else'
        commands.
@@ -74,7 +74,7 @@
          is used inside the tag, including in enclosed tags, the
          variable is not reevaluated.
 
-'''
+"""
 
 from .DT_Util import ParseError
 from .DT_Util import name_param

@@ -10,8 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-'''Sequence variables support
-'''
+"""Sequence variables support"""
 
 import re
 from math import sqrt

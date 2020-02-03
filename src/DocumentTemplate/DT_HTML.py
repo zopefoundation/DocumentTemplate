@@ -244,13 +244,13 @@ class HTML(String):
     # these should probably all be deprecated.
     @security.private
     def management_interface(self):
-        '''Hook to allow public execution of management interface with
-        everything else private.'''
+        """Hook to allow public execution of management interface with
+        everything else private."""
         return self
 
     @security.private
     def manage_editForm(self, URL1, REQUEST):
-        '''Display doc template editing form'''
+        """Display doc template editing form"""
 
         return self._manage_editForm(
             self,
@@ -268,12 +268,11 @@ InitializeClass(HTML)
 
 
 class HTMLDefault(HTML):
-    '''\
-    HTML document templates that edit themselves through copy.
+    """ HTML document templates that edit themselves through copy.
 
     This is to make a distinction from HTML objects that should edit
     themselves in place.
-    '''
+    """
     security = ClassSecurityInfo()
 
     security.declarePrivate('copy_class')  # NOQA: D001
@@ -291,8 +290,7 @@ InitializeClass(HTMLDefault)
 
 
 class HTMLFile(FileMixin, HTML):
-    """\
-    HTML Document templates read from files.
+    """ HTML Document templates read from files.
 
     If the object is pickled, the file name, rather
     than the file contents is pickled.  When the object is
@@ -304,7 +302,7 @@ class HTMLFile(FileMixin, HTML):
 
     @security.private
     def manage_default(self, REQUEST=None):
-        'Revert to factory defaults'
+        """Revert to factory defaults"""
         if self.edited_source:
             self.edited_source = ''
             self._v_cooked = self.cook()
@@ -313,7 +311,7 @@ class HTMLFile(FileMixin, HTML):
 
     @security.private
     def manage_editForm(self, URL1, REQUEST):
-        '''Display doc template editing form'''
+        """Display doc template editing form"""
 
         return self._manage_editForm(
             mapping=REQUEST,
@@ -333,7 +331,7 @@ class HTMLFile(FileMixin, HTML):
     @security.private
     def manage_edit(self, data,
                     PARENTS=[], URL1='', URL2='', REQUEST='', SUBMIT=''):
-        'edit a template'
+        """edit a template"""
         if SUBMIT == FactoryDefaultString:
             return self.manage_default(REQUEST)
         if data.find('\r'):

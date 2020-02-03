@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-'''Raising exceptions
+"""Raising exceptions
 
    Errors can be raised from DTML using the 'raise' tag.
 
@@ -22,7 +22,7 @@
        <!--#/raise-->
     <!--#/if-->
 
-'''
+"""
 
 from zExceptions import convertExceptionType
 from zExceptions import upgradeException

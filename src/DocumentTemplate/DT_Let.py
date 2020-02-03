@@ -11,7 +11,7 @@
 #
 ##############################################################################
 
-''' The Let tag was contributed to Zope by and is copyright, 1999
+""" The Let tag was contributed to Zope by and is copyright, 1999
     Phillip J. Eby.  Permission has been granted to release the Let tag
     under the Zope Public License.
 
@@ -38,7 +38,7 @@
    Variables are processed in sequence, so later assignments can
    reference and/or overwrite the results of previous assignments,
    as desired.
-'''
+"""
 
 import re
 

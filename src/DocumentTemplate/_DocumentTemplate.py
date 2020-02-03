@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-'''Document templates with fill-in fields
+"""Document templates with fill-in fields
 
 Document templates provide for creation of textual documents, such as
 HTML pages, from template source by inserting data from python objects
@@ -101,8 +101,8 @@ Document Templates may be created 4 ways:
 
     DocumentTemplate.HTMLFile -- Creates an HTML document template
         from a named file.
+"""
 
-'''
 import six
 
 import DocumentTemplate as _dt
@@ -324,8 +324,7 @@ class DictInstance(object):
 
 
 class TemplateDict(Base):
-    """TemplateDict -- Combine multiple mapping objects for lookup
-    """
+    """TemplateDict -- Combine multiple mapping objects for lookup"""
 
     level = 0
     _data = None

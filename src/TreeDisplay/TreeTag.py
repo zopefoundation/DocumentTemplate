@@ -256,7 +256,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
                   colspan, section, md, treeData, level=0, args=None,
                   try_call_attr=try_call_attr, encoding=None,
                   ):
-    "Render a tree as a table"
+    """Render a tree as a table"""
     encoding = encoding or 'latin-1'
     exp = 0
 
@@ -581,7 +581,7 @@ def apply_diff(state, diff, expand):
 
 
 def encode_seq(state):
-    "Convert a sequence to an encoded string"
+    """Convert a sequence to an encoded string"""
     state = compress(json.dumps(state))
     l_ = len(state)
 
@@ -631,7 +631,7 @@ def encode_str(state):
 
 
 def decode_seq(state):
-    "Convert an encoded string to a sequence"
+    """Convert an encoded string to a sequence"""
     if not isinstance(state, bytes):
         state = state.encode('ascii')
 

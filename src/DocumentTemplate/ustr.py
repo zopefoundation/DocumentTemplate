@@ -10,8 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ustr function.
-"""
+"""ustr function."""
 import six
 
 

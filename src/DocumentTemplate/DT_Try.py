@@ -199,7 +199,7 @@ class Try(object):
         return result
 
     def find_handler(self, exception):
-        "recursively search for a handler for a given exception"
+        """Recursively search for a handler for a given exception"""
         for e, h in self.handlers:
             if e == exception.__name__ or \
                e == '' or \
