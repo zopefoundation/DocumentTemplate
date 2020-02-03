@@ -56,7 +56,6 @@ safe_builtins['sequence'] = sequence
 _safe_globals['sequence'] = sequence
 
 LIMITED_BUILTINS = 1
-str = str  # NOQA - backwards compatibility for pickling
 
 
 class ParseError(Exception):

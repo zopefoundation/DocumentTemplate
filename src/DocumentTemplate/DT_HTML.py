@@ -21,7 +21,6 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from .DT_String import FileMixin
 from .DT_String import String
 from .DT_Util import ParseError
-from .DT_Util import str
 
 
 FactoryDefaultString = "Factory Default"

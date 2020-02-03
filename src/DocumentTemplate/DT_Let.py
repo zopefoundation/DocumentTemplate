@@ -45,7 +45,6 @@ import re
 from ._DocumentTemplate import render_blocks
 from .DT_Util import Eval
 from .DT_Util import ParseError
-from .DT_Util import str  # NOQA  Probably needed for historical pickles
 
 
 class Let(object):

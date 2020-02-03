@@ -167,7 +167,6 @@ from zope.structuredtext.document import DocumentWithImages
 # for import by other modules, dont remove!
 from .DT_Util import name_param
 from .DT_Util import parse_params
-from .DT_Util import str
 from .html_quote import html_quote
 from .ustr import ustr
 

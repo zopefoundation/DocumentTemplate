@@ -351,7 +351,6 @@ from .DT_Util import add_with_prefix
 from .DT_Util import name_param
 from .DT_Util import parse_params
 from .DT_Util import simple_name
-from .DT_Util import str
 
 
 if sys.version_info > (3, 0):
