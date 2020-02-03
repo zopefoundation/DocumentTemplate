@@ -4,7 +4,11 @@ Changelog
 3.2 (unreleased)
 ----------------
 
+- no longer escape double quotes in ``sql_quote`` - that breaks PostgreSQL
+  (`#48 <https://github.com/zopefoundation/DocumentTemplate/issues/48>`_)
+
 - Added `DeprecationWarnings` for all deprecated files and names
+  (`#42 <https://github.com/zopefoundation/DocumentTemplate/issues/42>`)
 
 - Import sorting done like Zope itself
 
