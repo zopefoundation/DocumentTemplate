@@ -524,8 +524,6 @@ REMOVE_BYTES = (b'\x00', b'\x1a', b'\r')
 REMOVE_TEXT = (u'\x00', u'\x1a', u'\r')
 DOUBLE_BYTES = (b"'", b'\\')
 DOUBLE_TEXT = (u"'", u'\\')
-ESCAPE_BYTES = (b'"',)
-ESCAPE_TEXT = (u'"',)
 
 
 def bytes_sql_quote(v):
@@ -536,9 +534,6 @@ def bytes_sql_quote(v):
     # Double untrusted characters to make them harmless.
     for char in DOUBLE_BYTES:
         v = v.replace(char, char * 2)
-    # Backslash-escape untrusted characters to make them harmless.
-    for char in ESCAPE_BYTES:
-        v = v.replace(char, b'\\%s' % char)
     return v
 
 
@@ -550,9 +545,6 @@ def text_sql_quote(v):
     # Double untrusted characters to make them harmless.
     for char in DOUBLE_TEXT:
         v = v.replace(char, char * 2)
-    # Backslash-escape untrusted characters to make them harmless.
-    for char in ESCAPE_TEXT:
-        v = v.replace(char, u'\\%s' % char)
     return v
 
 
