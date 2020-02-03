@@ -1,14 +1,14 @@
 Changelog
 =========
 
-3.2 (unreleased)
+3.2 (2020-02-03)
 ----------------
 
 - no longer escape double quotes in ``sql_quote`` - that breaks PostgreSQL
   (`#48 <https://github.com/zopefoundation/DocumentTemplate/issues/48>`_)
 
 - Added `DeprecationWarnings` for all deprecated files and names
-  (`#42 <https://github.com/zopefoundation/DocumentTemplate/issues/42>`)
+  (`#42 <https://github.com/zopefoundation/DocumentTemplate/issues/42>`_)
 
 - Import sorting done like Zope itself
 
