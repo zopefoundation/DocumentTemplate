@@ -102,10 +102,10 @@ class TestUrlQuoting(unittest.TestCase):
 
         self.assertEqual(bytes_sql_quote(b"Can't"), b"Can''t")
         self.assertEqual(bytes_sql_quote(b"Can\'t"), b"Can''t")
-        self.assertEqual(bytes_sql_quote(br"Can\'t"), b"Can\\\\''t")
+        self.assertEqual(bytes_sql_quote(br"Can\'t"), b"Can\\''t")
 
-        self.assertEqual(bytes_sql_quote(b"Can\\ I?"), b"Can\\\\ I?")
-        self.assertEqual(bytes_sql_quote(br"Can\ I?"), b"Can\\\\ I?")
+        self.assertEqual(bytes_sql_quote(b"Can\\ I?"), b"Can\\ I?")
+        self.assertEqual(bytes_sql_quote(br"Can\ I?"), b"Can\\ I?")
 
         self.assertEqual(
             bytes_sql_quote(b'Just say "Hello"'), b'Just say "Hello"')
@@ -130,7 +130,7 @@ class TestUrlQuoting(unittest.TestCase):
         # SyntaxError on Python 3.
         # self.assertEqual(text_sql_quote(ur"Can\'t"), u"Can\\\\''t")
 
-        self.assertEqual(text_sql_quote(u"Can\\ I?"), u"Can\\\\ I?")
+        self.assertEqual(text_sql_quote(u"Can\\ I?"), u"Can\\ I?")
         # SyntaxError on Python 3.
         # self.assertEqual(text_sql_quote(ur"Can\ I?"), u"Can\\\\ I?")
 
@@ -158,7 +158,7 @@ class TestUrlQuoting(unittest.TestCase):
         # SyntaxError on Python 3.
         # self.assertEqual(sql_quote(ur"Can\'t"), u"Can\\\\''t")
 
-        self.assertEqual(sql_quote(u"Can\\ I?"), u"Can\\\\ I?")
+        self.assertEqual(sql_quote(u"Can\\ I?"), u"Can\\ I?")
         # SyntaxError on Python 3.
         # self.assertEqual(sql_quote(ur"Can\ I?"), u"Can\\\\ I?")
 

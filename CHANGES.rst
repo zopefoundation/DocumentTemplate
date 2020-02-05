@@ -1,7 +1,14 @@
 Changelog
 =========
 
-3.2.1 (2020-03-02)
+3.2.2 (2020-02-04)
+------------------
+
+- de-fang ``sql_quote`` even more as quoting is too database-specific.
+  (`#48 <https://github.com/zopefoundation/DocumentTemplate/issues/48>`_)
+
+
+3.2.1 (2020-02-03)
 ------------------
 
 - prevent a really strange ``AccessControl`` test failure when running

@@ -522,8 +522,8 @@ def structured_text(v, name='(Unknown name)', md={}):
 # may give various errors on Python 2 or 3.  So we make separate functions
 REMOVE_BYTES = (b'\x00', b'\x1a', b'\r')
 REMOVE_TEXT = (u'\x00', u'\x1a', u'\r')
-DOUBLE_BYTES = (b"'", b'\\')
-DOUBLE_TEXT = (u"'", u'\\')
+DOUBLE_BYTES = (b"'",)
+DOUBLE_TEXT = (u"'",)
 
 
 def bytes_sql_quote(v):
