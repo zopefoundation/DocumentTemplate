@@ -85,7 +85,7 @@ class SecurityTests(DTMLTests):
         # Now be sure the syntax error occurred for security purposes.
         html = self.unrestricted_doc_class(expr)
 
-        class c(object):
+        class c:
             y = 10
         res = html(c=c)
         self.assertEqual(res, '10')

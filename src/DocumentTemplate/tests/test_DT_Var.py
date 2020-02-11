@@ -68,8 +68,8 @@ class TestUrlQuoting(unittest.TestCase):
     def test_url_quoting(self):
         from DocumentTemplate.DT_Var import url_quote
         from DocumentTemplate.DT_Var import url_unquote
-        unicode_value = u'G\xfcnther M\xfcller'
-        quoted_unicode_value = u'G%C3%BCnther%20M%C3%BCller'
+        unicode_value = 'G\xfcnther M\xfcller'
+        quoted_unicode_value = 'G%C3%BCnther%20M%C3%BCller'
         utf8_value = unicode_value.encode('UTF-8')
         quoted_utf8_value = b'G%C3%BCnther%20M%C3%BCller'
 
@@ -82,8 +82,8 @@ class TestUrlQuoting(unittest.TestCase):
     def test_url_quoting_plus(self):
         from DocumentTemplate.DT_Var import url_quote_plus
         from DocumentTemplate.DT_Var import url_unquote_plus
-        unicode_value = u'G\xfcnther M\xfcller'
-        quoted_unicode_value = u'G%C3%BCnther+M%C3%BCller'
+        unicode_value = 'G\xfcnther M\xfcller'
+        quoted_unicode_value = 'G%C3%BCnther+M%C3%BCller'
         utf8_value = unicode_value.encode('UTF-8')
         quoted_utf8_value = b'G%C3%BCnther+M%C3%BCller'
 
@@ -122,64 +122,64 @@ class TestUrlQuoting(unittest.TestCase):
 
     def test_text_sql_quote(self):
         from DocumentTemplate.DT_Var import text_sql_quote
-        self.assertEqual(text_sql_quote(u""), u"")
-        self.assertEqual(text_sql_quote(u"a"), u"a")
+        self.assertEqual(text_sql_quote(""), "")
+        self.assertEqual(text_sql_quote("a"), "a")
 
-        self.assertEqual(text_sql_quote(u"Can't"), u"Can''t")
-        self.assertEqual(text_sql_quote(u"Can\'t"), u"Can''t")
+        self.assertEqual(text_sql_quote("Can't"), "Can''t")
+        self.assertEqual(text_sql_quote("Can\'t"), "Can''t")
         # SyntaxError on Python 3.
         # self.assertEqual(text_sql_quote(ur"Can\'t"), u"Can\\\\''t")
 
-        self.assertEqual(text_sql_quote(u"Can\\ I?"), u"Can\\ I?")
+        self.assertEqual(text_sql_quote("Can\\ I?"), "Can\\ I?")
         # SyntaxError on Python 3.
         # self.assertEqual(text_sql_quote(ur"Can\ I?"), u"Can\\\\ I?")
 
         self.assertEqual(
-            text_sql_quote(u'Just say "Hello"'), u'Just say "Hello"')
+            text_sql_quote('Just say "Hello"'), 'Just say "Hello"')
 
         self.assertEqual(
-            text_sql_quote(u'Hello\x00World'), u'HelloWorld')
+            text_sql_quote('Hello\x00World'), 'HelloWorld')
         self.assertEqual(
-            text_sql_quote(u'\x00Hello\x00\x00World\x00'), u'HelloWorld')
+            text_sql_quote('\x00Hello\x00\x00World\x00'), 'HelloWorld')
 
         self.assertEqual(
-            text_sql_quote(u"carriage\rreturn"), u"carriagereturn")
-        self.assertEqual(text_sql_quote(u"line\nbreak"), u"line\nbreak")
-        self.assertEqual(text_sql_quote(u"tab\t"), u"tab\t")
+            text_sql_quote("carriage\rreturn"), "carriagereturn")
+        self.assertEqual(text_sql_quote("line\nbreak"), "line\nbreak")
+        self.assertEqual(text_sql_quote("tab\t"), "tab\t")
 
     def test_sql_quote(self):
         from DocumentTemplate.DT_Var import sql_quote
-        self.assertEqual(sql_quote(u""), u"")
-        self.assertEqual(sql_quote(u"a"), u"a")
+        self.assertEqual(sql_quote(""), "")
+        self.assertEqual(sql_quote("a"), "a")
         self.assertEqual(sql_quote(b"a"), b"a")
 
-        self.assertEqual(sql_quote(u"Can't"), u"Can''t")
-        self.assertEqual(sql_quote(u"Can\'t"), u"Can''t")
+        self.assertEqual(sql_quote("Can't"), "Can''t")
+        self.assertEqual(sql_quote("Can\'t"), "Can''t")
         # SyntaxError on Python 3.
         # self.assertEqual(sql_quote(ur"Can\'t"), u"Can\\\\''t")
 
-        self.assertEqual(sql_quote(u"Can\\ I?"), u"Can\\ I?")
+        self.assertEqual(sql_quote("Can\\ I?"), "Can\\ I?")
         # SyntaxError on Python 3.
         # self.assertEqual(sql_quote(ur"Can\ I?"), u"Can\\\\ I?")
 
         self.assertEqual(
-            sql_quote(u'Just say "Hello"'), u'Just say "Hello"')
+            sql_quote('Just say "Hello"'), 'Just say "Hello"')
 
         self.assertEqual(
-            sql_quote(u'Hello\x00World'), u'HelloWorld')
+            sql_quote('Hello\x00World'), 'HelloWorld')
         self.assertEqual(
-            sql_quote(u'\x00Hello\x00\x00World\x00'), u'HelloWorld')
+            sql_quote('\x00Hello\x00\x00World\x00'), 'HelloWorld')
 
         self.assertEqual(
-            sql_quote(u'\x00Hello\x00\x00World\x00'), u'HelloWorld')
+            sql_quote('\x00Hello\x00\x00World\x00'), 'HelloWorld')
 
-        self.assertEqual(u"\xea".encode("utf-8"), b"\xc3\xaa")
-        self.assertEqual(sql_quote(u"\xea'"), u"\xea''")
+        self.assertEqual("\xea".encode(), b"\xc3\xaa")
+        self.assertEqual(sql_quote("\xea'"), "\xea''")
         self.assertEqual(sql_quote(b"\xc3\xaa'"), b"\xc3\xaa''")
 
         self.assertEqual(
             sql_quote(b"carriage\rreturn"), b"carriagereturn")
         self.assertEqual(
-            sql_quote(u"carriage\rreturn"), u"carriagereturn")
-        self.assertEqual(sql_quote(u"line\nbreak"), u"line\nbreak")
-        self.assertEqual(sql_quote(u"tab\t"), u"tab\t")
+            sql_quote("carriage\rreturn"), "carriagereturn")
+        self.assertEqual(sql_quote("line\nbreak"), "line\nbreak")
+        self.assertEqual(sql_quote("tab\t"), "tab\t")

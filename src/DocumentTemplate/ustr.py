@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ustr function."""
-import six
-
 
 nasty_exception_str = getattr(Exception.__str__, 'im_func', None)
 
@@ -22,7 +20,7 @@ def ustr(v):
     minimising the chance of raising a UnicodeError. This
     even works with uncooperative objects like Exceptions
     """
-    if isinstance(v, (six.string_types, six.binary_type)):
+    if isinstance(v, (str, bytes)):
         return v
     else:
         fn = getattr(v, '__str__', None)
@@ -43,7 +41,7 @@ def ustr(v):
             else:
                 # Trust the object to do this right
                 v = fn()
-                if isinstance(v, (six.string_types, six.binary_type)):
+                if isinstance(v, (str, bytes)):
                     return v
                 else:
                     raise ValueError('__str__ returned wrong type')

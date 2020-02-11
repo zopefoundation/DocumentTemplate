@@ -3,11 +3,11 @@ import unittest
 from DocumentTemplate.DT_Util import ParseError
 
 
-class DummySection(object):
+class DummySection:
     blocks = ['dummy']
 
 
-class Dummy(object):
+class Dummy:
     """Dummy with attribute"""
 
     def __init__(self, name, number=0, _callable=0):

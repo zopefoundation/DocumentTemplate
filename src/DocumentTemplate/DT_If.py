@@ -81,7 +81,7 @@ from .DT_Util import name_param
 from .DT_Util import parse_params
 
 
-class If(object):
+class If:
     blockContinuations = ('else', 'elif')
     name = 'if'
     elses = None
@@ -131,7 +131,7 @@ class If(object):
         self.simple_form = ('i',) + tuple(sections)
 
 
-class Unless(object):
+class Unless:
     name = 'unless'
     blockContinuations = ()
 

@@ -317,7 +317,7 @@ foo bar
     def testPropogatedError(self):
         from ExtensionClass import Base
 
-        class foo(object):
+        class foo:
             def __len__(self):
                 return 9
 
@@ -581,7 +581,7 @@ def read_file(name):
     return res
 
 
-class Dummy(object):
+class Dummy:
     __allow_access_to_unprotected_subobjects__ = 1
 
     def __init__(self, **kw):

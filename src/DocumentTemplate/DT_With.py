@@ -39,7 +39,7 @@ from .DT_Util import name_param
 from .DT_Util import parse_params
 
 
-class With(object):
+class With:
     blockContinuations = ()
     name = 'with'
     mapping = None

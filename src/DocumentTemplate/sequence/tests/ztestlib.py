@@ -1,5 +1,3 @@
-
-
 class standard_html:  # Base class for using with ZTemplates
     def __init__(self, title):
         self.standard_html_header = """<HTML>

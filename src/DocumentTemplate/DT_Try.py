@@ -13,8 +13,7 @@
 
 import sys
 import traceback
-
-from six import StringIO
+from io import StringIO
 
 from ._DocumentTemplate import InstanceDict
 from ._DocumentTemplate import render_blocks
@@ -24,7 +23,7 @@ from .DT_Util import namespace
 from .DT_Util import parse_params
 
 
-class Try(object):
+class Try:
     """Zope DTML Exception handling
 
     usage:

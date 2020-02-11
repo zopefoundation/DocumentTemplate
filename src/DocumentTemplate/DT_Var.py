@@ -153,12 +153,7 @@ Evaluating expressions without rendering results
 import logging
 import re
 import sys
-
-import six
-from six.moves.urllib.parse import quote
-from six.moves.urllib.parse import quote_plus
-from six.moves.urllib.parse import unquote
-from six.moves.urllib.parse import unquote_plus
+import urllib.parse
 
 from AccessControl.tainted import TaintedString
 from Acquisition import aq_base
@@ -173,11 +168,8 @@ from .ustr import ustr
 
 logger = logging.getLogger('DocumentTemplate')
 
-if sys.version_info > (3, 0):
-    unicode = str
 
-
-class Var(object):
+class Var:
     name = 'var'
     expr = None
 
@@ -352,7 +344,7 @@ class Var(object):
     __call__ = render
 
 
-class Call(object):
+class Call:
 
     name = 'call'
     expr = None
@@ -369,43 +361,27 @@ class Call(object):
 
 
 def url_quote(v, name='(Unknown name)', md={}):
-    if six.PY2 and isinstance(v, unicode):
-        # quote does not handle unicode. Encoding to a "safe"
-        # intermediate encoding before quoting, then unencoding the result.
-        return quote(v.encode('utf-8')).decode('utf-8')
-    elif six.PY3 and isinstance(v, bytes):
-        return quote(v.decode('utf-8')).encode('utf-8')
-    return quote(str(v))
+    if isinstance(v, bytes):
+        return urllib.parse.quote(v.decode('utf-8')).encode('utf-8')
+    return urllib.parse.quote(str(v))
 
 
 def url_quote_plus(v, name='(Unknown name)', md={}):
-    if six.PY2 and isinstance(v, unicode):
-        # quote_plus does not handle unicode. Encoding to a "safe"
-        # intermediate encoding before quoting, then unencoding the result.
-        return quote_plus(v.encode('utf-8')).decode('utf-8')
-    elif six.PY3 and isinstance(v, bytes):
-        return quote_plus(v.decode('utf-8')).encode('utf-8')
-    return quote_plus(str(v))
+    if isinstance(v, bytes):
+        return urllib.parse.quote_plus(v.decode('utf-8')).encode('utf-8')
+    return urllib.parse.quote_plus(str(v))
 
 
 def url_unquote(v, name='(Unknown name)', md={}):
-    if six.PY2 and isinstance(v, unicode):
-        # unquote does not handle unicode. Encoding to a "safe"
-        # intermediate encoding before quoting, then unencoding the result.
-        return unquote(v.encode('utf-8')).decode('utf-8')
-    elif six.PY3 and isinstance(v, bytes):
-        return unquote(v.decode('utf-8')).encode('utf-8')
-    return unquote(str(v))
+    if isinstance(v, bytes):
+        return urllib.parse.unquote(v.decode('utf-8')).encode('utf-8')
+    return urllib.parse.unquote(str(v))
 
 
 def url_unquote_plus(v, name='(Unknown name)', md={}):
-    if six.PY2 and isinstance(v, unicode):
-        # unquote_plus does not handle unicode. Encoding to a "safe"
-        # intermediate encoding before quoting, then unencoding the result.
-        return unquote_plus(v.encode('utf-8')).decode('utf-8')
-    elif six.PY3 and isinstance(v, bytes):
-        return unquote_plus(v.decode('utf-8')).encode('utf-8')
-    return unquote_plus(str(v))
+    if isinstance(v, bytes):
+        return urllib.parse.unquote_plus(v.decode('utf-8')).encode('utf-8')
+    return urllib.parse.unquote_plus(str(v))
 
 
 def newline_to_br(v, name='(Unknown name)', md={}):
@@ -521,9 +497,9 @@ def structured_text(v, name='(Unknown name)', md={}):
 # Searching and replacing a byte in text, or text in bytes,
 # may give various errors on Python 2 or 3.  So we make separate functions
 REMOVE_BYTES = (b'\x00', b'\x1a', b'\r')
-REMOVE_TEXT = (u'\x00', u'\x1a', u'\r')
+REMOVE_TEXT = ('\x00', '\x1a', '\r')
 DOUBLE_BYTES = (b"'",)
-DOUBLE_TEXT = (u"'",)
+DOUBLE_TEXT = ("'",)
 
 
 def bytes_sql_quote(v):
@@ -541,7 +517,7 @@ def text_sql_quote(v):
     # Helper function for sql_quote, handling only text.
     # Remove bad characters.
     for char in REMOVE_TEXT:
-        v = v.replace(char, u'')
+        v = v.replace(char, '')
     # Double untrusted characters to make them harmless.
     for char in DOUBLE_TEXT:
         v = v.replace(char, char * 2)
@@ -607,7 +583,7 @@ modifiers = (
 modifiers = list(map(lambda f: (f.__name__, f), modifiers))
 
 
-class Comment(object):
+class Comment:
     """Comments
 
     The 'comment' tag can be used to simply include comments

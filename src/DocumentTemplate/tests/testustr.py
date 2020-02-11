@@ -13,16 +13,10 @@
 """ustr unit tests.
 """
 
-import sys
 import unittest
 
 
-if sys.version_info > (3, 0):
-    unichr = chr
-    unicode = str
-
-
-class force_str(object):
+class force_str:
     # A class whose string representation is not always a plain string:
 
     def __init__(self, s):
@@ -36,7 +30,7 @@ class Foo(str):
     pass
 
 
-class Bar(unicode):
+class Bar(str):
     pass
 
 
@@ -72,30 +66,30 @@ class UnicodeTests(unittest.TestCase):
         a = ustr([1, 2, 3])
         self.assertEqual(a, '[1, 2, 3]')
 
-    def test_w_unicode_literal(self):
+    def test_w_str_literal(self):
         from DocumentTemplate.ustr import ustr
-        a = ustr(u'hello')
+        a = ustr('hello')
         self.assertEqual(a, 'hello')
 
-    def test_w_force_str_unicode_literal(self):
+    def test_w_force_str_str_literal(self):
         from DocumentTemplate.ustr import ustr
-        a = ustr(force_str(u'hello'))
+        a = ustr(force_str('hello'))
         self.assertEqual(a, 'hello')
 
-    def test_w_unichr(self):
+    def test_w_chr(self):
         from DocumentTemplate.ustr import ustr
-        a = ustr(unichr(200))
-        self.assertEqual(a, unichr(200))
+        a = ustr(chr(200))
+        self.assertEqual(a, chr(200))
 
-    def test_w_force_str_unichr(self):
+    def test_w_force_str_chr(self):
         from DocumentTemplate.ustr import ustr
-        a = ustr(force_str(unichr(200)))
-        self.assertEqual(a, unichr(200))
+        a = ustr(force_str(chr(200)))
+        self.assertEqual(a, chr(200))
 
-    def test_w_unichr_in_exception(self):
+    def test_w_chr_in_exception(self):
         from DocumentTemplate.ustr import ustr
-        a = ustr(ValueError(unichr(200)))
-        self.assertEqual(a, unichr(200))
+        a = ustr(ValueError(chr(200)))
+        self.assertEqual(a, chr(200))
 
     def testCustomStrings(self):
         from DocumentTemplate.ustr import ustr

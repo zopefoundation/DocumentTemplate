@@ -1,9 +1,10 @@
 Changelog
 =========
 
-3.3 (unreleased)
+4.0 (unreleased)
 ----------------
 
+- Drop support for Python 2.
 
 3.2.2 (2020-02-04)
 ------------------

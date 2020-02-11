@@ -18,8 +18,6 @@ import zlib
 from binascii import a2b_base64
 from binascii import b2a_base64
 
-import six
-
 from DocumentTemplate._DocumentTemplate import InstanceDict
 from DocumentTemplate._DocumentTemplate import render_blocks
 from DocumentTemplate.DT_String import String
@@ -32,17 +30,13 @@ from DocumentTemplate.DT_Util import parse_params
 from DocumentTemplate.DT_Util import simple_name
 
 
-if six.PY3:
-    unicode = str
-    tbl = b''.join([chr(i).encode('latin-1') for i in range(256)])
-else:
-    tbl = b''.join([chr(i) for i in range(256)])
+tbl = b''.join([chr(i).encode('latin-1') for i in range(256)])
 
 tplus = tbl[:ord('+')] + b'-' + tbl[ord('+') + 1:]
 tminus = tbl[:ord('-')] + b'+' + tbl[ord('-') + 1:]
 
 
-class Tree(object):
+class Tree:
     name = 'tree'
     blockContinuations = ()
     expand = None
@@ -123,7 +117,7 @@ String.commands['tree'] = Tree
 
 pyid = id  # Copy builtin
 
-simple_types = {str: 1, unicode: 1, int: 1, float: 1,
+simple_types = {str: 1, int: 1, float: 1,
                 tuple: 1, list: 1, dict: 1}
 
 
@@ -264,7 +258,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
         urlattr = args['url']
         if urlattr and hasattr(self, urlattr):
             tpUrl = try_call_attr(self, urlattr)
-            url = (url and ('%s/%s' % (url, tpUrl))) or tpUrl
+            url = (url and ('{}/{}'.format(url, tpUrl))) or tpUrl
             root_url = root_url or tpUrl
 
     ptreeData = add_with_prefix(treeData, 'tree', args.get('prefix'))
@@ -343,7 +337,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
             items = list(items)  # Copy the list
             items.reverse()
 
-    if isinstance(id, six.binary_type):
+    if isinstance(id, bytes):
         diff.append(id.decode(encoding))
     else:
         diff.append(id)
@@ -378,10 +372,9 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
 
             s = encode_str(compress(json.dumps(diff)))  # bytes in ASCII enc.
 
-            # For rendering the encoded state string in a URL under Python 3,
+            # For rendering the encoded state string in a URL,
             # we must lose the "b" prefix by decoding
-            if six.PY3:
-                s = s.decode('ASCII')
+            s = s.decode('ASCII')
 
             # Propagate extra args through tree.
             if 'urlparam' in args:
@@ -598,8 +591,7 @@ def encode_seq(state):
         state = state[:l_]
 
     state = state.translate(tplus)
-    if six.PY3:
-        state = state.decode('ascii')
+    state = state.decode('ascii')
     return state
 
 
@@ -673,7 +665,7 @@ def compress(input):
 
     'input' should be text.
     """
-    if not isinstance(input, six.string_types):
+    if not isinstance(input, str):
         raise ValueError("Input should be text")
     if not isinstance(input, bytes):
         input = input.encode('utf-8')
@@ -736,8 +728,7 @@ def extract_id(item, idattr):
         return try_call_attr(item, idattr)
     elif getattr(item, '_p_oid', None):
         value = b2a_base64(item._p_oid)[:-1]
-        if six.PY3:
-            value = value.decode('ascii')
+        value = value.decode('ascii')
         return value
     else:
         return pyid(item)

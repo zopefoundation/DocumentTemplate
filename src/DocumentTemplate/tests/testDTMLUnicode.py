@@ -14,10 +14,8 @@
 """
 import unittest
 
-import six
 
-
-class force_str(object):
+class force_str:
     # A class whose string representation is not always a plain string:
 
     def __init__(self, s):
@@ -46,7 +44,7 @@ class DTMLUnicodeTests(unittest.TestCase):
     doc_class = property(_get_doc_class,)
 
     def _recode(self, string):
-        if isinstance(string, six.binary_type):
+        if isinstance(string, bytes):
             string = string.decode('UTF-8')
         return string.encode(self.recode_to)
 
@@ -58,55 +56,49 @@ class DTMLUnicodeTests(unittest.TestCase):
 
     def testUU(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
-        expected = u'helloworld'
-        res = html(a=u'hello', b=u'world')
+        expected = 'helloworld'
+        res = html(a='hello', b='world')
         self.assertEqual(res, expected)
 
     def testAU(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
-        expected = u'helloworld'
-        res = html(a='hello', b=u'world')
+        expected = 'helloworld'
+        res = html(a='hello', b='world')
         self.assertEqual(res, expected)
 
     def testAB(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
-        if six.PY2:
-            expected = self._recode('hello\xc3\x88')
-        else:
-            expected = u'hello\xc8'
+        expected = 'hello\xc8'
         res = html(a='hello', b=self._recode(b'\xc3\x88'))
         self.assertEqual(res, expected)
 
     def testUB(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
-        expected = u'hello\xc8'
-        res = html(a=u'hello', b=self._recode(b'\xc3\x88'))
+        expected = 'hello\xc8'
+        res = html(a='hello', b=self._recode(b'\xc3\x88'))
         self.assertEqual(res, expected)
 
     def testUB2(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
-        expected = u'\u07d0\xc8'
-        res = html(a=six.unichr(2000), b=self._recode(b'\xc3\x88'))
+        expected = '\u07d0\xc8'
+        res = html(a=chr(2000), b=self._recode(b'\xc3\x88'))
         self.assertEqual(res, expected)
 
     def testUnicodeStr(self):
         html = self.doc_class('<dtml-var a><dtml-var b>')
-        expected = u'\u07d0\xc8'
-        res = html(a=force_str(six.unichr(2000)), b=self._recode(b'\xc3\x88'))
+        expected = '\u07d0\xc8'
+        res = html(a=force_str(chr(2000)), b=self._recode(b'\xc3\x88'))
         self.assertEqual(res, expected)
 
     def testUqB(self):
         html = self.doc_class('<dtml-var a html_quote><dtml-var b>')
-        expected = u'he&gt;llo\xc8'
-        res = html(a=u'he>llo', b=self._recode(b'\xc3\x88'))
+        expected = 'he&gt;llo\xc8'
+        res = html(a='he>llo', b=self._recode(b'\xc3\x88'))
         self.assertEqual(res, expected)
 
     def testSize(self):
-        if six.PY3:
-            html = self.doc_class('<dtml-var "_.chr(200)*4" size=2>')
-        else:
-            html = self.doc_class('<dtml-var "_.unichr(200)*4" size=2>')
-        expected = six.unichr(200) * 2 + '...'
+        html = self.doc_class('<dtml-var "_.chr(200)*4" size=2>')
+        expected = chr(200) * 2 + '...'
         res = html()
         self.assertEqual(res, expected)
 
