@@ -14,14 +14,9 @@
 """
 
 import unittest
+from html import escape
 
 from ..html_quote import html_quote
-
-
-try:
-    from html import escape
-except ImportError:  # PY2
-    from cgi import escape
 
 
 class DTMLTests(unittest.TestCase):

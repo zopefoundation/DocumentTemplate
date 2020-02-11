@@ -11,12 +11,10 @@
 #
 ##############################################################################
 
-import sys
 import unittest
 
 from zope.sequencesort.ssort import SortEx
 
-from .results import res1
 from .results import res2
 from .results import res3
 from .results import res4
@@ -27,11 +25,6 @@ from .ztestlib import wordlist
 
 
 class TestCase(unittest.TestCase):
-
-    def test1(self):
-        if sys.version_info < (3, 0):
-            # There is no sort order defined for dictionaries.
-            self.assertEqual(res1, SortEx(wordlist))
 
     def test2(self):
         self.assertEqual(res2, SortEx(wordlist, (("key",),), mapping=1))

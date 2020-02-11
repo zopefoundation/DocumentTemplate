@@ -495,7 +495,7 @@ def structured_text(v, name='(Unknown name)', md={}):
 
 
 # Searching and replacing a byte in text, or text in bytes,
-# may give various errors on Python 2 or 3.  So we make separate functions
+# may give various errors.  So we make separate functions:
 REMOVE_BYTES = (b'\x00', b'\x1a', b'\r')
 REMOVE_TEXT = ('\x00', '\x1a', '\r')
 DOUBLE_BYTES = (b"'",)
