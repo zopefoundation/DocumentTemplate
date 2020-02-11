@@ -24,31 +24,11 @@ from RestrictedPython.Eval import RestrictionCapableEval
 from RestrictedPython.Guards import safe_builtins
 from RestrictedPython.Utilities import utility_builtins
 from zExceptions import Unauthorized as ValidationError
-from zope.deferredimport import deprecated
 
 from . import sequence
 from ._DocumentTemplate import TemplateDict
 from ._DocumentTemplate import safe_callable
 
-
-# BBB DocumentTemplate 4.0
-deprecated(
-    'Please import from DocumentTemplate._DocumentTemplate. '
-    'These shims will go away in DocumentTemplate 4.0.',
-    InstanceDict='DocumentTemplate._DocumentTemplate:InstanceDict',
-    join_unicode='DocumentTemplate._DocumentTemplate:join_unicode',
-    render_blocks='DocumentTemplate._DocumentTemplate:render_blocks',
-)
-deprecated(
-    'Please import from DocumentTemplate.html_quote. '
-    'These shims will go away in DocumentTemplate 4.0.',
-    html_quote='DocumentTemplate.html_quote:html_quote',
-)
-deprecated(
-    'Please import from DocumentTemplate.ustr. '
-    'These shims will go away in DocumentTemplate 4.0.',
-    ustr='DocumentTemplate.html_quote:ustr',
-)
 
 test = utility_builtins['test']  # backwards compatibility
 utility_builtins['sequence'] = sequence
