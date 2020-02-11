@@ -77,7 +77,7 @@ def int_param(params, md, name, default=0, st=type('')):
 functype = type(int_param)
 
 
-class NotBindable(object):
+class NotBindable:
     # Used to prevent TemplateDict from trying to bind to functions.
     def __init__(self, f):
         self._func = f
@@ -100,7 +100,7 @@ if LIMITED_BUILTINS:
         setattr(TemplateDict, name, f)
 
 
-class StringModuleWrapper(object):
+class StringModuleWrapper:
     # Wrap the string module so it can deal with TaintedString strings.
 
     def __getattr__(self, key):
@@ -111,7 +111,7 @@ class StringModuleWrapper(object):
             return attr
 
 
-class StringFunctionWrapper(object):
+class StringFunctionWrapper:
 
     def __init__(self, method):
         self._method = method
@@ -244,7 +244,7 @@ class Eval(RestrictionCapableEval):
 simple_name = re.compile('^[a-z][a-z0-9_]*$', re.I).match
 
 
-class Add_with_prefix(object):
+class Add_with_prefix:
 
     def __init__(self, map, defprefix, prefix):
         self.map = map
@@ -258,7 +258,7 @@ class Add_with_prefix(object):
         if name.startswith(dp + '-'):
             map[self.prefix + name[len(dp):].replace('-', '_')] = value
         else:
-            map['%s_%s' % (self.prefix, name)] = value
+            map['{}_{}'.format(self.prefix, name)] = value
 
 
 def add_with_prefix(map, defprefix, prefix):

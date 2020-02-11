@@ -47,7 +47,7 @@ from .DT_Util import Eval
 from .DT_Util import ParseError
 
 
-class Let(object):
+class Let:
 
     blockContinuations = ()
     name = 'let'

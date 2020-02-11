@@ -334,8 +334,6 @@ import re
 import sys
 from operator import itemgetter
 
-import six
-
 from zope.sequencesort.ssort import _Smallest
 
 from ._DocumentTemplate import InstanceDict
@@ -352,17 +350,15 @@ from .DT_Util import parse_params
 from .DT_Util import simple_name
 
 
-if sys.version_info > (3, 0):
-    unicode = str
+def cmp(a, b):
+    return (a > b) - (a < b)
 
-    def cmp(a, b):
-        return (a > b) - (a < b)
 
 TupleType = tuple
-StringTypes = six.string_types + (six.binary_type,)
+StringTypes = (str, bytes)
 
 
-class InFactory(object):
+class InFactory:
     blockContinuations = ('else', )
     name = 'in'
 
@@ -377,7 +373,7 @@ class InFactory(object):
 In = InFactory()
 
 
-class InClass(object):
+class InClass:
     elses = None
     expr = sort = batch = mapping = no_push_item = None
     start_name_re = None
@@ -627,7 +623,7 @@ class InClass(object):
                                 if index == first:
                                     pkw['sequence-start'] = 0
                                 continue
-                            raise ValidationError('(item %s): %s' % (
+                            raise ValidationError('(item {}): {}'.format(
                                 index, vv), sys.exc_info()[2])
                     else:
                         client = sequence[index]
@@ -741,7 +737,8 @@ class InClass(object):
                                 pkw['sequence-start'] = 0
                             continue
                         raise ValidationError(
-                            '(item %s): %s' % (index, vv), sys.exc_info()[2])
+                            '(item {}): {}'.format(index, vv),
+                            sys.exc_info()[2])
                 else:
                     client = sequence[index]
 
@@ -955,7 +952,7 @@ def make_sortfunctions(sortfields, md):
     return sf_list
 
 
-class SortBy(object):
+class SortBy:
     def __init__(self, multsort, sf_list):
         self.multsort = multsort
         self.sf_list = sf_list

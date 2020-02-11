@@ -15,8 +15,6 @@ import os
 import re
 from threading import Lock
 
-import six
-
 import DocumentTemplate as _dt
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -36,7 +34,7 @@ _marker = []  # Create a new marker object.
 COOKLOCK = Lock()
 
 
-class String(object):
+class String:
     """Document templates defined from strings.
 
     Document template strings use an extended form of python string
@@ -78,7 +76,7 @@ class String(object):
     @security.private
     def parse_error(self, mess, tag, text, start):
         raise ParseError(
-            "%s, for tag %s, on line %s of %s" % (
+            "{}, for tag {}, on line {} of {}".format(
                 mess, self.errQuote(tag), len(text[:start].split('\n')),
                 self.errQuote(self.__name__)))
 
@@ -121,9 +119,9 @@ class String(object):
             cname, module, name = command
             d = {}
             try:
-                six.exec_('from %s import %s' % (module, name), d)
+                exec('from {} import {}'.format(module, name), d)
             except ImportError:
-                six.exec_('from DocumentTemplate.%s import %s' % (
+                exec('from DocumentTemplate.{} import {}'.format(
                     module, name), d)
             command = d[name]
             self.commands[cname] = command
@@ -168,7 +166,7 @@ class String(object):
                 raise ParseError('Unexpected tag', tag)
         else:
             # Var command
-            args = args and ("%s %s" % (name, args)) or name
+            args = args and ("{} {}".format(name, args)) or name
             return tag, args, Var, None
 
     @security.private
@@ -555,7 +553,7 @@ class String(object):
 InitializeClass(String)
 
 
-class FileMixin(object):
+class FileMixin:
     # Mix-in class to abstract certain file-related attributes
     edited_source = ''
 

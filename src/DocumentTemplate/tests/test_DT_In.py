@@ -3,11 +3,11 @@ import unittest
 from DocumentTemplate.DT_Util import ParseError
 
 
-class DummySection(object):
+class DummySection:
     blocks = ['dummy']
 
 
-class Dummy(object):
+class Dummy:
     """Dummy with attribute"""
 
     def __init__(self, name, number=0, _callable=0):
@@ -51,14 +51,6 @@ class TestIn(unittest.TestCase):
 
 class DT_In_Tests(unittest.TestCase):
     """Functional testing ..DT_In.InClass."""
-
-    def assertRaisesRegex(self, *args, **kw):
-        try:
-            # available from Python 3.2
-            return unittest.TestCase.assertRaisesRegex(self, *args, **kw)
-        except AttributeError:
-            # only available till Python 3.7
-            return unittest.TestCase.assertRaisesRegexp(self, *args, **kw)
 
     @property
     def doc_class(self):

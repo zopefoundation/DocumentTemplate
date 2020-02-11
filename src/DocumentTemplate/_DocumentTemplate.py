@@ -103,8 +103,6 @@ Document Templates may be created 4 ways:
         from a named file.
 """
 
-import six
-
 import DocumentTemplate as _dt
 from Acquisition import aq_base
 from ExtensionClass import Base
@@ -134,9 +132,9 @@ def join_unicode(rendered, encoding=None):
             encoding = _dt.OLD_DEFAULT_ENCODING
         rendered = list(rendered)
         for i in range(len(rendered)):
-            if isinstance(rendered[i], six.binary_type):
+            if isinstance(rendered[i], bytes):
                 rendered[i] = rendered[i].decode(encoding)
-        return u''.join(rendered)
+        return ''.join(rendered)
 
 
 def render_blocks(blocks, md, encoding=None):
@@ -158,18 +156,18 @@ def render_blocks_(blocks, rendered, md, encoding):
 
         if isinstance(block, tuple) and \
            len(block) > 1 and \
-           isinstance(block[0], six.string_types):
+           isinstance(block[0], str):
 
             first_char = block[0][0]
             if first_char == 'v':  # var
                 t = block[1]
-                if isinstance(t, six.string_types):
+                if isinstance(t, str):
                     t = md[t]
                 else:
                     t = t(md)
 
                 skip_html_quote = 0
-                if not isinstance(t, (six.string_types, six.binary_type)):
+                if not isinstance(t, (str, bytes)):
                     # This might be a TaintedString object
                     untaintmethod = getattr(t, '__untaint__', None)
                     if untaintmethod is not None:
@@ -177,7 +175,7 @@ def render_blocks_(blocks, rendered, md, encoding):
                         t = untaintmethod()
                         skip_html_quote = 1
 
-                if not isinstance(t, (six.string_types, six.binary_type)):
+                if not isinstance(t, (str, bytes)):
                     t = ustr(t)
 
                 if (skip_html_quote == 0 and len(block) == 3):
@@ -242,7 +240,7 @@ def render_blocks_(blocks, rendered, md, encoding):
                 raise ValueError(
                     'Invalid DTML command code, %s', block[0])
 
-        elif not isinstance(block, (six.string_types, six.binary_type)):
+        elif not isinstance(block, (str, bytes)):
             block = block(md)
 
         if append and block:
@@ -257,14 +255,14 @@ def safe_callable(ob):
         if hasattr(ob, '__call__'):
             return True
         else:
-            if type(ob) in (six.class_types, Base):
+            if type(ob) in (type, Base):
                 return True
             else:
                 return False
     return callable(ob)
 
 
-class InstanceDict(object):
+class InstanceDict:
     """"""
 
     guarded_getattr = None
@@ -311,7 +309,7 @@ class InstanceDict(object):
         return result
 
 
-class DictInstance(object):
+class DictInstance:
 
     def __init__(self, data):
         self._data = data

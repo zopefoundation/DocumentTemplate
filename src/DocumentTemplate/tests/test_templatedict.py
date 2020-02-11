@@ -20,7 +20,7 @@ from .._DocumentTemplate import TemplateDict
 from ..security import RestrictedDTML
 
 
-class DummyDocTemp(object):
+class DummyDocTemp:
 
     def __init__(self, name, temp=True):
         self.name = name
@@ -30,7 +30,7 @@ class DummyDocTemp(object):
         return ('doctemp', self.name, args)
 
 
-class DummyNamespace(object):
+class DummyNamespace:
 
     isDocTemp = True
 

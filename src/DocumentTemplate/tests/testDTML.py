@@ -14,14 +14,9 @@
 """
 
 import unittest
+from html import escape
 
 from ..html_quote import html_quote
-
-
-try:
-    from html import escape
-except ImportError:  # PY2
-    from cgi import escape
 
 
 class DTMLTests(unittest.TestCase):
@@ -317,7 +312,7 @@ foo bar
     def testPropogatedError(self):
         from ExtensionClass import Base
 
-        class foo(object):
+        class foo:
             def __len__(self):
                 return 9
 
@@ -581,7 +576,7 @@ def read_file(name):
     return res
 
 
-class Dummy(object):
+class Dummy:
     __allow_access_to_unprotected_subobjects__ = 1
 
     def __init__(self, **kw):

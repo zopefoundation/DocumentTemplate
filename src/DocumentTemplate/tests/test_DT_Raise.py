@@ -1,7 +1,7 @@
 import unittest
 
 
-class DummySection(object):
+class DummySection:
     blocks = ['dummy']
 
 

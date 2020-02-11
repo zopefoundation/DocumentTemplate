@@ -36,7 +36,7 @@ class InvalidErrorTypeExpression(Exception):
     pass
 
 
-class Raise(object):
+class Raise:
 
     blockContinuations = ()
     name = 'raise'

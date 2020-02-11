@@ -27,7 +27,7 @@ except ImportError:
 TupleType = tuple
 
 
-class sequence_variables(object):
+class sequence_variables:
 
     alt_prefix = None
 
@@ -203,7 +203,7 @@ class sequence_variables(object):
 
         # Initialize all stats to empty strings:
         for stat in self.statistic_names:
-            data['%s-%s' % (stat, name)] = ''
+            data['{}-{}'.format(stat, name)] = ''
 
         count = len(values)
         try:  # Numeric statistics
@@ -250,8 +250,8 @@ class sequence_variables(object):
                     except Exception:
                         try:
                             data['median-%s' % name] = (
-                                "between %s and %s" % (values[half],
-                                                       values[half - 1]))
+                                "between {} and {}".format(values[half],
+                                                           values[half - 1]))
                         except Exception:
                             pass
 

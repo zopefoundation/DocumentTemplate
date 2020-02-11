@@ -27,7 +27,7 @@ from DocumentTemplate import DT_Util
 RestrictedDTML = None
 
 
-class BaseRestrictedDTML(object):
+class BaseRestrictedDTML:
     """A mix-in for derivatives of DT_String.String that adds Zope security."""
 
     def guarded_getattr(self, *args):  # ob, name [, default]
@@ -50,7 +50,7 @@ else:
 # Add security testing capabilities
 
 
-class DTMLSecurityAPI(object):
+class DTMLSecurityAPI:
     """API for performing security checks in DTML using '_' methods."""
 
     def SecurityValidate(md, inst, parent, name, value):
@@ -125,7 +125,7 @@ for name, v in safe_builtins.items():
 # Temporarily create a DictInstance so that we can mark its type as
 # being a key in the ContainerAssertions.
 
-class _dummy_class(object):
+class _dummy_class:
     pass
 
 
