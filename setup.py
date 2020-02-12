@@ -15,7 +15,7 @@
 from os.path import join
 from setuptools import setup, find_packages, Extension
 
-__version__ = '2.13.6.dev0'
+__version__ = '2.13.6'
 
 setup(name='DocumentTemplate',
       version=__version__,

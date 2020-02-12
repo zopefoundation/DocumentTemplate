@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.13.6 (unreleased)
+2.13.6 (2020-02-12)
 -------------------
 
 - de-fang ``sql_quote`` even more as quoting is too database-specific.
