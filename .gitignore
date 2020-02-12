@@ -5,6 +5,7 @@
 __pycache__
 bin/
 build/
+default.profraw
 develop-eggs/
 dist/
 eggs/
