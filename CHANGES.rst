@@ -3,6 +3,7 @@ Changelog
 
 4.0 (unreleased)
 ----------------
+- Fix ``tox`` and testing configurations to install package first
 
 - Drop support for Python 2.
 
