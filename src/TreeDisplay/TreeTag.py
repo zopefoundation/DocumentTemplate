@@ -413,7 +413,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
 
         # add item text
         dataspan = colspan - level
-        nowrap = (args['nowrap'] and ' style="white-space: nowrap"') or ''
+        nowrap = (args.get('nowrap') and ' style="white-space: nowrap"') or ''
         output('<td%s%s valign="top" align="left">' %
                ((dataspan > 1 and (' colspan="%s"' % dataspan) or ''),
                 nowrap))
