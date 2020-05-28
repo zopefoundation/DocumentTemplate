@@ -3,6 +3,8 @@ Changelog
 
 4.0 (unreleased)
 ----------------
+- Fix broken tree tag
+  (`#52 <https://github.com/zopefoundation/DocumentTemplate/issues/52>`_)
 
 - Drop support for Python 2.
 
