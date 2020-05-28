@@ -1,8 +1,9 @@
 Changelog
 =========
 
-3.3 (unreleased)
-----------------
+3.2.3 (2020-05-28)
+------------------
+
 - Fix broken tree tag
   (`#52 <https://github.com/zopefoundation/DocumentTemplate/issues/52>`_)
 
