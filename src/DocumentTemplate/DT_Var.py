@@ -518,45 +518,26 @@ def structured_text(v, name='(Unknown name)', md={}):
     return HTML()(doc, level, header=False)
 
 
-# Searching and replacing a byte in text, or text in bytes,
-# may give various errors on Python 2 or 3.  So we make separate functions
-REMOVE_BYTES = (b'\x00', b'\x1a', b'\r')
-REMOVE_TEXT = (u'\x00', u'\x1a', u'\r')
-DOUBLE_BYTES = (b"'",)
-DOUBLE_TEXT = (u"'",)
-
-
-def bytes_sql_quote(v):
-    # Helper function for sql_quote, handling only bytes.
-    # Remove bad characters.
-    for char in REMOVE_BYTES:
-        v = v.replace(char, b'')
-    # Double untrusted characters to make them harmless.
-    for char in DOUBLE_BYTES:
-        v = v.replace(char, char * 2)
-    return v
-
-
-def text_sql_quote(v):
-    # Helper function for sql_quote, handling only text.
-    # Remove bad characters.
-    for char in REMOVE_TEXT:
-        v = v.replace(char, u'')
-    # Double untrusted characters to make them harmless.
-    for char in DOUBLE_TEXT:
-        v = v.replace(char, char * 2)
-    return v
-
-
 def sql_quote(v, name='(Unknown name)', md={}):
     """Quote single quotes in a string by doubling them.
 
     This is needed to securely insert values into sql
     string literals in templates that generate sql.
     """
-    if isinstance(v, bytes):
-        return bytes_sql_quote(v)
-    return text_sql_quote(v)
+    if six.PY3 and isinstance(v, bytes):
+        v = v.decode('UTF-8')
+    elif six.PY2 and not isinstance(v, bytes):
+        v = v.encode('UTF-8')
+
+    # Remove bad characters
+    for char in ('\x00', '\x1a', '\r'):
+        v = v.replace(char, '')
+
+    # Double untrusted characters to make them harmless.
+    for char in ("'",):
+        v = v.replace(char, char * 2)
+
+    return v
 
 
 special_formats = {
