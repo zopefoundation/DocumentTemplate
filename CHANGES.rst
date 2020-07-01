@@ -4,6 +4,9 @@ Changelog
 3.3 (unreleased)
 ----------------
 
+- Restore ``sql_quote`` behavior of always returning native strings
+  (`#54 <https://github.com/zopefoundation/DocumentTemplate/issues/54>`_)
+
 
 3.2.3 (2020-05-28)
 ------------------
