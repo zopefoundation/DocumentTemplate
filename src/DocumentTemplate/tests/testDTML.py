@@ -16,6 +16,8 @@
 import unittest
 from html import escape
 
+import six
+
 from ..html_quote import html_quote
 
 
@@ -262,6 +264,26 @@ class DTMLTests(unittest.TestCase):
         expected = 'http://www.zope.org?a=b 123'
         self.assertEqual(html1(), expected)
         self.assertEqual(html2(), expected)
+
+    def test_sql_quote(self):
+        html = self.doc_class('<dtml-var x sql_quote>')
+        special = u'\xae'
+
+        self.assertEqual(html(x=u'x'), u'x')
+        self.assertEqual(html(x=b'x'), u'x')
+        self.assertEqual(html(x=u"Moe's Bar"), u"Moe''s Bar")
+        self.assertEqual(html(x=b"Moe's Bar"), u"Moe''s Bar")
+
+        if six.PY3:
+            self.assertEqual(html(x=u"Moe's B%sr" % special),
+                             u"Moe''s B%sr" % special)
+            self.assertEqual(html(x=b"Moe's B%sr" % special.encode('UTF-8')),
+                             u"Moe''s B%sr" % special)
+        else:
+            self.assertEqual(html(x=u"Moe's B%sr" % special),
+                             "Moe''s B%sr" % special.encode('UTF-8'))
+            self.assertEqual(html(x=b"Moe's B%sr" % special.encode('UTF-8')),
+                             b"Moe''s B%sr" % special.encode('UTF-8'))
 
     def test_fmt(self):
         html = self.doc_class(

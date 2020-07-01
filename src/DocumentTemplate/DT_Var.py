@@ -494,36 +494,6 @@ def structured_text(v, name='(Unknown name)', md={}):
     return HTML()(doc, level, header=False)
 
 
-# Searching and replacing a byte in text, or text in bytes,
-# may give various errors.  So we make separate functions:
-REMOVE_BYTES = (b'\x00', b'\x1a', b'\r')
-REMOVE_TEXT = ('\x00', '\x1a', '\r')
-DOUBLE_BYTES = (b"'",)
-DOUBLE_TEXT = ("'",)
-
-
-def bytes_sql_quote(v):
-    # Helper function for sql_quote, handling only bytes.
-    # Remove bad characters.
-    for char in REMOVE_BYTES:
-        v = v.replace(char, b'')
-    # Double untrusted characters to make them harmless.
-    for char in DOUBLE_BYTES:
-        v = v.replace(char, char * 2)
-    return v
-
-
-def text_sql_quote(v):
-    # Helper function for sql_quote, handling only text.
-    # Remove bad characters.
-    for char in REMOVE_TEXT:
-        v = v.replace(char, '')
-    # Double untrusted characters to make them harmless.
-    for char in DOUBLE_TEXT:
-        v = v.replace(char, char * 2)
-    return v
-
-
 def sql_quote(v, name='(Unknown name)', md={}):
     """Quote single quotes in a string by doubling them.
 
@@ -531,8 +501,17 @@ def sql_quote(v, name='(Unknown name)', md={}):
     string literals in templates that generate sql.
     """
     if isinstance(v, bytes):
-        return bytes_sql_quote(v)
-    return text_sql_quote(v)
+        v = v.decode('UTF-8')
+
+    # Remove bad characters
+    for char in ('\x00', '\x1a', '\r'):
+        v = v.replace(char, '')
+
+    # Double untrusted characters to make them harmless.
+    for char in ("'",):
+        v = v.replace(char, char * 2)
+
+    return v
 
 
 special_formats = {

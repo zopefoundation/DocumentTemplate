@@ -3,6 +3,10 @@ Changelog
 
 4.0 (unreleased)
 ----------------
+
+- Restore ``sql_quote`` behavior of always returning native strings
+  (`#54 <https://github.com/zopefoundation/DocumentTemplate/issues/54>`_)
+
 - Fix broken tree tag
   (`#52 <https://github.com/zopefoundation/DocumentTemplate/issues/52>`_)
 
