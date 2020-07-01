@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.3 (unreleased)
+3.3 (2020-07-01)
 ----------------
 
 - Restore ``sql_quote`` behavior of always returning native strings
