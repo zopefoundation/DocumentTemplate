@@ -16,8 +16,6 @@
 import unittest
 from html import escape
 
-import six
-
 from ..html_quote import html_quote
 
 
@@ -274,16 +272,10 @@ class DTMLTests(unittest.TestCase):
         self.assertEqual(html(x=u"Moe's Bar"), u"Moe''s Bar")
         self.assertEqual(html(x=b"Moe's Bar"), u"Moe''s Bar")
 
-        if six.PY3:
-            self.assertEqual(html(x=u"Moe's B%sr" % special),
-                             u"Moe''s B%sr" % special)
-            self.assertEqual(html(x=b"Moe's B%sr" % special.encode('UTF-8')),
-                             u"Moe''s B%sr" % special)
-        else:
-            self.assertEqual(html(x=u"Moe's B%sr" % special),
-                             "Moe''s B%sr" % special.encode('UTF-8'))
-            self.assertEqual(html(x=b"Moe's B%sr" % special.encode('UTF-8')),
-                             b"Moe''s B%sr" % special.encode('UTF-8'))
+        self.assertEqual(html(x=u"Moe's B%sr" % special),
+                         u"Moe''s B%sr" % special)
+        self.assertEqual(html(x=b"Moe's B%sr" % special.encode('UTF-8')),
+                         u"Moe''s B%sr" % special)
 
     def test_fmt(self):
         html = self.doc_class(

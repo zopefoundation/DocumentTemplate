@@ -15,8 +15,6 @@
 
 import unittest
 
-import six
-
 
 class TestNewlineToBr(unittest.TestCase):
 
@@ -119,12 +117,8 @@ class TestUrlQuoting(unittest.TestCase):
             sql_quote('\x00Hello\x00\x00World\x00'), 'HelloWorld')
 
         self.assertEqual("\xea".encode("utf-8"), b"\xc3\xaa")
-        if six.PY3:
-            self.assertEqual(sql_quote(b"\xc3\xaa'"), "\xea''")
-            self.assertEqual(sql_quote("\xea'"), "\xea''")
-        else:
-            self.assertEqual(sql_quote(b"\xc3\xaa'"), b"\xc3\xaa''")
-            self.assertEqual(sql_quote("\xea'"), b"\xc3\xaa''")
+        self.assertEqual(sql_quote(b"\xc3\xaa'"), "\xea''")
+        self.assertEqual(sql_quote("\xea'"), "\xea''")
 
         self.assertEqual(
             sql_quote(b"carriage\rreturn"), "carriagereturn")
