@@ -15,6 +15,8 @@ Changelog
 - Eventually drop BBB code leading to a deprecation warning in version 3.2+.
   (`#42 <https://github.com/zopefoundation/DocumentTemplate/issues/42>`_)
 
+- Update `isort` to version 5.
+
 
 3.2.2 (2020-02-04)
 ------------------

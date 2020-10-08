@@ -199,6 +199,7 @@ class DTMLTests(unittest.TestCase):
 
     def testStringDateFormatting(self):
         import DateTime
+
         from DocumentTemplate.DT_HTML import String
         html = String("%(name capitalize spacify)s is "
                       "%(date fmt=year)s/%(date fmt=month)s/%(date fmt=day)s")
@@ -583,6 +584,7 @@ class RESTTests(DTMLTests):
 
 def read_file(name):
     import os
+
     from DocumentTemplate import tests
     here = tests.__path__[0]
     with open(os.path.join(here, name), 'r') as fd:

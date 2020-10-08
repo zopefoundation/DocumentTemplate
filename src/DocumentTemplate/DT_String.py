@@ -15,9 +15,10 @@ import os
 import re
 from threading import Lock
 
-import DocumentTemplate as _dt
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
+
+import DocumentTemplate as _dt
 
 from ._DocumentTemplate import InstanceDict
 from ._DocumentTemplate import TemplateDict
