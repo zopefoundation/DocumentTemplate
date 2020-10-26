@@ -3,7 +3,7 @@ language: python
 matrix:
     include:
         - python: "3.6"
-          env: TOXENV=flake8
+          env: TOXENV=lint
           after_success:
         - python: "3.5"
           env: TOXENV=py35
