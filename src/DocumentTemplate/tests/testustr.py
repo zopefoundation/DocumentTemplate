@@ -35,9 +35,10 @@ class Bar(str):
 
 
 class RequestLike(object):
-    def __str__(self): return "RequestLike"
+    def __str__(self):
+        return "RequestLike"
 
-    args = () # to confuse `ustr._exception_str`
+    args = ()  # to confuse `ustr._exception_str`
 
 
 class UnicodeTests(unittest.TestCase):
