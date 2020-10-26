@@ -3,24 +3,25 @@ language: python
 matrix:
     include:
         - python: "3.6"
-          env: TOXENV=flake8
+          env: TOXENV=lint
+          after_success:
         - python: "3.5"
           env: TOXENV=py35
         - python: "3.6"
           env: TOXENV=py36
         - python: "3.7"
           env: TOXENV=py37
-          dist: xenial
         - python: "3.8"
           env: TOXENV=py38
-          dist: xenial
+        - python: "3.9-dev"
+          env: TOXENV=py39
 
 install:
-    - travis_retry pip install -U pip setuptools
-    - travis_retry pip install -U tox coveralls coverage
+    - pip install -U pip setuptools
+    - pip install -U tox coveralls coverage
 
 script:
-    - travis_retry tox
+    - tox
 
 after_success:
     - coverage combine
