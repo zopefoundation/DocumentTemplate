@@ -12,7 +12,7 @@
 ##############################################################################
 """ustr function."""
 
-nasty_exception_str = getattr(Exception.__str__, 'im_func', None)
+nasty_exception_str = getattr(Exception.__str__, '__func__', None)
 
 
 def ustr(v):
@@ -31,7 +31,7 @@ def ustr(v):
             # they all constrain the type which potentially raises an
             # exception.
             # To avoid exceptions we have to call __str__ direct.
-            if getattr(fn, 'im_func', None) == nasty_exception_str:
+            if getattr(fn, '__func__', None) == nasty_exception_str:
                 # Exception objects have been optimised into C, and their
                 # __str__ function fails when given a unicode object.
                 # Unfortunately this scenario is all too common when
