@@ -5,6 +5,8 @@ Changelog
 4.0 (unreleased)
 ----------------
 
+- Add support for Python 3.9
+
 - Restore ``sql_quote`` behavior of always returning native strings
   (`#54 <https://github.com/zopefoundation/DocumentTemplate/issues/54>`_)
 
