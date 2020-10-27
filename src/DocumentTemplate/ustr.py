@@ -14,9 +14,6 @@
 import six
 
 
-nasty_exception_str = getattr(Exception.__str__, 'im_func', None)
-
-
 def ustr(v):
     """Convert any object to a plain string or unicode string,
     minimising the chance of raising a UnicodeError. This
@@ -33,7 +30,7 @@ def ustr(v):
             # they all constrain the type which potentially raises an
             # exception.
             # To avoid exceptions we have to call __str__ direct.
-            if getattr(fn, 'im_func', None) == nasty_exception_str:
+            if isinstance(v, BaseException):
                 # Exception objects have been optimised into C, and their
                 # __str__ function fails when given a unicode object.
                 # Unfortunately this scenario is all too common when

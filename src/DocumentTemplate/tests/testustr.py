@@ -40,6 +40,13 @@ class Bar(unicode):
     pass
 
 
+class RequestLike(object):
+    def __str__(self):
+        return "RequestLike"
+
+    args = ()  # to confuse `ustr._exception_str`
+
+
 class UnicodeTests(unittest.TestCase):
 
     def test_bare_string_literall(self):
@@ -51,6 +58,10 @@ class UnicodeTests(unittest.TestCase):
         from DocumentTemplate.ustr import ustr
         a = ustr(force_str('hello'))
         self.assertEqual(a, 'hello')
+
+    def test_RequestLike(self):
+        from DocumentTemplate.ustr import ustr
+        self.assertEqual(ustr(RequestLike()), "RequestLike")
 
     def test_with_non_ascii_char(self):
         from DocumentTemplate.ustr import ustr

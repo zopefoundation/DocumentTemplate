@@ -4,10 +4,13 @@ Changelog
 3.4 (unreleased)
 ----------------
 
+- Make ``ustr.ustr`` Python 3 compatible
+  (`Zope#921 <https://github.com/zopefoundation/Zope/issues/921>`_)
+
 
 3.3 (2020-07-01)
 ----------------
-
+ 
 - Restore ``sql_quote`` behavior of always returning native strings
   (`#54 <https://github.com/zopefoundation/DocumentTemplate/issues/54>`_)
 
