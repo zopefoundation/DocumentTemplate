@@ -36,8 +36,9 @@ class TestRaise(unittest.TestCase):
         self.assertRaises(SyntaxError, raiser.render, TemplateDict())
 
     def test_render_w_type_zExceptions_exception(self):
-        from DocumentTemplate.DT_Util import TemplateDict
         from zExceptions import Redirect
+
+        from DocumentTemplate.DT_Util import TemplateDict
         raiser = self._makeOne(type='Redirect')
         self.assertRaises(Redirect, raiser.render, TemplateDict())
 
@@ -52,8 +53,9 @@ class TestRaise(unittest.TestCase):
         self.assertRaises(SyntaxError, raiser.render, TemplateDict())
 
     def test_render_w_expr_zExceptions_exception(self):
-        from DocumentTemplate.DT_Util import TemplateDict
         from zExceptions import Redirect
+
+        from DocumentTemplate.DT_Util import TemplateDict
         raiser = self._makeOne(expr='Redirect')
         self.assertRaises(Redirect, raiser.render, TemplateDict())
 

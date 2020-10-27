@@ -4,6 +4,8 @@ Changelog
 3.4 (unreleased)
 ----------------
 
+- Update `isort` to version 5.
+
 - Make ``ustr.ustr`` Python 3 compatible
   (`Zope#921 <https://github.com/zopefoundation/Zope/issues/921>`_)
 

@@ -21,6 +21,7 @@ from AccessControl.ImplPython import guarded_getattr
 from AccessControl.SimpleObjectPolicies import ContainerAssertions
 from AccessControl.ZopeGuards import guarded_getitem
 from AccessControl.ZopeGuards import safe_builtins
+
 from DocumentTemplate import DT_Util
 
 

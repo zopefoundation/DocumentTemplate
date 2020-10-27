@@ -105,10 +105,11 @@ Document Templates may be created 4 ways:
 
 import six
 
-import DocumentTemplate as _dt
 from Acquisition import aq_base
 from ExtensionClass import Base
 from zExceptions import HTTPException
+
+import DocumentTemplate as _dt
 
 from .html_quote import html_quote
 from .ustr import ustr
