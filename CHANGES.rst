@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.4 (unreleased)
+3.4 (2020-10-27)
 ----------------
 
 - Update `isort` to version 5.
