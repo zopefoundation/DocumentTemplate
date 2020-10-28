@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/zopefoundation/DocumentTemplate.svg?branch=master
-   :target: https://travis-ci.org/zopefoundation/DocumentTemplate
+.. image:: https://travis-ci.com/zopefoundation/DocumentTemplate.svg?branch=master
+   :target: https://travis-ci.com/zopefoundation/DocumentTemplate
 
 .. image:: https://coveralls.io/repos/github/zopefoundation/DocumentTemplate/badge.svg?branch=master
    :target: https://coveralls.io/github/zopefoundation/DocumentTemplate?branch=master
