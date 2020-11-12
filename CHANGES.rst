@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-4.0 (unreleased)
+4.0 (2020-11-12)
 ----------------
 
 - Make ``ustr.ustr`` Python 3 compatible
