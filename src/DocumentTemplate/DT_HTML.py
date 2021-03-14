@@ -31,7 +31,7 @@ class dtml_re_class:
 
     def search(self, text, start=0,
                name_match=re.compile('[\000- ]*[a-zA-Z]+[\000- ]*').match,
-               end_match=re.compile('[\000- ]*(/|end)', re.I).match,
+               end_match=re.compile('[\000- ]*(/|end)', re.IGNORECASE).match,
                start_search=re.compile('[<&]').search,
                ent_name=re.compile('[-a-zA-Z0-9_.]+').match,
                ):

@@ -1,0 +1,28 @@
+# Generated from:
+# https://github.com/zopefoundation/meta/tree/master/config/zope-product
+[meta]
+template = "zope-product"
+commit-id = "c9ccfc6dd58798357db94e3aaf213ee82a4e8400"
+
+[python]
+with-appveyor = false
+with-pypy = false
+with-legacy-python = false
+with-docs = false
+with-sphinx-doctests = false
+
+[tox]
+use-flake8 = true
+
+[coverage]
+fail-under = 74
+
+[manifest]
+additional-rules = [
+    "include buildout4.cfg",
+    "recursive-include src *.dtml",
+    "recursive-include src *.out",
+    ]
+
+[isort]
+known_local_folder = "TreeDisplay"
