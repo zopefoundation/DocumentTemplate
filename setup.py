@@ -60,7 +60,7 @@ setup(name='DocumentTemplate',
           "Topic :: Text Processing :: Markup",
       ],
       keywords='DTML template zope HTML SQL web markup',
-      python_requires='>=3.4, <4',
+      python_requires='>=3.5, <4',
       install_requires=[
           'AccessControl >= 4.0a5',
           'Acquisition',
