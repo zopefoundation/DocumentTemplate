@@ -41,7 +41,7 @@ class BaseRestrictedDTML:
 # This does not respect the security policy as set by AccessControl. Instead
 # it only deals with the C module being compiled or not.
 try:
-    from AccessControl.cAccessControl import RestrictedDTMLMixin
+    from AccessControl.cAccessControl import RestrictedDTMLMixin_I_do_not_want_the_C_version
 except ImportError:
     RestrictedDTML = BaseRestrictedDTML
 else:
