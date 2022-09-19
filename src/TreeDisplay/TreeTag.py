@@ -241,7 +241,7 @@ def tpRender(self, md, section, args,
     if state is substate and not ('single' in args and args['single']):
         state = state or ([id],)
         state = encode_seq(state)
-        md['RESPONSE'].setCookie('tree-s', state)
+        md['RESPONSE'].setCookie('tree-s', state, same_site='Lax')
 
     return ''.join(data)
 
