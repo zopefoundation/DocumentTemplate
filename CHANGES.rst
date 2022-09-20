@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.1 (unreleased)
+4.1 (2022-09-20)
 ----------------
 
 - Set the ``tree-s`` cookie for ``dtml-tree`` tags with ``SameSite=Lax``.
