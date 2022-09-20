@@ -18,8 +18,10 @@ from TreeDisplay import TreeTag
 
 class FakeResponse:
 
-    def setCookie(self, name, value):
+    def setCookie(self, name, value, **kw):
         setattr(self, name, value)
+        for key, value in kw.items():
+            setattr(self, key, value)
 
 
 class DummyContent:
@@ -40,6 +42,9 @@ class DummyFolder:
 
 class TestTreeTag(unittest.TestCase):
 
+    def setUp(self):
+        self.response = FakeResponse()
+
     @property
     def doc_class(self):
         from DocumentTemplate.DT_HTML import HTML
@@ -47,15 +52,17 @@ class TestTreeTag(unittest.TestCase):
 
     def _render(self, text, **kw):
         html = self.doc_class(text)
-        return html(URL='/', RESPONSE=FakeResponse(), **kw)
+        return html(URL='/', RESPONSE=self.response, **kw)
 
     def test_instantiation_empty(self):
         res = self._render('<dtml-tree fldr></dtml-tree>', fldr=1)
         self.assertEqual(res, '<table cellspacing="0">\n</table>\n')
+        self.assertEqual(self.response.same_site, 'Lax')
 
     def test_instantiation(self):
         res = self._render('<dtml-tree fldr></dtml-tree>', fldr=DummyFolder())
         self.assertEqual(res, EMPTY_TREE)
+        self.assertEqual(self.response.same_site, 'Lax')
 
     def test_encode_decode_seq(self):
         state = [['AAAAAAAAAAE=', [['AAAAAAAAAAY=']]]]

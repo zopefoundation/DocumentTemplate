@@ -4,6 +4,13 @@ Changelog
 4.1 (unreleased)
 ----------------
 
+- Set the ``tree-s`` cookie for ``dtml-tree`` tags with ``SameSite=Lax``.
+  The tree tag never set this attribute. That causes modern browsers to show
+  warnings in the browser console and break tree displays in the future.
+  See https://hacks.mozilla.org/2020/08/changes-to-samesite-cookie-behavior/
+  for information about the ``SameSite`` cookie attribute and why its handling
+  in browsers is changing. 
+
 - Add support for Python 3.10.
 
 - Drop support for Python 3.5.
