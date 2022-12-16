@@ -2,7 +2,7 @@
 # https://github.com/zopefoundation/meta/tree/master/config/zope-product
 [meta]
 template = "zope-product"
-commit-id = "b5df3766ff8923477f3d24729b19504f0c401a2e"
+commit-id = "d6240444ec6c9e203f2fd9f62c3e6038f9189e96"
 
 [python]
 with-pypy = false
@@ -10,6 +10,7 @@ with-legacy-python = false
 with-sphinx-doctests = false
 with-windows = false
 with-future-python = false
+with-macos = false
 
 [tox]
 use-flake8 = true
