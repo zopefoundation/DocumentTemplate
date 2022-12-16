@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.2 (unreleased)
+4.2 (2022-12-16)
 ----------------
 
 - Fix insidious buildout configuration bug for tests against Zope 4.
