@@ -146,10 +146,3 @@ class opt_Tests(unittest.TestCase):
         # Nothing given
         # Uses default values
         self.assertEqual(self._makeOne(0, 0, 0, 0, SEQUENCE), (1, 7, 7))
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(sequence_variables_Tests))
-    suite.addTest(unittest.makeSuite(opt_Tests))
-    return suite

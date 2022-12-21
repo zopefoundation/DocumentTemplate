@@ -737,7 +737,7 @@ class InClass:
                                 pkw['sequence-start'] = 0
                             continue
                         raise ValidationError(
-                            '(item {}): {}'.format(index, vv),
+                            f'(item {index}): {vv}',
                             sys.exc_info()[2])
                 else:
                     client = sequence[index]
@@ -864,16 +864,16 @@ class InClass:
 
 
 basic_type = {
-    type(''): 1,
-    type(0): 1,
-    type(0.0): 1,
+    str: 1,
+    int: 1,
+    float: 1,
     type(()): 1,
     type([]): 1,
     type(None): 1,
 }.__contains__
 
 
-def int_param(params, md, name, default=0, st=type('')):
+def int_param(params, md, name, default=0, st=str):
     try:
         v = params[name]
     except Exception:

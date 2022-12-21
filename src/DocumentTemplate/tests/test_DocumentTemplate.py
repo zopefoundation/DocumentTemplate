@@ -10,7 +10,7 @@ class Item(Acquisition.Implicit):
         self.id = id
 
     def __repr__(self):
-        return '<Item id={0.id!r}>'.format(self)
+        return f'<Item id={self.id!r}>'
 
     def method1(self):
         pass

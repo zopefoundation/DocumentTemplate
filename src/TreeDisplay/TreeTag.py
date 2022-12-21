@@ -258,7 +258,7 @@ def tpRenderTABLE(self, id, root_url, url, state, substate, diff, data,
         urlattr = args['url']
         if urlattr and hasattr(self, urlattr):
             tpUrl = try_call_attr(self, urlattr)
-            url = (url and ('{}/{}'.format(url, tpUrl))) or tpUrl
+            url = (url and (f'{url}/{tpUrl}')) or tpUrl
             root_url = root_url or tpUrl
 
     ptreeData = add_with_prefix(treeData, 'tree', args.get('prefix'))

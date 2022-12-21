@@ -120,7 +120,7 @@ class String:
             cname, module, name = command
             d = {}
             try:
-                exec('from {} import {}'.format(module, name), d)
+                exec(f'from {module} import {name}', d)
             except ImportError:
                 exec('from DocumentTemplate.{} import {}'.format(
                     module, name), d)
@@ -167,7 +167,7 @@ class String:
                 raise ParseError('Unexpected tag', tag)
         else:
             # Var command
-            args = args and ("{} {}".format(name, args)) or name
+            args = args and (f"{name} {args}") or name
             return tag, args, Var, None
 
     @security.private
@@ -578,7 +578,7 @@ class FileMixin:
             print('file not found: %s' % self.raw)
 
         if self.raw:
-            with open(self.raw, 'r') as fd:
+            with open(self.raw) as fd:
                 raw = fd.read()
             return raw
         return ''

@@ -34,7 +34,7 @@ class Bar(str):
     pass
 
 
-class RequestLike(object):
+class RequestLike:
     def __str__(self):
         return "RequestLike"
 

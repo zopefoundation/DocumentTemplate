@@ -19,6 +19,13 @@ from html import escape
 from ..html_quote import html_quote
 
 
+try:
+    from docutils.core import publish_string  # NOQA: F401 unused import
+    HAVE_DOCUTILS = True
+except ImportError:
+    HAVE_DOCUTILS = False
+
+
 class DTMLTests(unittest.TestCase):
 
     def _get_doc_class(self):
@@ -266,17 +273,17 @@ class DTMLTests(unittest.TestCase):
 
     def test_sql_quote(self):
         html = self.doc_class('<dtml-var x sql_quote>')
-        special = u'\xae'
+        special = '\xae'
 
-        self.assertEqual(html(x=u'x'), u'x')
-        self.assertEqual(html(x=b'x'), u'x')
-        self.assertEqual(html(x=u"Moe's Bar"), u"Moe''s Bar")
-        self.assertEqual(html(x=b"Moe's Bar"), u"Moe''s Bar")
+        self.assertEqual(html(x='x'), 'x')
+        self.assertEqual(html(x=b'x'), 'x')
+        self.assertEqual(html(x="Moe's Bar"), "Moe''s Bar")
+        self.assertEqual(html(x=b"Moe's Bar"), "Moe''s Bar")
 
-        self.assertEqual(html(x=u"Moe's B%sr" % special),
-                         u"Moe''s B%sr" % special)
+        self.assertEqual(html(x="Moe's B%sr" % special),
+                         "Moe''s B%sr" % special)
         self.assertEqual(html(x=b"Moe's B%sr" % special.encode('UTF-8')),
-                         u"Moe''s B%sr" % special)
+                         "Moe''s B%sr" % special)
 
     def test_fmt(self):
         html = self.doc_class(
@@ -529,6 +536,8 @@ foo bar
         self.assertEqual(result, expected)
 
 
+@unittest.skipUnless(HAVE_DOCUTILS,
+                     'No docutils, skipping reStructuredText tests.')
 class RESTTests(DTMLTests):
 
     def test_fmt_reST_include_directive_raises(self):
@@ -587,7 +596,7 @@ def read_file(name):
 
     from DocumentTemplate import tests
     here = tests.__path__[0]
-    with open(os.path.join(here, name), 'r') as fd:
+    with open(os.path.join(here, name)) as fd:
         res = fd.read()
     return res
 
@@ -616,15 +625,3 @@ docutils_raw_warning = (
 
 class PukeError(Exception):
     """Exception raised in test code."""
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(DTMLTests))
-    try:
-        from docutils.core import publish_string  # NOQA: F401 unused import
-    except ImportError:
-        pass
-    else:
-        suite.addTest(unittest.makeSuite(RESTTests))
-    return suite

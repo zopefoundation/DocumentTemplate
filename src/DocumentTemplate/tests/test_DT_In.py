@@ -104,7 +104,7 @@ class DT_In_Tests(unittest.TestCase):
 
         for arg in batch_args:
             html = self.doc_class(template.format(arg=arg))
-            error_msg = 'The {arg} attribute was used'.format(arg=arg)
+            error_msg = f'The {arg} attribute was used'
             with self.assertRaisesRegex(ParseError, error_msg):
                 html(seq=['a', 'b'])
 

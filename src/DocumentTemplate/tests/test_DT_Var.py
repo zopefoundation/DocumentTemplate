@@ -116,7 +116,7 @@ class TestUrlQuoting(unittest.TestCase):
         self.assertEqual(
             sql_quote('\x00Hello\x00\x00World\x00'), 'HelloWorld')
 
-        self.assertEqual("\xea".encode("utf-8"), b"\xc3\xaa")
+        self.assertEqual("\xea".encode(), b"\xc3\xaa")
         self.assertEqual(sql_quote(b"\xc3\xaa'"), "\xea''")
         self.assertEqual(sql_quote("\xea'"), "\xea''")
 

@@ -126,10 +126,3 @@ class DT_Unless_Tests(unittest.TestCase):
             '</dtml-unless>')
 
         self.assertEqual(html(), 'Foo not true')
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(DT_If_Tests))
-    suite.addTest(unittest.makeSuite(DT_Unless_Tests))
-    return suite

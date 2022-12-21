@@ -203,7 +203,7 @@ class sequence_variables:
 
         # Initialize all stats to empty strings:
         for stat in self.statistic_names:
-            data['{}-{}'.format(stat, name)] = ''
+            data[f'{stat}-{name}'] = ''
 
         count = len(values)
         try:  # Numeric statistics

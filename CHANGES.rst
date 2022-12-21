@@ -4,6 +4,8 @@ Changelog
 4.4 (unreleased)
 ----------------
 
+- Drop support for Python 3.6.
+
 
 4.3 (2022-12-21)
 ----------------

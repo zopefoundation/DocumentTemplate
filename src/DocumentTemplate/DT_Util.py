@@ -42,7 +42,7 @@ class ParseError(Exception):
     """Document Template Parse Error"""
 
 
-def int_param(params, md, name, default=0, st=type('')):
+def int_param(params, md, name, default=0, st=str):
     v = params.get(name, default)
     if v:
         try:
@@ -238,7 +238,7 @@ class Add_with_prefix:
         if name.startswith(dp + '-'):
             map[self.prefix + name[len(dp):].replace('-', '_')] = value
         else:
-            map['{}_{}'.format(self.prefix, name)] = value
+            map[f'{self.prefix}_{name}'] = value
 
 
 def add_with_prefix(map, defprefix, prefix):
