@@ -22,7 +22,7 @@ with open('README.rst') as f:
 with open('CHANGES.rst') as f:
     CHANGES = f.read()
 
-version = '4.2'
+version = '4.3.dev0'
 
 
 setup(name='DocumentTemplate',
@@ -72,6 +72,9 @@ setup(name='DocumentTemplate',
           'zope.sequencesort',
           'zope.structuredtext',
       ],
+      extras_require={
+          'test': ['docutils']
+      },
       include_package_data=True,
       zip_safe=False,
       )

@@ -622,7 +622,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(DTMLTests))
     try:
-        import reStructuredText  # NOQA
+        from docutils.core import publish_string  # NOQA: F401 unused import
     except ImportError:
         pass
     else:

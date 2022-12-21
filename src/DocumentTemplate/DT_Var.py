@@ -456,20 +456,32 @@ def len_comma(v, name='(Unknown name)', md={}):
 
 def restructured_text(v, name='(Unknown name)', md={}):
     try:
-        from reStructuredText import HTML
+        from docutils.core import publish_string
     except ImportError:
-        logger.info('The reStructuredText package is not available, therefor '
+        logger.info('The docutils package is not available, therefore '
                     'the DT_Var.restructured_text function returns None.')
         return None
 
-    if isinstance(v, str):
-        txt = v
+    if isinstance(v, (str, bytes)):
+        data = v
     elif aq_base(v).meta_type in ['DTML Document', 'DTML Method']:
-        txt = aq_base(v).read_raw()
+        data = aq_base(v).read_raw()
     else:
-        txt = str(v)
+        data = str(v)
 
-    return HTML(txt)
+    # Override some docutils default settings
+    # The default for output_encoding is UTF8 already, the settings
+    # override acts as a reminder.
+    rest_settings_overrides = {'file_insertion_enabled': False,
+                               'raw_enabled': False,
+                               'output_encoding': 'UTF-8'}
+
+    html_bytes = publish_string(data,
+                                writer_name='html',
+                                settings_overrides=rest_settings_overrides)
+
+    # The formatting methods are expected to return native strings.
+    return html_bytes.decode('UTF-8')
 
 
 def structured_text(v, name='(Unknown name)', md={}):

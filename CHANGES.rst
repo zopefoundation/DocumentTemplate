@@ -1,6 +1,12 @@
 Changelog
 =========
 
+4.3 (unreleased)
+----------------
+
+- Fix `restructured-text` format specification. Tests were silently skipped.
+
+
 4.2 (2022-12-16)
 ----------------
 
