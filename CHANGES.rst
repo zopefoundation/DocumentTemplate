@@ -4,6 +4,7 @@ Changelog
 4.5 (unreleased)
 ----------------
 
+- Add preliminary support for Python 3.12b2
 
 4.4 (2022-01-12)
 ----------------
@@ -33,7 +34,7 @@ Changelog
   warnings in the browser console and break tree displays in the future.
   See https://hacks.mozilla.org/2020/08/changes-to-samesite-cookie-behavior/
   for information about the ``SameSite`` cookie attribute and why its handling
-  in browsers is changing. 
+  in browsers is changing.
 
 - Add support for Python 3.10.
 
