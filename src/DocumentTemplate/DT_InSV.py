@@ -88,7 +88,7 @@ class sequence_variables:
     def value(self, index, name):
         data = self.data
         item = self.items[index]
-        if type(item) == TupleType and len(item) == 2:
+        if isinstance(item, tuple) and len(item) == 2:
             item = item[1]
         if data['mapping']:
             return item[name]
