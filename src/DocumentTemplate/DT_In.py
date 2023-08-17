@@ -807,7 +807,7 @@ class InClass:
         s = []
         for client in sequence:
             k = None
-            if type(client) == TupleType and len(client) == 2:
+            if isinstance(client, tuple) and len(client) == 2:
                 if isort:
                     k = client[0]
                 v = client[1]
