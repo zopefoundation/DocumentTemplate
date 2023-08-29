@@ -4,7 +4,7 @@ Changelog
 4.5 (unreleased)
 ----------------
 
-- Add preliminary support for Python 3.12b2
+- Add preliminary support for Python 3.12rc1
 
 4.4 (2022-01-12)
 ----------------
