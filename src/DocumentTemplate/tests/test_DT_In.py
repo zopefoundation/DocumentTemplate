@@ -48,6 +48,40 @@ class TestIn(unittest.TestCase):
             {'key': 'c', 'data': '3'},
         ], result)
 
+    def test_sort_sequence__02(self):
+        """It does not break on sort value `None`, sorts smallest."""
+        stmt = self._makeOne('seq', 'mapping', 'sort=data')
+        seq = [
+            {'key': 'c', 'data': '3'},
+            {'key': 'a', 'data': '1'},
+            {'key': 'b', 'data': '2'},
+            {'key': 'a', 'data': None},
+        ]
+        result = stmt.sort_sequence(seq, 'key')
+        self.assertEqual([
+            {'key': 'a', 'data': None},
+            {'key': 'a', 'data': '1'},
+            {'key': 'b', 'data': '2'},
+            {'key': 'c', 'data': '3'},
+        ], result)
+
+    def test_sort_sequence__03(self):
+        """It does not break on sort value `None`, multisorts smallest."""
+        stmt = self._makeOne('seq', 'mapping', 'sort=key,data')
+        seq = [
+            {'key': 'c', 'data': '3'},
+            {'key': 'a', 'data': '1'},
+            {'key': 'b', 'data': '2'},
+            {'key': 'a', 'data': None},
+        ]
+        result = stmt.sort_sequence(seq, 'key')
+        self.assertEqual([
+            {'key': 'a', 'data': None},
+            {'key': 'a', 'data': '1'},
+            {'key': 'b', 'data': '2'},
+            {'key': 'c', 'data': '3'},
+        ], result)
+
 
 class DT_In_Tests(unittest.TestCase):
     """Functional testing ..DT_In.InClass."""

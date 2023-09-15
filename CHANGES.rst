@@ -6,6 +6,9 @@ Changelog
 
 - Add preliminary support for Python 3.12rc1
 
+- Be more resilient on sorting if the getter returns ``None``.
+
+
 4.4 (2022-01-12)
 ----------------
 
