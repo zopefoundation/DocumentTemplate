@@ -58,7 +58,6 @@ class TestIn(unittest.TestCase):
             {'key': 'a', 'data': None},
         ]
         result = stmt.sort_sequence(seq, 'key')
-        breakpoint()
         self.assertEqual([
             {'key': 'a', 'data': None},
             {'key': 'a', 'data': '1'},
@@ -76,7 +75,6 @@ class TestIn(unittest.TestCase):
             {'key': 'a', 'data': None},
         ]
         result = stmt.sort_sequence(seq, 'key')
-        breakpoint()
         self.assertEqual([
             {'key': 'a', 'data': None},
             {'key': 'a', 'data': '1'},
