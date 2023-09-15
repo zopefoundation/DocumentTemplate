@@ -829,6 +829,8 @@ class InClass:
                                 akey = akey()
                             except Exception:
                                 pass
+                        if akey is None:
+                            akey = _Smallest
                         k.append(akey)
                 else:  # One sort key.
                     if mapping:
@@ -840,6 +842,8 @@ class InClass:
                             k = k()
                         except Exception:
                             k = _Smallest
+                    if k is None:
+                        k = _Smallest
 
             s.append((k, client))
 
