@@ -4,9 +4,10 @@ Changelog
 4.5 (unreleased)
 ----------------
 
-- Add preliminary support for Python 3.12rc1
+- Add preliminary support for Python 3.12rc1.
 
 - Be more resilient on sorting if the getter returns ``None``.
+  (`#72 <https://github.com/zopefoundation/DocumentTemplate/pull/72>`_)
 
 
 4.4 (2022-01-12)
