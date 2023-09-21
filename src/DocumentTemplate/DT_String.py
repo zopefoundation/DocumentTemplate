@@ -110,7 +110,7 @@ class String:
             '[\000- ]+'                             # space after tag name
             '(?P<args>([^\\)"]+("[^"]*")?)*)'         # arguments
             ')?'
-            '\\)(?P<fmt>[0-9]*[.]?[0-9]*[a-z]|[]![])',  # end
+            '\\)(?P<fmt>[0-9]*[.]?[0-9]*[a-z]|[][])',  # end
             re.I)
 
     @security.private
