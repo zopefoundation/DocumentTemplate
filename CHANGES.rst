@@ -4,7 +4,7 @@ Changelog
 4.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add official support for Python 3.12.
 
 
 4.5 (2023-09-18)
