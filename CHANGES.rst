@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.6 (unreleased)
+4.6 (2023-11-13)
 ----------------
 
 - Add official support for Python 3.12.
