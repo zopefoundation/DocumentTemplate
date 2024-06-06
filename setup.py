@@ -22,7 +22,7 @@ with open('README.rst') as f:
 with open('CHANGES.rst') as f:
     CHANGES = f.read()
 
-version = '4.7.dev0'
+version = '5.0.dev0'
 
 
 setup(name='DocumentTemplate',
@@ -51,7 +51,6 @@ setup(name='DocumentTemplate',
           "Operating System :: OS Independent",
           "Programming Language :: Python",
           "Programming Language :: Python :: 3",
-          "Programming Language :: Python :: 3.7",
           "Programming Language :: Python :: 3.8",
           "Programming Language :: Python :: 3.9",
           "Programming Language :: Python :: 3.10",
@@ -61,7 +60,7 @@ setup(name='DocumentTemplate',
           "Topic :: Text Processing :: Markup",
       ],
       keywords='DTML template zope HTML SQL web markup',
-      python_requires='>=3.7',
+      python_requires='>=3.8',
       install_requires=[
           'AccessControl >= 4.0a5',
           'Acquisition',
