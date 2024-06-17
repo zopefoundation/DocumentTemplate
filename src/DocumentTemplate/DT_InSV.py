@@ -17,7 +17,6 @@ from math import sqrt
 
 import roman
 
-
 try:
     import Missing
     mv = Missing.Value
@@ -31,7 +30,10 @@ class sequence_variables:
 
     alt_prefix = None
 
-    def __init__(self, items=None, query_string='', start_name_re=None,
+    def __init__(self,
+                 items=None,
+                 query_string='',
+                 start_name_re=None,
                  alt_prefix=''):
         if items is not None:
             # Turn iterable into a list, to support key lookup
@@ -129,16 +131,18 @@ class sequence_variables:
                 if mo is not None:
                     v = mo.group(0)
                     l_ = mo.start(0)
-                    query_string = (query_string[:l_] +  # NOQA: W504
-                                    query_string[l_ + len(v) - 1:])
+                    query_string = (
+                        query_string[:l_] +  # NOQA: W504
+                        query_string[l_ + len(v) - 1:])
 
             else:
-                l_ = reg.search_group(query_string, (0,))
+                l_ = reg.search_group(query_string, (0, ))
                 if l_:
                     v = l_[1]
                     l_ = l_[0]
-                    query_string = (query_string[:l_] +  # NOQA: W504
-                                    query_string[l_ + len(v) - 1:])
+                    query_string = (
+                        query_string[:l_] +  # NOQA: W504
+                        query_string[l_ + len(v) - 1:])
 
             query_string = '?' + query_string[1:]
         else:
@@ -148,8 +152,16 @@ class sequence_variables:
         return query_string
 
     statistic_names = (
-        'total', 'count', 'min', 'max', 'median', 'mean', 'variance',
-        'variance-n', 'standard-deviation', 'standard-deviation-n',
+        'total',
+        'count',
+        'min',
+        'max',
+        'median',
+        'mean',
+        'variance',
+        'variance-n',
+        'standard-deviation',
+        'standard-deviation-n',
     )
 
     def statistics(self, name, key):
@@ -245,13 +257,13 @@ class sequence_variables:
                 else:
                     half = count // 2
                     try:
-                        data['median-%s' % name] = (
-                            values[half] + values[half - 1]) // 2
+                        data['median-%s' %
+                             name] = (values[half] + values[half - 1]) // 2
                     except Exception:
                         try:
-                            data['median-%s' % name] = (
-                                "between {} and {}".format(values[half],
-                                                           values[half - 1]))
+                            data['median-%s' %
+                                 name] = ("between {} and {}".format(
+                                     values[half], values[half - 1]))
                         except Exception:
                             pass
 
@@ -275,10 +287,9 @@ class sequence_variables:
             pass
         r = []
         while end < l_:
-            start, end, spam = opt(end + 1 - overlap, 0,
-                                   sz, orphan, sequence)
-            v = sequence_variables(self.items,
-                                   self.query_string, self.start_name_re)
+            start, end, spam = opt(end + 1 - overlap, 0, sz, orphan, sequence)
+            v = sequence_variables(self.items, self.query_string,
+                                   self.start_name_re)
             d = v.data
             d['batch-start-index'] = start - 1
             d['batch-end-index'] = end - 1
@@ -305,10 +316,10 @@ class sequence_variables:
             pass
         r = []
         while start > 1:
-            start, end, spam = opt(0, start - 1 + overlap,
-                                   sz, orphan, sequence)
-            v = sequence_variables(self.items,
-                                   self.query_string, self.start_name_re)
+            start, end, spam = opt(0, start - 1 + overlap, sz, orphan,
+                                   sequence)
+            v = sequence_variables(self.items, self.query_string,
+                                   self.start_name_re)
             d = v.data
             d['batch-start-index'] = start - 1
             d['batch-end-index'] = end - 1
@@ -324,10 +335,9 @@ class sequence_variables:
         'last': last,
         'previous': previous_batches,
         'next': next_batches,
-        # These two are for backward compatability with a missfeature:
-        'sequence-index': \
-        lambda self, suffix, key: self['sequence-' + suffix],
-        'sequence-index-is': \
+        # These two are for backward compatibility with a misfeature:
+        'sequence-index': lambda self, suffix, key: self['sequence-' + suffix],
+        'sequence-index-is':
         lambda self, suffix, key: self['sequence-' + suffix],
     }
     for n in statistic_names:
@@ -340,10 +350,10 @@ class sequence_variables:
                 key = key[9:]
             self.data[self.alt_prefix + key] = value
 
-    def __getitem__(self, key,
+    def __getitem__(self,
+                    key,
                     special_prefixes=special_prefixes,
-                    special_prefix=special_prefixes.__contains__
-                    ):
+                    special_prefix=special_prefixes.__contains__):
         data = self.data
         if key in data:
             return data[key]
