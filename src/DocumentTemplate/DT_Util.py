@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Foundation and Contributors.
+# Copyright (c) 2002-2024 Zope Foundation and Contributors.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -508,7 +508,7 @@ class SequenceFromIter:
 
     def __getitem__(self, idx):
         if idx < 0:
-            raise IndexError(f"negative indexes are not supported {idx}")
+            raise IndexError("negative indexes are not supported {idx}".format(idx))
         while not self.finished and idx >= len(self.data):
             try:
                 self.data.append(next(self.it))

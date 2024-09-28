@@ -4,6 +4,9 @@ Changelog
 3.5 (unreleased)
 ----------------
 
+- Support lazy batching again, support general iterators (backported)
+  (`#75 <https://github.com/zopefoundation/DocumentTemplate/issues/75>`_)
+
 
 3.4 (2020-10-27)
 ----------------
@@ -16,7 +19,7 @@ Changelog
 
 3.3 (2020-07-01)
 ----------------
- 
+
 - Restore ``sql_quote`` behavior of always returning native strings
   (`#54 <https://github.com/zopefoundation/DocumentTemplate/issues/54>`_)
 

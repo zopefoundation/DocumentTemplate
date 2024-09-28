@@ -349,6 +349,7 @@ from .DT_Util import ValidationError
 from .DT_Util import add_with_prefix
 from .DT_Util import name_param
 from .DT_Util import parse_params
+from .DT_Util import sequence_ensure_subscription
 from .DT_Util import simple_name
 
 
@@ -463,25 +464,25 @@ class InClass(object):
         expr = self.expr
         name = self.__name__
         if expr is None:
-            sequence = md[name]
+            sequence = sequence_ensure_subscription(md[name])
             cache = {name: sequence}
         else:
-            sequence = expr(md)
+            sequence = sequence_ensure_subscription(expr(md))
             cache = None
-
-        if not sequence:
-            if self.elses:
-                return render_blocks(self.elses, md, encoding=self.encoding)
-            return ''
 
         if isinstance(sequence, str):
             raise ValueError(
                 'Strings are not allowed as input to the in tag.')
 
-        # Turn iterable like dict.keys() into a list.
-        sequence = list(sequence)
-        if cache is not None:
-            cache[name] = sequence
+        # below we do not use ``not sequence`` because the
+        # implied ``__len__`` is expensive for some (lazy) sequences
+        # if not sequence:
+        try:
+            sequence[0]
+        except IndexError:
+            if self.elses:
+                return render_blocks(self.elses, md, encoding=self.encoding)
+            return ''
 
         section = self.section
         params = self.args
@@ -671,25 +672,25 @@ class InClass(object):
         expr = self.expr
         name = self.__name__
         if expr is None:
-            sequence = md[name]
+            sequence = sequence_ensure_subscription(md[name])
             cache = {name: sequence}
         else:
-            sequence = expr(md)
+            sequence = sequence_ensure_subscription(expr(md))
             cache = None
-
-        if not sequence:
-            if self.elses:
-                return render_blocks(self.elses, md, encoding=self.encoding)
-            return ''
 
         if isinstance(sequence, str):
             raise ValueError(
                 'Strings are not allowed as input to the in tag.')
 
-        # Turn iterable like dict.keys() into a list.
-        sequence = list(sequence)
-        if cache is not None:
-            cache[name] = sequence
+        # below we do not use ``not sequence`` because the
+        # implied ``__len__`` is expensive for some (lazy) sequences
+        # if not sequence:
+        try:
+            sequence[0]
+        except IndexError:
+            if self.elses:
+                return render_blocks(self.elses, md, encoding=self.encoding)
+            return ''
 
         section = self.section
         mapping = self.mapping
