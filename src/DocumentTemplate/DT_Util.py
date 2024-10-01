@@ -470,3 +470,57 @@ def parse_params(text,
         return parse_params(text, result, **parms)
     else:
         return result
+
+
+def sequence_supports_subscription(obj):
+    """Check whether *obj* supports sequence subscription.
+
+    We are using a heuristics.
+    """
+    # check wether *obj* might support sequence subscription
+    if not (hasattr(obj, "__getitem__") and hasattr(obj, "__len__")):
+        return False
+    # check that *obj* is unlikely a mapping
+    if (hasattr(obj, "get") or hasattr(obj, "keys")):
+        return False
+    return True
+
+
+def sequence_ensure_subscription(obj):
+    """return an *obj* wrapper supporting sequence subscription.
+
+    *obj* must either support sequence subscription itself
+    (and then is returned unwrapped) or be iterable.
+    """
+    if sequence_supports_subscription(obj):
+        return obj
+    return SequenceFromIter(iter(obj))
+
+
+class SequenceFromIter:
+    """Iterator wrapper supporting lazy sequence subscription."""
+
+    finished = False
+
+    def __init__(self, it):
+        self.it = it
+        self.data = []
+
+    def __getitem__(self, idx):
+        if idx < 0:
+            raise IndexError(f"negative indexes are not supported {idx}")
+        while not self.finished and idx >= len(self.data):
+            try:
+                self.data.append(next(self.it))
+            except StopIteration:
+                self.finished = True
+        return self.data[idx]
+
+    def __len__(self):
+        """the size -- ATT: expensive!"""
+        while not self.finished:
+            try:
+                self[len(self.data)]
+            except IndexError:
+                pass
+        return len(self.data)
