@@ -458,22 +458,12 @@ def sequence_supports_subscription(obj):
     We are using a heuristics.
     """
     # check wether *obj* might support sequence subscription
-    try:
-        obj[0]
-    except IndexError:
-        return True
-    except (AttributeError, TypeError, KeyError):
+    if not (hasattr(obj, "__getitem__") and hasattr(obj, "__len__")):
         return False
-    # check that *obj* is not a mapping
-    try:
-        obj[None]
-    except (TypeError, ValueError, RuntimeError):
-        # we may need more exceptions above
-        # (to support sequence like objects using strange exceptions)
-        return True
-    except KeyError:
-        pass
-    return False
+    # check that *obj* is unlikely a mapping
+    if (hasattr(obj, "get") or hasattr(obj, "keys")):
+        return False
+    return True
 
 
 def sequence_ensure_subscription(obj):
