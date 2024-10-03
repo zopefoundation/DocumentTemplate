@@ -6,6 +6,9 @@ Changelog
 
 - Drop support for Python 3.7.
 
+- Support lazy batching again, support general iterators
+  (`#75 <https://github.com/zopefoundation/DocumentTemplate/issues/75>`_)
+
 
 4.6 (2023-11-13)
 ----------------
