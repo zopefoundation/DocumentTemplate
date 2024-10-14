@@ -363,7 +363,6 @@ def parse_params(text,
                  parmre=re.compile('([\000- ]*([^\000- ="]+)=([^\000- ="]+))'),
                  qparmre=re.compile('([\000- ]*([^\000- ="]+)="([^"]*)")'),
                  **parms):
-
     """Parse tag parameters
 
     The format of tag parameters consists of 1 or more parameter
