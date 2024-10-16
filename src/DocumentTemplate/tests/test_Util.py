@@ -19,15 +19,15 @@ class SequenceTests(TestCase):
         self.assertFalse(sequence_supports_subscription({0: 0, None: None}))
 
     def test_supports_iter(self):
-        self.assertFalse(sequence_supports_subscription((i for i in range(0))))
-        self.assertFalse(sequence_supports_subscription((i for i in range(1))))
+        self.assertFalse(sequence_supports_subscription(i for i in range(0)))
+        self.assertFalse(sequence_supports_subscription(i for i in range(1)))
 
     def test_supports_SequenceFromIter(self):
         S = SequenceFromIter
         self.assertTrue(
-            sequence_supports_subscription(S((i for i in range(0)))))
+            sequence_supports_subscription(S(i for i in range(0))))
         self.assertTrue(
-            sequence_supports_subscription(S((i for i in range(1)))))
+            sequence_supports_subscription(S(i for i in range(1))))
 
     def test_supports_RuntimeError(self):
         # check that ``ZTUtils.Lazy.Lazy`` is recognized

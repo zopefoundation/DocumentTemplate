@@ -49,7 +49,7 @@ class TestTemplateDict(unittest.TestCase):
 
     def test_extensionclass(self):
         self.assertTrue(issubclass(TemplateDict, Base))
-        self.assertTrue(isinstance(TemplateDict(), Base))
+        self.assertIsInstance(TemplateDict(), Base)
         self.assertFalse(hasattr(TemplateDict, '__of__'))
 
     def test_empty(self):
@@ -58,14 +58,14 @@ class TestTemplateDict(unittest.TestCase):
         self.assertEqual(td.level, 0)
         self.assertRaises(AttributeError, getattr, td, 'foo')
         self.assertFalse(td.has_key('foo'))  # NOQA: W601
-        self.assertFalse('foo' in td)
+        self.assertNotIn('foo', td)
         self.assertFalse(td.has_key('level'))  # NOQA: W601
-        self.assertFalse('level' in td)
+        self.assertNotIn('level', td)
         self.assertRaises(KeyError, td.getitem, 0)
-        self.assertFalse(0 in td)
+        self.assertNotIn(0, td)
         with self.assertRaises(KeyError):
             td['foo']
-        self.assertTrue(td() is None)
+        self.assertIsNone(td())
 
     def test_level(self):
         td = TemplateDict()
@@ -80,7 +80,7 @@ class TestTemplateDict(unittest.TestCase):
         self.assertEqual(td[0], 'b')
         self.assertEqual(td[:], 'bar')
         self.assertEqual(td.getitem(-1), 'r')
-        self.assertTrue(td() is None)
+        self.assertIsNone(td())
         self.assertEqual(td._pop(1), 'bar')
         self.assertEqual(len(td), 3)
         self.assertEqual(td[:], 'foo')
@@ -93,7 +93,7 @@ class TestTemplateDict(unittest.TestCase):
         self.assertEqual(len(td), 0)
         self.assertRaises(KeyError, td.getitem, 0)
         self.assertFalse(td.has_key('foo'))  # NOQA: W601
-        self.assertFalse('foo' in td)
+        self.assertNotIn('foo', td)
         self.assertEqual(td.foo, 1)
         self.assertEqual(td.bar, 2)
         self.assertEqual(td.baz, None)
@@ -101,14 +101,14 @@ class TestTemplateDict(unittest.TestCase):
     def test_call(self):
         td = TemplateDict()
         result = td({'one': 1}, two=2)
-        self.assertTrue(isinstance(result, tuple))
+        self.assertIsInstance(result, tuple)
         self.assertEqual(len(result), 1)
         inst = result[0]
         self.assertEqual(type(inst).__name__, 'DictInstance')
         self.assertEqual(inst.one, 1)
         self.assertEqual(inst.two, 2)
         self.assertRaises(AttributeError, getattr, inst, 'three')
-        self.assertFalse(isinstance(inst, Base))
+        self.assertNotIsInstance(inst, Base)
 
     def test_stack(self):
         td = TemplateDict()
@@ -116,13 +116,13 @@ class TestTemplateDict(unittest.TestCase):
         td._push(object())
         td._push({'two': 22, 'three': 3})
         td._push({'four': None})
-        self.assertTrue('three' in td)
+        self.assertIn('three', td)
         self.assertEqual(td.getitem('three'), 3)
-        self.assertTrue('two' in td)
+        self.assertIn('two', td)
         self.assertEqual(td.getitem('two'), 22)
         self.assertRaises(TypeError, td.__contains__, 'one')
         self.assertRaises(TypeError, td.getitem, 'one')
-        self.assertTrue('four' in td)
+        self.assertIn('four', td)
         self.assertEqual(td.getitem('four'), None)
 
     def test_callable_doctemp(self):
@@ -171,7 +171,7 @@ class TestRestrictedTemplateDict(unittest.TestCase):
         def func(td):
             return td.this
         result = func(td)
-        self.assertTrue(result is context)
+        self.assertIs(result, context)
 
     def test_taintwrapper(self):
         class Request(dict):
