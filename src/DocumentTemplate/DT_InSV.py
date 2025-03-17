@@ -23,7 +23,7 @@ from .DT_Util import sequence_ensure_subscription
 try:
     import Missing
     mv = Missing.Value
-except ImportError:
+except ModuleNotFoundError:
     mv = None
 
 TupleType = tuple

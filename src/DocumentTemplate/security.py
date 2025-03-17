@@ -42,7 +42,7 @@ class BaseRestrictedDTML:
 # it only deals with the C module being compiled or not.
 try:
     from AccessControl.cAccessControl import RestrictedDTMLMixin
-except ImportError:
+except ModuleNotFoundError:
     RestrictedDTML = BaseRestrictedDTML
 else:
     class RestrictedDTML(RestrictedDTMLMixin, BaseRestrictedDTML):
