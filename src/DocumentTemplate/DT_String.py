@@ -121,7 +121,7 @@ class String:
             d = {}
             try:
                 exec(f'from {module} import {name}', d)
-            except ImportError:
+            except ModuleNotFoundError:
                 exec('from DocumentTemplate.{} import {}'.format(
                     module, name), d)
             command = d[name]

@@ -22,7 +22,7 @@ from ..html_quote import html_quote
 try:
     from docutils.core import publish_string  # NOQA: F401 unused import
     HAVE_DOCUTILS = True
-except ImportError:
+except ModuleNotFoundError:
     HAVE_DOCUTILS = False
 
 

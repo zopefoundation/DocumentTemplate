@@ -457,7 +457,7 @@ def len_comma(v, name='(Unknown name)', md={}):
 def restructured_text(v, name='(Unknown name)', md={}):
     try:
         from docutils.core import publish_string
-    except ImportError:
+    except ModuleNotFoundError:
         logger.info('The docutils package is not available, therefore '
                     'the DT_Var.restructured_text function returns None.')
         return None
@@ -497,7 +497,7 @@ def structured_text(v, name='(Unknown name)', md={}):
     level = 3
     try:
         from App.config import getConfiguration
-    except ImportError:
+    except ModuleNotFoundError:
         pass
     else:
         level = getConfiguration().structured_text_header_level
