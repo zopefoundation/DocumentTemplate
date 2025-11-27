@@ -4,15 +4,9 @@ Changelog
 5.0 (unreleased)
 ----------------
 
-- Add support for Python 3.14.
+- Add support for Python 3.13, 3.14.
 
-- Drop support for Python 3.9.
-
-- Drop support for Python 3.8.
-
-- Add support for Python 3.13.
-
-- Drop support for Python 3.7.
+- Drop support for Python 3.7, 3.8, 3.9.
 
 - Support lazy batching again, support general iterators
   (`#75 <https://github.com/zopefoundation/DocumentTemplate/issues/75>`_)
