@@ -4,7 +4,7 @@ Changelog
 5.1 (unreleased)
 ----------------
 
-- Fix Zope test failures accessing sequence wrappers introduced in #75
+- Fix Zope test failures accessing sequence wrappers introduced in #76
   from untrusted code.
   (`#81 <https://github.com/zopefoundation/DocumentTemplate/issues/81>`_)
 
