@@ -479,6 +479,8 @@ def sequence_ensure_subscription(obj):
 class SequenceFromIter:
     """Iterator wrapper supporting lazy sequence subscription."""
 
+    __allow_access_to_unprotected_subobjects__ = 1
+
     finished = False
 
     def __init__(self, it):
