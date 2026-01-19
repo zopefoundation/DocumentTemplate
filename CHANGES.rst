@@ -1,8 +1,10 @@
 Changelog
 =========
 
-5.1 (unreleased)
+5.1 (2026-01-19)
 ----------------
+
+- Move package metadata from setup.py to pyproject.toml.
 
 - Fix Zope test failures accessing sequence wrappers introduced in #76
   from untrusted code.

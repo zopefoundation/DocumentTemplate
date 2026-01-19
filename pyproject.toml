@@ -1,12 +1,69 @@
 # Generated with zope.meta (https://zopemeta.readthedocs.io/) from:
 # https://github.com/zopefoundation/meta/tree/master/src/zope/meta/zope-product
-
 [build-system]
 requires = [
     "setuptools >= 78.1.1,< 81",
     "wheel",
 ]
 build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "DocumentTemplate"
+version = "5.1"
+description = "Document Templating Markup Language (DTML)"
+license = "ZPL-2.1"
+classifiers = [
+    "Development Status :: 6 - Mature",
+    "Environment :: Web Environment",
+    "Framework :: Zope",
+    "Framework :: Zope :: 5",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Text Processing :: Markup",
+]
+dynamic = ["readme"]
+requires-python = ">=3.10"
+authors = [
+    {name = "Zope Foundation and contributors",email = "zope-dev@zope.dev"},
+]
+maintainers = [
+    {name = "Plone Foundation and contributors",email = "zope-dev@zope.dev"},
+]
+dependencies = [
+    "AccessControl >= 4.0a5",
+    "Acquisition",
+    "ExtensionClass>=4.1a1",
+    "RestrictedPython >= 4.0a1",
+    "roman",
+    "zExceptions",
+    "zope.sequencesort",
+    "zope.structuredtext",
+]
+keywords = [
+    "DTML",
+    "template",
+    "zope",
+    "HTML",
+    "SQL",
+    "web",
+    "markup",
+]
+
+[project.optional-dependencies]
+test = ["docutils"]
+
+[project.urls]
+Documentation = "https://zope.readthedocs.io/en/latest/zopebook/index.html"
+Source = "https://github.com/zopefoundation/DocumentTemplate"
+Issues = "https://github.com/zopefoundation/DocumentTemplate/issues"
 
 [tool.coverage.run]
 branch = true
@@ -30,3 +87,7 @@ exclude_lines = [
 
 [tool.coverage.html]
 directory = "parts/htmlcov"
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.rst", "CHANGES.rst"]}
+
