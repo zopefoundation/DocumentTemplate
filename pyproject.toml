@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "DocumentTemplate"
-version = "5.1"
+version = "5.2.dev0"
 description = "Document Templating Markup Language (DTML)"
 license = "ZPL-2.1"
 classifiers = [
