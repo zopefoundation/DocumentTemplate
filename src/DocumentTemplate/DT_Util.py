@@ -204,6 +204,9 @@ class Eval(RestrictionCapableEval):
         d.update(self.globals)
         for name in self.used:
             __traceback_info__ = name
+            # Don't try to override builtins, since they need to be protected
+            if d["__builtins__"] and name in d["__builtins__"]:
+                continue
             try:
                 if name not in d:
                     d[name] = md.getitem(name, 0)

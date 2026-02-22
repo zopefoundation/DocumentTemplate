@@ -408,6 +408,38 @@ foo bar
             <dtml-var expr="_.render(i.h2)">''')(i=C())
         self.assertEqual(res, expected)
 
+    def test_subitem_with_builtins_names(self):
+        # Test builtins names shadowing
+        import Acquisition
+        from ExtensionClass import Base
+
+        class C(Base, Acquisition.Implicit):
+            __allow_access_to_unprotected_subobjects__ = 1
+
+            def __init__(self, x):
+                self.x = x
+
+            def __call__(self, *args, **kwargs):
+                return f"rendering: {self.x}"
+
+        foo = C("foo")
+        foo.str = bar = C("bar")
+        expected = (
+            '''
+            foo,
+            foo,
+            bar,
+            rendering: foo,
+            rendering: bar''')
+        res = self.doc_class(
+            '''
+            <dtml-var "foo.x">,
+            <dtml-var "str(foo.x)">,
+            <dtml-var "foo.str.x">,
+            <dtml-var "foo()">,
+            <dtml-var "foo.str()">''')(**{"foo": foo, "str": bar})
+        self.assertEqual(res, expected)
+
     def testWith(self):
         class person:
             __allow_access_to_unprotected_subobjects__ = 1
