@@ -4,6 +4,8 @@ Changelog
 5.2 (unreleased)
 ----------------
 
+- Prevent builtins shadowing in DTML Var.
+
 
 5.1 (2026-01-19)
 ----------------

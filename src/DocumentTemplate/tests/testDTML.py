@@ -422,22 +422,30 @@ foo bar
             def __call__(self, *args, **kwargs):
                 return f"rendering: {self.x}"
 
+            def __len__(self):
+                return len(self.x)
+
         foo = C("foo")
         foo.str = bar = C("bar")
+        foo.len = baz = C("baz")
         expected = (
             '''
             foo,
             foo,
             bar,
             rendering: foo,
-            rendering: bar''')
+            rendering: bar,
+            3,
+            rendering: baz''')
         res = self.doc_class(
             '''
             <dtml-var "foo.x">,
             <dtml-var "str(foo.x)">,
             <dtml-var "foo.str.x">,
             <dtml-var "foo()">,
-            <dtml-var "foo.str()">''')(**{"foo": foo, "str": bar})
+            <dtml-var "foo.str()">,
+            <dtml-var "len(foo)">,
+            <dtml-var "foo.len()">''')(**{"foo": foo, "str": bar, "len": baz})
         self.assertEqual(res, expected)
 
     def testWith(self):
