@@ -4,6 +4,9 @@ Changelog
 5.2 (unreleased)
 ----------------
 
+- Prevent builtins shadowing in DTML Var.
+  (`Zope#1285 <https://github.com/zopefoundation/Zope/issues/1285>`_)
+
 
 5.1 (2026-01-19)
 ----------------
