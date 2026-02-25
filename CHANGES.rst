@@ -4,6 +4,8 @@ Changelog
 5.3 (unreleased)
 ----------------
 
+- Reverted builtins shadowing fix from 5.2, it was causing other issues.
+
 
 5.2 (2026-02-23)
 ----------------
