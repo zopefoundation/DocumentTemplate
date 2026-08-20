@@ -2,7 +2,7 @@
 # https://github.com/zopefoundation/meta/tree/master/src/zope/meta/zope-product
 [meta]
 template = "zope-product"
-commit-id = "46adcf92"
+commit-id = "9333ca19"
 
 [python]
 with-pypy = false
@@ -24,3 +24,6 @@ additional-rules = [
 
 [isort]
 known_local_folder = "TreeDisplay"
+
+[pypi]
+trusted-publishing = true

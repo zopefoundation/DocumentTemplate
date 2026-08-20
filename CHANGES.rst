@@ -4,6 +4,10 @@ Changelog
 5.4 (unreleased)
 ----------------
 
+- Add support for Python 3.15.
+
+- Switch to PyPI Trusted Publishing.
+
 
 5.3 (2026-02-25)
 ----------------
